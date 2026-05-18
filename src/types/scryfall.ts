@@ -18,7 +18,3 @@ export type ScryfallCard = {
   collector_number?: string
   card_faces?: ScryfallCardFace[]
 }
-
-export type ScryfallSearchResponse = {
-  data: ScryfallCard[]
-}

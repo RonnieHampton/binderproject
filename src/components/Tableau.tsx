@@ -1,4 +1,5 @@
 import type { ScryfallCard } from "../types/scryfall";
+import BinderCard from "./BinderCard";
 
 type TableauProps = {
   cards: ScryfallCard[]
@@ -8,13 +9,15 @@ type TableauProps = {
 function Tableau({ cards, onRemoveCard }: TableauProps) {
   return (
     <>
-      <p>Tableau Component</p>
-
+        <div style={{ display: 'flex', flexDirection: 'row', gap: '1rem'}}>
       {cards.map((card, index) => (
-        <div key={`${card.id}-${index}`} onClick={() => onRemoveCard?.(index)}>
-          {card.name}
-        </div>
+
+          <div key={`${card.id}-${index}`} onClick={() => onRemoveCard?.(index)}>
+            <BinderCard card={card} />
+          </div>
+        
       ))}
+      </div>
     </>
   )
 }

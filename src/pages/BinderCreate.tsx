@@ -4,6 +4,7 @@ import type { ScryfallCard } from "../types/scryfall"
 import Tableau from "../components/Tableau";
 import { useState } from "react";
 
+
 function BinderCreate() {
 	const [tableauCards, setTableauCards] = useState<ScryfallCard[]>([])
 
@@ -16,14 +17,19 @@ function BinderCreate() {
     }
 
 	return (
+        <>
 		<div>
-			<p>
-				<br />
-				<Link to="/">Home</Link>
-			</p>
+            <div className="topArea">
+			<Link to="/">Home</Link>
+            <br/>
 			<SearchBar onSelectCard={handleSelectCard} />
+            <br />
+            </div>
             <Tableau onRemoveCard={handleRemoveCard} cards={tableauCards}/>
 		</div>
+            
+
+    </>
 	)
 }
 

@@ -1,0 +1,7 @@
+.topArea {
+  position: relative;
+  height: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
