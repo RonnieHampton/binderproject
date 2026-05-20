@@ -23,12 +23,19 @@ function BinderCreate() {
     )
     const [overlayCard, setOverlayCard] = useState<CardInstance | null>(null);
     const [page, setPage] = useState(0);
-    const hoverTimeout = useRef<number | null>(null);
+    const hoverInterval = useRef<number | null>(null);
 
     const handleSelectCard = (card: ScryfallCard) => {
         const newCard = createCardInstance(card);
         setTableauCards((prev) => [...prev, newCard])
     }
+
+    const clearHoverInterval = () => {
+            if (hoverInterval.current !== null) {
+                clearInterval(hoverInterval.current);
+                hoverInterval.current = null;
+            }
+        };
 
     const handlePageChange = (increment: number) => {
         setPage(page + increment);
@@ -110,27 +117,23 @@ function BinderCreate() {
             onDragOver={(event) => {
                 const targetID = event.operation.target?.id;
 
-                if (targetID === "left" && page > 0) {
-                    if (!hoverTimeout.current) {
-                        hoverTimeout.current = window.setTimeout(() => {
-                            handlePageChange(-1);
-                            hoverTimeout.current = null;
-                        }, 2000);
+                const canGoLeft = targetID === "left" && page > 0;
+                const canGoRight = targetID === "right" && page < 4;
+
+                if (canGoLeft || canGoRight) {
+                    if (hoverInterval.current === null) {
+                    hoverInterval.current = window.setInterval(() => {
+                        setPage((prev) => {
+                        if (targetID === "left") return Math.max(prev - 1, 0);
+                        if (targetID === "right") return Math.min(prev + 1, 4);
+                        return prev;
+                        });
+                    }, 500);
                     }
-
-                } else if (targetID === "right" && page < 4) {
-
-                    if (!hoverTimeout.current) {
-                        hoverTimeout.current = window.setTimeout(() => {
-                            handlePageChange(1);
-                            hoverTimeout.current = null;
-                        }, 2000);
-                    }
-
+                } else {
+                    clearHoverInterval();
                 }
-
-    console.log(`Dragged over: ${targetID}`);
-}}
+            }}
             
             
             onDragStart={(event) => { 
@@ -157,6 +160,8 @@ function BinderCreate() {
                         handleToTrash(sourceType, sourceIndex);
                         console.log(`Card dragged to trash at index: ${sourceIndex}`);
                     }
+
+                    clearHoverInterval();
                 }
             }>
                 <TrashDroppable />
