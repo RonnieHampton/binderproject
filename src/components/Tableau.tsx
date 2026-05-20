@@ -14,7 +14,8 @@ function Tableau({ cards}: TableauProps) {
 
   return (
     <>
-      <div ref={ref} style={{ minHeight: "320px",
+      <div ref={ref} style={{  maxWidth: "100%",
+    minHeight: "320px",
     padding: "1rem",
     border: "2px dashed gray",
     borderRadius: "12px",display: 'flex', flexDirection: 'row', gap: '1rem'}}>

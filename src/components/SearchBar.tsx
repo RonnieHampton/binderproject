@@ -9,7 +9,7 @@ type SearchBarProps = {
 }
 
 function SearchBar({ onSelectCard }: SearchBarProps) {
-    
+    const [focused, setFocused] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState<ScryfallCard[]>([]);
 
@@ -34,9 +34,9 @@ function SearchBar({ onSelectCard }: SearchBarProps) {
 
     return(
         <>
-        <div className="search-bar">
+        <div onFocus={() => setFocused(true)} onBlur={() => setFocused(false)} className="search-bar">
             <input type="text" value={searchTerm} onChange={handleSearch} placeholder="Search..." />
-            <SearchResult result={searchResults} onSelectCard={handleSelectCard}/>
+            {focused && <SearchResult result={searchResults} onSelectCard={handleSelectCard}/>}
         </div>
         </>
     )

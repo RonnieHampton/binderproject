@@ -4,15 +4,11 @@ function Home() {
   return (
     <div>
       <h1>Welcome to Binder Project</h1>
-      <p>
-        This is a clean starter page. Update <code>src/App.tsx</code> to
-        build your app.
         <br />
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "1rem", marginTop: "1rem" }}>
         <Link to="/BinderView">Go to BinderView</Link>
         <Link to="/BinderCreate">Go to BinderCreate</Link>
         </div>
-      </p>
     </div>
   )
 }  

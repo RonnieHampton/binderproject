@@ -14,7 +14,10 @@ function SearchResult({ result, onSelectCard }: SearchResultProps) {
           className="result-row"
           key={card.id}
           type="button"
-          onClick={() => onSelectCard?.(card)}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            onSelectCard?.(card);
+          }}
         >
           <img
             className="result-thumb"

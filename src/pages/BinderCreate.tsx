@@ -2,11 +2,12 @@ import { Link } from "react-router-dom";
 import SearchBar from "../components/SearchBar";
 import type { CardInstance, ScryfallCard } from "../types/scryfall"
 import Tableau from "../components/Tableau";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Binder from "../components/Binder";
 import { DragDropProvider, DragOverlay } from "@dnd-kit/react";
 import TrashDroppable from "../components/Trash";
 import CardOverlay from "../components/CardOverlay";
+import DragHoverDetector from "../components/DragHoverDetector"
 
 function createCardInstance(card: ScryfallCard): CardInstance {
     return { 
@@ -21,50 +22,81 @@ function BinderCreate() {
         Array(60).fill(null)
     )
     const [overlayCard, setOverlayCard] = useState<CardInstance | null>(null);
+    const [page, setPage] = useState(0);
+    const hoverTimeout = useRef<number | null>(null);
 
     const handleSelectCard = (card: ScryfallCard) => {
         const newCard = createCardInstance(card);
         setTableauCards((prev) => [...prev, newCard])
     }
-    
+
+    const handlePageChange = (increment: number) => {
+        setPage(page + increment);
+    };
+
     const handleToBinder = (sourceIndex: number, targetIndex: number) => {
-        const neededCard = tableauCards[sourceIndex]
-        if (!neededCard) return;
-        setTableauCards((prev) => prev.filter((_, i) => i !== sourceIndex));
-        const nextBinder = [...binderCards];
-        nextBinder[targetIndex] = neededCard;
-        setBinderCards(nextBinder);
-    }
+    const neededCard = tableauCards[sourceIndex];
+    if (!neededCard) return;
+
+    setTableauCards((prev) => prev.filter((_, i) => i !== sourceIndex));
+
+    setBinderCards((prev) => {
+        const next = [...prev];
+        next[targetIndex] = neededCard;
+        return next;
+    });
+    };
 
     const handleToTableau = (sourceIndex: number) => {
-        const neededCard = binderCards[sourceIndex];
-        if (!neededCard) return;
-        setBinderCards((prev) => prev.filter((_, i) => i !== sourceIndex));
-        setTableauCards((prev) => [...prev, neededCard]);
-    }
+    const neededCard = binderCards[sourceIndex];
+    if (!neededCard) return;
+
+    setBinderCards((prev) => {
+        const next = [...prev];
+        next[sourceIndex] = null;
+        return next;
+    });
+
+    setTableauCards((prev) => [...prev, neededCard]);
+    };
 
     const handleBinderMove = (sourceIndex: number, targetIndex: number) => {
-        const oldCard = binderCards[targetIndex];
-        const neededCard = binderCards[sourceIndex];
-        if (!neededCard) return;
-        const nextBinder = [...binderCards];
-        nextBinder[sourceIndex] = oldCard ?? null;
-        nextBinder[targetIndex] = neededCard;
-        setBinderCards(nextBinder);
+    if (sourceIndex === targetIndex) return;
+
+    setBinderCards((prev) => {
+        const next = [...prev];
+
+        const neededCard = next[sourceIndex];
+        if (!neededCard) return prev;
+
+        const oldCard = next[targetIndex];
+
+        next[sourceIndex] = oldCard ?? null;
+        next[targetIndex] = neededCard;
+
+        return next;
+    });
+    };
+
+    const handleToTrash = (
+    sourceType: string | undefined,
+    sourceIndex: number
+    ) => {
+    if (sourceType === "binder-draggable") {
+        setBinderCards((prev) => {
+        const next = [...prev];
+        next[sourceIndex] = null;
+        return next;
+        });
+
+        return;
     }
 
-    const handleToTrash = (sourceType: string | undefined,sourceIndex: number) => {
-        if (sourceType === "binder-draggable") {
-            setBinderCards((prev) => {
-            const next = [...prev];
-            next[sourceIndex] = null;
-            return next;
-            });
-        } else {
-            setTableauCards((prev) =>
-            prev.filter((_, i) => i !== sourceIndex)
-            );
-        }
+    if (sourceType === "tableau-draggable") {
+        setTableauCards((prev) =>
+        prev.filter((_, i) => i !== sourceIndex)
+        );
+    }
     };
 
 	return (
@@ -74,7 +106,34 @@ function BinderCreate() {
 			<SearchBar onSelectCard={handleSelectCard} />
             </div>
 
-            <DragDropProvider onDragStart={(event) => { 
+            <DragDropProvider 
+            onDragOver={(event) => {
+                const targetID = event.operation.target?.id;
+
+                if (targetID === "left" && page > 0) {
+                    if (!hoverTimeout.current) {
+                        hoverTimeout.current = window.setTimeout(() => {
+                            handlePageChange(-1);
+                            hoverTimeout.current = null;
+                        }, 2000);
+                    }
+
+                } else if (targetID === "right" && page < 4) {
+
+                    if (!hoverTimeout.current) {
+                        hoverTimeout.current = window.setTimeout(() => {
+                            handlePageChange(1);
+                            hoverTimeout.current = null;
+                        }, 2000);
+                    }
+
+                }
+
+    console.log(`Dragged over: ${targetID}`);
+}}
+            
+            
+            onDragStart={(event) => { 
                 setOverlayCard(event.operation.source?.data?.card || null);
             }}
             
@@ -102,7 +161,17 @@ function BinderCreate() {
             }>
                 <TrashDroppable />
                 <Tableau cards={tableauCards}/>
-                <Binder cards={binderCards}/>
+                <div style={{
+                    display: "grid",
+                    gridTemplateColumns: "250px auto 250px",
+                    columnGap: "24px",
+                    alignItems: "start",
+                    justifyContent: "center",
+                }}>
+                <DragHoverDetector id="left" />
+                <Binder onPageChange={handlePageChange} page={page} cards={binderCards}/>
+                <DragHoverDetector id="right" />
+                </div>
 
                 <DragOverlay dropAnimation={null}>
                     {overlayCard ? (
