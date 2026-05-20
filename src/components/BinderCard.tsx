@@ -1,16 +1,18 @@
 import {useDraggable} from '@dnd-kit/react';
-import type { ScryfallCard } from "../types/scryfall"
+import type { CardInstance } from "../types/scryfall"
 
-function BinderCard({card}: {card: ScryfallCard}) {
+function BinderCard({card, index}: {card: CardInstance, index: number}) {
   const { ref } = useDraggable({
     id: card.id,
+    type: "tableau-draggable",
+    data: {index, card}
   });
 
   return (
     <img
       ref={ref}
-      src={card.image_uris?.normal}
-      alt={card?.name}
+      src={card.card.image_uris?.normal}
+      alt={card.card?.name}
       style={{height: '300px', width:"auto"}}
     />
   );

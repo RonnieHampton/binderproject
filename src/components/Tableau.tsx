@@ -1,22 +1,30 @@
-import type { ScryfallCard } from "../types/scryfall";
+import type { CardInstance } from "../types/scryfall";
 import BinderCard from "./BinderCard";
+import { useDroppable } from "@dnd-kit/react";
 
 type TableauProps = {
-  cards: ScryfallCard[]
-  onRemoveCard?: (index: number) => void
+  cards: CardInstance[]
 }
 
-function Tableau({ cards, onRemoveCard }: TableauProps) {
+function Tableau({ cards}: TableauProps) {
+  const {ref} = useDroppable({
+    id: 'tableau',
+    type: 'tableau'
+  })
+
   return (
     <>
-        <div style={{ display: 'flex', flexDirection: 'row', gap: '1rem'}}>
-      {cards.map((card, index) => (
+      <div ref={ref} style={{ minHeight: "320px",
+    padding: "1rem",
+    border: "2px dashed gray",
+    borderRadius: "12px",display: 'flex', flexDirection: 'row', gap: '1rem'}}>
+        {cards.map((card, index) => (
 
-          <div key={`${card.id}-${index}`} onClick={() => onRemoveCard?.(index)}>
-            <BinderCard card={card} />
-          </div>
-        
-      ))}
+            <div key={`${card.id}-${index}`}>
+              <BinderCard card={card} index={index}/>
+            </div>
+          
+        ))}
       </div>
     </>
   )

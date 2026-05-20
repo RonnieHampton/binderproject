@@ -35,7 +35,7 @@ function SearchBar({ onSelectCard }: SearchBarProps) {
     return(
         <>
         <div className="search-bar">
-            <input type="text" value={searchTerm} onChange={(e) => handleSearch(e)} placeholder="Search..." />
+            <input type="text" value={searchTerm} onChange={handleSearch} placeholder="Search..." />
             <SearchResult result={searchResults} onSelectCard={handleSelectCard}/>
         </div>
         </>
