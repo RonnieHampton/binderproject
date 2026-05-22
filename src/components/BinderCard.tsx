@@ -1,9 +1,15 @@
 import {useDraggable} from '@dnd-kit/react';
 import type { CardInstance } from "../types/scryfall"
 
-function BinderCard({card, index}: {card: CardInstance, index: number}) {
+type BinderCardProps = {
+  card: CardInstance;
+  index: number;
+  onSelect: (card: CardInstance, index: number) => void;
+};
+
+function BinderCard({card, index, onSelect }: BinderCardProps) {
   const { ref } = useDraggable({
-    id: card.id,
+    id: `${index}-${card.id}`,
     type: "tableau-draggable",
     data: {index, card}
   });
@@ -13,7 +19,8 @@ function BinderCard({card, index}: {card: CardInstance, index: number}) {
       ref={ref}
       src={card.card.image_uris?.normal}
       alt={card.card?.name}
-      style={{height: '300px', width:"auto"}}
+      style={{height: '300px', width:"auto", borderRadius: "13px"}}
+      onClick={() => onSelect(card, index)}
     />
   );
 }

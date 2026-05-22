@@ -8,6 +8,9 @@ import { DragDropProvider, DragOverlay } from "@dnd-kit/react";
 import TrashDroppable from "../components/Trash";
 import CardOverlay from "../components/CardOverlay";
 import DragHoverDetector from "../components/DragHoverDetector"
+import type { TableauSortMode } from "../types/tableau";
+import CardOptionsModal from "../components/CardOptionsModal";
+import './BinderCreate.css'
 
 function createCardInstance(card: ScryfallCard): CardInstance {
     return { 
@@ -24,11 +27,24 @@ function BinderCreate() {
     const [overlayCard, setOverlayCard] = useState<CardInstance | null>(null);
     const [page, setPage] = useState(0);
     const hoverInterval = useRef<number | null>(null);
+    const [sortMode, setSortMode] = useState<TableauSortMode>("cmc");
+    const [selectedCard, setSelectedCard] = useState<CardInstance | null>(null);
+    const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
-    const handleSelectCard = (card: ScryfallCard) => {
+    const handleSelectSearch = (card: ScryfallCard) => {
         const newCard = createCardInstance(card);
         setTableauCards((prev) => [...prev, newCard])
     }
+
+    const closeModal = () => {
+        setSelectedCard(null);
+        setSelectedIndex(null);
+    };
+
+    const handleSelect = (card: CardInstance | null, index: number) => {
+        setSelectedCard(card);
+        setSelectedIndex(index);
+    };
 
     const clearHoverInterval = () => {
             if (hoverInterval.current !== null) {
@@ -38,20 +54,30 @@ function BinderCreate() {
         };
 
     const handlePageChange = (increment: number) => {
-        setPage(page + increment);
+        setPage((prev) => Math.max(0, Math.min(prev + increment, 4)));
     };
 
     const handleToBinder = (sourceIndex: number, targetIndex: number) => {
-    const neededCard = tableauCards[sourceIndex];
-    if (!neededCard) return;
+        const neededCard = tableauCards[sourceIndex];
+        if (!neededCard) return;
 
-    setTableauCards((prev) => prev.filter((_, i) => i !== sourceIndex));
+        const displacedCard = binderCards[targetIndex];
 
-    setBinderCards((prev) => {
-        const next = [...prev];
-        next[targetIndex] = neededCard;
-        return next;
-    });
+        setBinderCards((prevBinder) => {
+            const nextBinder = [...prevBinder];
+            nextBinder[targetIndex] = neededCard;
+            return nextBinder;
+        });
+
+        setTableauCards((prevTableau) => {
+            const nextTableau = prevTableau.filter((_, i) => i !== sourceIndex);
+
+            if (displacedCard) {
+                nextTableau.push(displacedCard);
+            }
+
+            return nextTableau;
+        });
     };
 
     const handleToTableau = (sourceIndex: number) => {
@@ -70,19 +96,19 @@ function BinderCreate() {
     const handleBinderMove = (sourceIndex: number, targetIndex: number) => {
     if (sourceIndex === targetIndex) return;
 
-    setBinderCards((prev) => {
-        const next = [...prev];
+        setBinderCards((prev) => {
+            const next = [...prev];
 
-        const neededCard = next[sourceIndex];
-        if (!neededCard) return prev;
+            const neededCard = next[sourceIndex];
+            if (!neededCard) return prev;
 
-        const oldCard = next[targetIndex];
+            const oldCard = next[targetIndex];
 
-        next[sourceIndex] = oldCard ?? null;
-        next[targetIndex] = neededCard;
+            next[sourceIndex] = oldCard ?? null;
+            next[targetIndex] = neededCard;
 
-        return next;
-    });
+            return next;
+        });
     };
 
     const handleToTrash = (
@@ -110,7 +136,7 @@ function BinderCreate() {
 		<div>
             <div className="topArea">
 			<Link to="/">Home</Link>
-			<SearchBar onSelectCard={handleSelectCard} />
+			<SearchBar onSelectCard={handleSelectSearch} />
             </div>
 
             <DragDropProvider 
@@ -151,21 +177,34 @@ function BinderCreate() {
                         console.log(`Card dragged from tableau to binder at index: ${targetIndex}`);
                     } else if (sourceType === 'binder-draggable' && targetType === 'tableau') {
                         handleToTableau(sourceIndex);
-                        console.log(`Card dragged from binder to tableau at index: ${sourceIndex}`);
+                        console.log(`Card dragged from binder to tableau from index: ${sourceIndex}`);
                     } else if (sourceType === 'binder-draggable' && targetType === 'binder-droppable') {
                         handleBinderMove(sourceIndex, targetIndex);
                         // Handle the case where a card is dragged from the binder to the binder
-                        console.log(`Card dragged from binder to binder at index: ${targetIndex}`);
+                        console.log(`Card dragged from binder index ${sourceIndex} to binder at index: ${targetIndex}`);
                     } else if (targetType === 'trash') {
                         handleToTrash(sourceType, sourceIndex);
-                        console.log(`Card dragged to trash at index: ${sourceIndex}`);
+                        console.log(`Card dragged to trash from index: ${sourceIndex}`);
                     }
 
                     clearHoverInterval();
                 }
             }>
                 <TrashDroppable />
-                <Tableau cards={tableauCards}/>
+                <select
+                    value={sortMode}
+                    onChange={(e) =>
+                        setSortMode(e.target.value as TableauSortMode)
+                    }
+                >
+                    <option value="cmc">Mana Value</option>
+                    <option value="color_identity">Color Identity</option>
+                    <option value="type_line">Type</option>
+                    <option value="rarity">Rarity</option>
+                    <option value="set">Set</option>
+                </select>
+                <Tableau onSelect={handleSelect} sortType={sortMode} cards={tableauCards}/>
+                <p>{`Current page: ${page + 1}/5`}</p>
                 <div style={{
                     display: "grid",
                     gridTemplateColumns: "250px auto 250px",
@@ -174,7 +213,7 @@ function BinderCreate() {
                     justifyContent: "center",
                 }}>
                 <DragHoverDetector id="left" />
-                <Binder onPageChange={handlePageChange} page={page} cards={binderCards}/>
+                <Binder onSelect={handleSelect} onPageChange={handlePageChange} page={page} cards={binderCards}/>
                 <DragHoverDetector id="right" />
                 </div>
 
@@ -185,6 +224,18 @@ function BinderCreate() {
                 </DragOverlay>
 
             </DragDropProvider>
+
+            {selectedCard && selectedIndex !== null && (
+                <div className="modal-backdrop" onClick={closeModal}>
+                    <div className="modal-panel" onClick={(e) => e.stopPropagation()}>
+                    <CardOptionsModal
+                        card={selectedCard}
+                        index={selectedIndex}
+                        handleSave={() => {}}
+                    />
+                    </div>
+                </div>
+                )}
 		</div>
 	)
 }

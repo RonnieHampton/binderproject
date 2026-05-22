@@ -4,9 +4,10 @@ import { useDroppable, useDraggable } from "@dnd-kit/react";
 type BinderDroppableProps = {
   card: CardInstance | null,
   index: number
+  onSelect: (card: CardInstance | null, index: number) => void
 };
 
-function BinderDroppable({card, index}: BinderDroppableProps) {
+function BinderDroppable({card, index, onSelect}: BinderDroppableProps) {
     const {ref: droppableRef} = useDroppable({
         id: `drop-${index}`,
         type: "binder-droppable", 
@@ -25,6 +26,7 @@ function BinderDroppable({card, index}: BinderDroppableProps) {
             draggableRef(node);
     };
 
+    console.log(card?.card.prints_search_uri);
 
     return(
         <>
@@ -41,9 +43,11 @@ function BinderDroppable({card, index}: BinderDroppableProps) {
                     <img
                     src={card.card.image_uris?.normal}
                     alt={card.card.name}
-                    style={{ height: "300px", width: "auto" }}
+                    style={{ height: "300px", width: "auto", borderRadius: "18px" }}
+                    onClick={() => onSelect(card, index)}
                     />
                 ) : null}
+                <p>{index}</p>
             </div>
         </>
     )
