@@ -1,6 +1,5 @@
 import type {
   ScryfallCard,
-  ScryfallSearchResponse
 } from "../types/scryfall"
 
 export async function fetchCards(
@@ -15,7 +14,7 @@ export async function fetchCards(
     return []
   }
 
-  const json = (await response.json()) as ScryfallSearchResponse
+  const json = (await response.json())
 
   return json.data
 }
