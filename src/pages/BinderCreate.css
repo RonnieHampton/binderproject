@@ -1,11 +1,3 @@
-.topArea {
-  position: relative;
-  height: 420px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 .modal-backdrop {
   position: fixed;
   inset: 0;
