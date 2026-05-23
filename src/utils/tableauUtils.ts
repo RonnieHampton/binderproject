@@ -20,34 +20,45 @@ function CreateInstance(card: CardInstance, sourceIndex: number): TableauRendera
   };
 }
 
-function normalizeBucket(card: CardInstance, sortType: TableauSortMode) {
-  if (sortType === "cmc") {
-    return `Mana Value ${card.card.cmc}`;
-  } else if (sortType === "color_identity") {
-    return card.card.color_identity?.join('') || 'Colorless';
-  } else if (sortType === "type_line") {
-    for (const type of CARD_TYPES) {
-      if (card.card.type_line?.includes(type)) {
-        return type;
+function normalizeBucket(
+  card: CardInstance,
+  sortType: TableauSortMode
+): string {
+  switch (sortType) {
+    case "cmc":
+      return `Mana Value ${card.card.cmc}`;
+
+    case "color_identity":
+      return card.card.color_identity?.join("") || "Colorless";
+
+    case "type_line":
+      for (const type of CARD_TYPES) {
+        if (card.card.type_line?.includes(type)) {
+          return type;
+        }
       }
-    }
-  } else if (sortType === "rarity") {
-     return card.card.rarity || "unknown";
-  } else if (sortType === "set") {
-    return card.card.set_name || "unknown";
+      return "Other";
+
+    case "rarity":
+      return card.card.rarity || "unknown";
+
+    case "set":
+      return card.card.set_name || "unknown";
+
+    default:
+      return "bwaerg";
   }
-  return "bwaerg";
 }
 
 
-export default function SortTableau(cards: CardInstance[], sortType: TableauSortMode) {
+export default function SortTableau(cards: (CardInstance | null)[], sortType: TableauSortMode) {
   // Implementation of sorting logic based on sortType
   const buckets = new Map<string, TableauRenderableCard[]>();
   
   for (const [sourceIndex, card] of cards.entries()) {
-    const bucketName = normalizeBucket(card, sortType);
+    const bucketName = normalizeBucket(card as CardInstance, sortType);
     const bucket = buckets.get(bucketName) ?? [];
-    bucket.push(CreateInstance(card, sourceIndex));
+    bucket.push(CreateInstance(card as CardInstance, sourceIndex));
     buckets.set(bucketName, bucket);
   }
 

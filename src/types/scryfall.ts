@@ -47,3 +47,9 @@ export type CardInstance = {
   card: ScryfallCard
   id: string
 }
+
+export type ModalCard = {
+  card: CardInstance | null
+  index: number
+  zone: string
+}

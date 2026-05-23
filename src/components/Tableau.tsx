@@ -6,9 +6,9 @@ import SortTableau from '../utils/tableauUtils'
 import './Tableau.css'
 
 type TableauProps = {
-  cards: CardInstance[]
+  cards: (CardInstance | null)[]
   sortType: TableauSortMode;
-  onSelect: (card: CardInstance, index: number) => void;
+  onSelect: (card: CardInstance, index: number, zone: string) => void;
 }
 
 function Tableau({ cards, sortType, onSelect }: TableauProps) {
@@ -18,8 +18,6 @@ function Tableau({ cards, sortType, onSelect }: TableauProps) {
   })
 
   const sortedCards = SortTableau(cards, sortType);
-
-  console.log(`Sorted Mana Values: `, sortedCards.map(column => (column.title)));
 
   return (
     <>
@@ -34,7 +32,7 @@ function Tableau({ cards, sortType, onSelect }: TableauProps) {
               <header className="column-header">{column.title}</header>
               <div className="card-stack">
                 {column.cards.map((card) => (
-                  <BinderCard onSelect={() => onSelect(card.instance, card.sourceIndex)} key={card.sourceIndex} card={card.instance} index={card.sourceIndex} />
+                  <BinderCard onSelect={() => onSelect(card.instance, card.sourceIndex, "tableau")} key={card.sourceIndex} card={card.instance} index={card.sourceIndex} />
                 ))}
               </div>
             </section>

@@ -18,3 +18,16 @@ export async function fetchCards(
 
   return json.data
 }
+
+export async function fetchPrintings(
+  uri: string
+): Promise<ScryfallCard[]> {
+  const response = await fetch(uri);
+
+  if (!response.ok) {
+    return [];
+  }
+
+  const json = await response.json();
+  return json.data;
+}

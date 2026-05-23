@@ -26,8 +26,6 @@ function BinderDroppable({card, index, onSelect}: BinderDroppableProps) {
             draggableRef(node);
     };
 
-    console.log(card?.card.prints_search_uri);
-
     return(
         <>
             <div

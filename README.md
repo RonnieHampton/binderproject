@@ -8,8 +8,12 @@ A React + TypeScript application for searching and displaying Magic: The Gatheri
 
 - Search cards by name
 - Live search suggestions
+- Drag-and-drop binder management
+- Tableau organization and grouping
+- Alternate printing selection
+- Double-faced card support
+- Binder page navigation
 - Display card images and metadata
-- Binder/tableau style layout
 - Fast frontend powered by Vite
 - Type-safe development with TypeScript
 
@@ -40,12 +44,23 @@ npm run dev
 
 ## Future Improvements
 
-- Deck building
-- Saved binders
-- Sorting and filtering
-- Card price integration
-- Authentication
-- Mobile optimization
+### MVP Remaining
+- Export binder
+- Import binder
+- Code cleanup
+- Improved styling
+
+### UX Improvements
+- Mana symbol rendering
+- Better modal layout
+- Responsive sizing
+- Keyboard navigation
+
+### Future Features
+- Multiselect
+- Deck statistics
+- Bulk trashing
+- Collection filters and search
 
 ---
 

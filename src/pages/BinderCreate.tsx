@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import SearchBar from "../components/SearchBar";
-import type { CardInstance, ScryfallCard } from "../types/scryfall"
+import type { CardInstance, ScryfallCard, ModalCard } from "../types/scryfall"
 import Tableau from "../components/Tableau";
 import { useRef, useState } from "react";
 import Binder from "../components/Binder";
@@ -20,7 +20,7 @@ function createCardInstance(card: ScryfallCard): CardInstance {
 }
 
 function BinderCreate() {
-	const [tableauCards, setTableauCards] = useState<CardInstance[]>([])
+	const [tableauCards, setTableauCards] = useState<(CardInstance | null)[]>([])
     const [binderCards, setBinderCards] = useState<(CardInstance | null)[]>(
         Array(60).fill(null)
     )
@@ -28,8 +28,7 @@ function BinderCreate() {
     const [page, setPage] = useState(0);
     const hoverInterval = useRef<number | null>(null);
     const [sortMode, setSortMode] = useState<TableauSortMode>("cmc");
-    const [selectedCard, setSelectedCard] = useState<CardInstance | null>(null);
-    const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+    const [modalCard, setModalCard] = useState<ModalCard | null>(null);
 
     const handleSelectSearch = (card: ScryfallCard) => {
         const newCard = createCardInstance(card);
@@ -37,13 +36,29 @@ function BinderCreate() {
     }
 
     const closeModal = () => {
-        setSelectedCard(null);
-        setSelectedIndex(null);
+        setModalCard(null);
     };
 
-    const handleSelect = (card: CardInstance | null, index: number) => {
-        setSelectedCard(card);
-        setSelectedIndex(index);
+    const handleCardSave = (changedCard: ScryfallCard, index: number, zone: string) => {
+        const card = createCardInstance(changedCard);
+        if (zone === "binder") {
+            setBinderCards((prev) => {
+                const next = [...prev];
+                next[index] = card;
+                return next;
+            });
+        } else if (zone === "tableau") {
+            setTableauCards((prev) => {
+                const next = [...prev];
+                next[index] = card;
+                return next;
+            });
+        }
+        closeModal();
+    };
+
+    const handleSelect = (card: CardInstance | null, index: number, zone: string) => {
+        setModalCard({ card, index, zone });
     };
 
     const clearHoverInterval = () => {
@@ -225,13 +240,14 @@ function BinderCreate() {
 
             </DragDropProvider>
 
-            {selectedCard && selectedIndex !== null && (
+            {modalCard !== null && (
                 <div className="modal-backdrop" onClick={closeModal}>
                     <div className="modal-panel" onClick={(e) => e.stopPropagation()}>
                     <CardOptionsModal
-                        card={selectedCard}
-                        index={selectedIndex}
-                        handleSave={() => {}}
+                        card={modalCard.card}
+                        index={modalCard.index}
+                        zone={modalCard.zone}
+                        handleSave={(card, index, zone) => handleCardSave(card, index, zone)}
                     />
                     </div>
                 </div>
