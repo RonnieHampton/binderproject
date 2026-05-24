@@ -45,10 +45,8 @@ npm run dev
 ## Future Improvements
 
 ### MVP Remaining
-- Export binder
-- Import binder
-- Code cleanup
 - Improved styling
+- Fixing some broken images and QOL updates
 
 ### UX Improvements
 - Mana symbol rendering
@@ -58,7 +56,7 @@ npm run dev
 
 ### Future Features
 - Multiselect
-- Deck statistics
+- Binder statistics
 - Bulk trashing
 - Collection filters and search
 
