@@ -4,10 +4,11 @@ import type { CardInstance, ScryfallCard, ModalCard } from "../types/scryfall";
 
 const BINDER_SIZE = 60;
 
-function createCardInstance(card: ScryfallCard): CardInstance {
+function createCardInstance(card: ScryfallCard, face: "front" | "back", UUID: string | null): CardInstance {
   return {
     card,
-    id: crypto.randomUUID(),
+    face: face ?? "front",
+    id: UUID ?? crypto.randomUUID(),
   };
 }
 
@@ -19,12 +20,26 @@ export function useBinderManager() {
   const [modalCard, setModalCard] = useState<ModalCard | null>(null);
 
   const handleSelectCard = (card: ScryfallCard) => {
-    const newCard = createCardInstance(card);
+    const newCard = createCardInstance(card, "front", null);
     setTableauCards((prev) => [...prev, newCard]);
   };
 
   const closeModal = () => {
     setModalCard(null);
+  };
+
+  const handleCtrlClick = (card: CardInstance, index: number, zone: string) => {
+    if (zone === "binder") {
+      setBinderCards((prev) => {
+        const next = [...prev];
+        if (card.face === "front") {
+          next[index] = { ...card, face: "back" };
+        } else {
+          next[index] = { ...card, face: "front" };
+        }
+        return next;
+      });
+    }
   };
 
   const handleModalSelect = (
@@ -38,9 +53,10 @@ export function useBinderManager() {
   const handleCardSave = (
     changedCard: ScryfallCard,
     index: number,
-    zone: string
+    zone: string,
+    face: string
   ) => {
-    const card = createCardInstance(changedCard);
+    const card = createCardInstance(changedCard, face as "front" | "back", changedCard?.id);
 
     if (zone === "binder") {
       setBinderCards((prev) => {
@@ -185,6 +201,7 @@ export function useBinderManager() {
     handleToTrash,
     closeModal,
     handleExport,
-    handleImport
+    handleImport,
+    handleCtrlClick
   };
 }

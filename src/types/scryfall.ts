@@ -45,6 +45,7 @@ export type ScryfallCard = {
 
 export type CardInstance = {
   card: ScryfallCard
+  face: string
   id: string
 }
 

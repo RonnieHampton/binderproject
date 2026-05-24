@@ -31,6 +31,7 @@ function BinderCreate() {
     closeModal,
     handleExport,
     handleImport,
+    handleCtrlClick
   } = useBinderManager();
 
   const [overlayCard, setOverlayCard] = useState<CardInstance | null>(null);
@@ -142,6 +143,7 @@ function BinderCreate() {
         >
           <DragHoverDetector id="left" />
           <Binder
+            onCtrlClick={(card, index, zone) => handleCtrlClick(card, index, zone)}
             onSelect={handleModalSelect}
             onPageChange={handlePageChange}
             page={page}
@@ -162,7 +164,7 @@ function BinderCreate() {
             card={modalCard.card}
             index={modalCard.index}
             zone={modalCard.zone}
-            handleSave={(card, index, zone) => handleCardSave(card, index, zone)}
+            handleSave={(card, index, zone, face) => handleCardSave(card, index, zone, face)}
             />
           </div>
         </div>

@@ -6,11 +6,12 @@ type BinderProps = {
   page: number;
   onPageChange: (direction: number) => void;
   onSelect: (card: CardInstance | null, index: number, zone: string) => void;
+  onCtrlClick: (card: CardInstance, index: number, zone: string) => void;
 };
 
 const CARDS_PER_PAGE = 12;
 
-function Binder({ cards, page, onPageChange, onSelect }: BinderProps) {
+function Binder({ cards, page, onPageChange, onSelect, onCtrlClick }: BinderProps) {
   const totalPages = Math.ceil(cards.length / CARDS_PER_PAGE);
 
   return (
@@ -40,6 +41,7 @@ function Binder({ cards, page, onPageChange, onSelect }: BinderProps) {
           >
             {pageCards.map((card, index) => (
               <BinderDroppable
+                onCtrlClick={(card, index) => onCtrlClick(card, index, "binder")}
                 onSelect={() => onSelect(card, index, "binder")}
                 key={start + index}
                 card={card}

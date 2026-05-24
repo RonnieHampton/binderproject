@@ -6,7 +6,7 @@ type CardOptionsModalProps = {
     card: CardInstance | null;
     index: number;
     zone: string
-    handleSave: (changedCard: ScryfallCard, index: number, zone: string) => void;
+    handleSave: (changedCard: ScryfallCard, index: number, zone: string, face: string) => void;
 };
 
 function CardOptionsModal({ card, index, zone, handleSave }: CardOptionsModalProps) {
@@ -16,8 +16,12 @@ function CardOptionsModal({ card, index, zone, handleSave }: CardOptionsModalPro
     const IMG = currentCard?.image_uris?.normal;
     const FACEONE = currentCard?.card_faces?.[0]?.image_uris?.normal;
     const FACETWO = currentCard?.card_faces?.[1]?.image_uris?.normal;
-    const originalCard = card?.card;
+    const originalCard = card;
     const uri = card?.card.prints_search_uri
+    const displayedFace = clicked ? card?.face === "front" ? "back" : "front" : card?.face ?? "front";
+    const imageSrc = IMG ?? (displayedFace === "front" ? FACEONE : FACETWO);
+    const faceIndex = displayedFace === "front" ? 0 : 1;
+    {console.log(currentCard.card_faces)}
 
     useEffect(() => {
         async function loadPrintings() {
@@ -54,7 +58,7 @@ function CardOptionsModal({ card, index, zone, handleSave }: CardOptionsModalPro
         }}
         >
         <img
-            src={(clicked && FACETWO) ? FACETWO : (IMG ?? FACEONE)}
+            src={(imageSrc)}
             onClick={() => setClicked(!clicked)}
             alt={card?.card.name}
             style={{
@@ -97,17 +101,17 @@ function CardOptionsModal({ card, index, zone, handleSave }: CardOptionsModalPro
                 </p>
             )}
 
-            {currentCard.oracle_text && (
+            {(currentCard.oracle_text || currentCard.card_faces?.[faceIndex]?.oracle_text) && (
                 <div>
                     <strong>Rules Text:</strong>
-                    <p>{currentCard.oracle_text}</p>
+                    <p>{currentCard.oracle_text ?? currentCard.card_faces?.[faceIndex]?.oracle_text}</p>
                 </div>
             )}
-
-            {currentCard.flavor_text && (
+            {(currentCard.flavor_text || currentCard.card_faces?.[faceIndex]?.flavor_text) && (
+                
                 <div>
                     <strong>Flavor Text:</strong>
-                    <em>{currentCard.flavor_text}</em>
+                    <em>{currentCard.flavor_text ?? currentCard.card_faces?.[faceIndex]?.flavor_text}</em>
                 </div>
             )}
 
@@ -184,16 +188,23 @@ function CardOptionsModal({ card, index, zone, handleSave }: CardOptionsModalPro
         <button
         type="button"
         onClick={() => {
-            handleSave(currentCard, index, zone);
+            if (card?.face === "front" && clicked){
+                handleSave(currentCard, index, zone, "back");
+            } else if (card?.face === "back" && clicked) {
+                handleSave(currentCard, index, zone, "front");
+            } else {
+                handleSave(currentCard, index, zone, card?.face ?? "front");
+            }
         }}
         >
         Save Selection
         </button>
 
         <button
-        onClick={() =>
-            setCurrentCard(originalCard as ScryfallCard)
-        }
+        onClick={() => {
+            setCurrentCard(originalCard?.card as ScryfallCard)
+            setClicked(false)
+        }}
         >
         Reset
         </button>
