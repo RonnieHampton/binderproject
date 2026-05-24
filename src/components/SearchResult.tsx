@@ -9,7 +9,7 @@ type SearchResultProps = {
 function SearchResult({ result, onSelectCard }: SearchResultProps) {
   return (
     <div className="result-list">
-    {result.slice(0, 5).map((card) => (
+    {result.slice(0, 20).map((card) => (
         <button
           className="result-row"
           key={card.id}
@@ -21,7 +21,7 @@ function SearchResult({ result, onSelectCard }: SearchResultProps) {
         >
           <img
             className="result-thumb"
-            src={card.image_uris?.small}
+            src={card.image_uris?.small ?? card.card_faces?.[0]?.image_uris?.small}
             alt={card.name}
           />
 

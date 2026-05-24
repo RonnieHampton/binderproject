@@ -17,7 +17,7 @@ function BinderCard({card, index, onSelect }: BinderCardProps) {
   return (
     <img
       ref={ref}
-      src={card.card.image_uris?.normal}
+      src={card.card.image_uris?.normal ?? card.card.card_faces?.[0]?.image_uris?.normal}
       alt={card.card?.name}
       style={{height: '300px', width:"auto", borderRadius: "13px"}}
       onClick={() => onSelect(card, index)}
