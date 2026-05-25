@@ -41,6 +41,8 @@ export type ScryfallCard = {
   card_faces?: ScryfallCardFace[]
 
   prints_search_uri?: string
+
+  layout: string
 }
 
 export type CardInstance = {
@@ -54,3 +56,13 @@ export type ModalCard = {
   index: number
   zone: string
 }
+
+export type ManaToken =
+  | {
+      type: "text";
+      value: string;
+    }
+  | {
+      type: "symbol";
+      value: string;
+};
