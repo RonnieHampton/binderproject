@@ -59,6 +59,7 @@ npm run dev
 - Binder statistics
 - Bulk trashing
 - Collection filters and search
+- Accessibility & Settings
 
 ---
 
