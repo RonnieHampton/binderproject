@@ -3,7 +3,7 @@ import BinderCard from "./BinderCard";
 import { useDroppable } from "@dnd-kit/react";
 import type { TableauSortMode } from "../types/tableau";
 import SortTableau from '../utils/tableauUtils'
-import './Tableau.css'
+import styles from './Tableau.module.css'
 
 type TableauProps = {
   cards: (CardInstance | null)[]
@@ -22,16 +22,12 @@ function Tableau({ cards, sortType, onSelect, onCtrlClick }: TableauProps) {
 
   return (
     <>
-      <div ref={ref} style={{  maxWidth: "100%",
-    minHeight: "320px",
-    padding: "1rem",
-    border: "2px dashed gray",
-    borderRadius: "12px",display: 'flex', flexDirection: 'row', gap: '1rem'}}>
+      <div ref={ref} className={styles.tableauBoard}>
         {sortedCards.map((column) => (
 
-            <section className="tableau-column" key={column.id}>
-              <header className="column-header">{column.title}</header>
-              <div className="card-stack">
+            <section className={styles.tableauColumn} key={column.id}>
+              <header className={styles.columnHeader}>{column.title}</header>
+              <div className={styles.cardStack}>
                 {column.cards.map((card) => (
                   <BinderCard onCtrlClick={() => onCtrlClick(card.instance, card.sourceIndex, "tableau")} 
                   onSelect={() => onSelect(card.instance, card.sourceIndex, "tableau")} key={card.sourceIndex} card={card.instance} index={card.sourceIndex} />

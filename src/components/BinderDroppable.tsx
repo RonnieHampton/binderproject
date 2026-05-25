@@ -1,5 +1,6 @@
 import type { CardInstance } from "../types/scryfall"
 import { useDroppable, useDraggable } from "@dnd-kit/react";
+import styles from "./BinderDroppable.module.css";
 
 type BinderDroppableProps = {
   card: CardInstance | null,
@@ -36,19 +37,14 @@ function BinderDroppable({card, index, onSelect, onCtrlClick}: BinderDroppablePr
     return(
         <>
             <div
+                className={styles.binderSlot}
                 ref={ref}
-                style={{
-                    height: "300px",
-                    width: "215px",
-                    backgroundColor: "gray",
-                    borderRadius: "8px",
-                }}
                 >
                 {card ? (
                     <img
+                    className={styles.binderSlotImage}
                     src={src}
                     alt={card.card.name}
-                    style={{ height: "300px", width: "auto", borderRadius: "18px" }}
                     onClick={(e) => {
                         if (e.ctrlKey&& card.card.card_faces?.length === 2) {
                             e.preventDefault();
@@ -61,7 +57,7 @@ function BinderDroppable({card, index, onSelect, onCtrlClick}: BinderDroppablePr
                     }}
                     />
                 ) : null}
-                <p>{index}</p>
+                <p className={styles.slotIndex}>{index}</p>
             </div>
         </>
     )

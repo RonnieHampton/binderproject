@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import SearchResult from "./SearchResult";
 import type { ScryfallCard } from "../types/scryfall"
 import { fetchCards } from "../api/scryfall";
-import "./SearchBar.css";
+import styles from "./SearchBar.module.css";
 
 type SearchBarProps = {
   onSelectCard: (card: ScryfallCard) => void
@@ -34,8 +34,8 @@ function SearchBar({ onSelectCard }: SearchBarProps) {
 
     return(
         <>
-        <div onFocus={() => setFocused(true)} onBlur={() => setFocused(false)} className="search-bar">
-            <input type="text" value={searchTerm} onChange={handleSearch} placeholder="Search..." />
+        <div onFocus={() => setFocused(true)} onBlur={() => setFocused(false)} className={styles.searchBar}>
+            <input className={styles.searchInput} type="text" value={searchTerm} onChange={handleSearch} placeholder="Search..." />
             {focused && <SearchResult result={searchResults} onSelectCard={handleSelectCard}/>}
         </div>
         </>

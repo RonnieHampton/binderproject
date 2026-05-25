@@ -1,5 +1,5 @@
 import type { ScryfallCard } from "../types/scryfall";
-import "./SearchResult.css";
+import styles from "./SearchResult.module.css";
 
 type SearchResultProps = {
   result: ScryfallCard[]
@@ -8,10 +8,10 @@ type SearchResultProps = {
 
 function SearchResult({ result, onSelectCard }: SearchResultProps) {
   return (
-    <div className="result-list">
+    <div className={styles.resultList}>
     {result.slice(0, 20).map((card) => (
         <button
-          className="result-row"
+          className={styles.resultRow}
           key={card.id}
           type="button"
           onMouseDown={(e) => {
@@ -20,12 +20,12 @@ function SearchResult({ result, onSelectCard }: SearchResultProps) {
           }}
         >
           <img
-            className="result-thumb"
+            className={styles.resultThumb}
             src={card.image_uris?.small ?? card.card_faces?.[0]?.image_uris?.small}
             alt={card.name}
           />
 
-          <div className="result-text">
+          <div className={styles.resultText}>
             <strong>{card.name}</strong>
             <span>
               {card.set?.toUpperCase()} · {card.collector_number}

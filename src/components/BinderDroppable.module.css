@@ -1,0 +1,16 @@
+.binderSlot {
+  height: 300px;
+  width: 215px;
+  background-color: gray;
+  border-radius: 8px;
+}
+
+.binderSlotImage {
+  height: 300px;
+  width: auto;
+  border-radius: 18px;
+}
+
+.slotIndex {
+  margin: 0;
+}

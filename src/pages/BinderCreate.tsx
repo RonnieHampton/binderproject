@@ -11,7 +11,7 @@ import DragHoverDetector from "../components/DragHoverDetector";
 import type { TableauSortMode } from "../types/tableau";
 import CardOptionsModal from "../components/CardOptionsModal";
 import { useBinderManager } from "../hooks/useBinderManager";
-import "./BinderCreate.css";
+import styles from "./BinderCreate.module.css";
 
 const MAX_PAGE = 4;
 const PAGE_CHANGE_INTERVAL = 500;
@@ -51,8 +51,8 @@ function BinderCreate() {
   };
 
   return (
-    <div>
-      <div className="topArea">
+    <div className={styles.binderCreatePage}>
+      <div className={styles.topArea}>
         <Link to="/">Home</Link>
         <SearchBar onSelectCard={handleSelectCard} />
       </div>
@@ -114,6 +114,7 @@ function BinderCreate() {
         <TrashDroppable />
 
         <select
+          className={styles.sortSelect}
           value={sortMode}
           onChange={(e) => setSortMode(e.target.value as TableauSortMode)}
         >
@@ -131,17 +132,9 @@ function BinderCreate() {
           cards={tableauCards}
         />
 
-        <p>{`Current page: ${page + 1}/${MAX_PAGE + 1}`}</p>
+        <p className={styles.pageIndicator}>{`Current page: ${page + 1}/${MAX_PAGE + 1}`}</p>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "250px auto 250px",
-            columnGap: "24px",
-            alignItems: "start",
-            justifyContent: "center",
-          }}
-        >
+        <div className={styles.binderLayout}>
           <DragHoverDetector id="left" />
           <Binder
             onCtrlClick={(card, index, zone) => handleCtrlClick(card, index, zone)}
@@ -159,8 +152,8 @@ function BinderCreate() {
       </DragDropProvider>
 
       {modalCard !== null && (
-        <div className="modal-backdrop" onClick={closeModal}>
-          <div className="modal-panel" onClick={(e) => e.stopPropagation()}>
+        <div className={styles.modalBackdrop} onClick={closeModal}>
+          <div className={styles.modalPanel} onClick={(e) => e.stopPropagation()}>
            <CardOptionsModal
             card={modalCard.card}
             index={modalCard.index}
@@ -170,9 +163,10 @@ function BinderCreate() {
           </div>
         </div>
       )}
-      <button onClick={handleExport}>Export Binder</button>
+      <button className={styles.exportButton} onClick={handleExport}>Export Binder</button>
 
       <input
+        className={styles.importInput}
         type="file"
         accept="application/json,.json"
         onChange={handleImport}

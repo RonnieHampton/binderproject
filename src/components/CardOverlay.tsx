@@ -1,4 +1,5 @@
 import type { CardInstance } from "../types/scryfall";
+import styles from "./CardOverlay.module.css";
 
 function CardOverlay({ card }: { card: CardInstance }) {
   const defaultFace = card.card.image_uris?.normal;
@@ -13,12 +14,9 @@ function CardOverlay({ card }: { card: CardInstance }) {
 
   return (
     <img
+      className={styles.cardOverlayImage}
       src={src}
       alt={card.card.name}
-      style={{
-        height: "300px",
-        width: "auto",
-      }}
     />
   );
 }

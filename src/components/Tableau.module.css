@@ -1,0 +1,61 @@
+.tableauBoard {
+  max-width: 100%;
+  min-height: 320px;
+  padding: 1rem;
+  border: 2px dashed gray;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: flex-start;
+  overflow-x: auto;
+  width: 100%;
+}
+
+.tableauColumn {
+  width: 230px;
+  flex: 0 0 230px;
+  padding: 0.75rem;
+}
+
+.columnHeader {
+  width: 215px;
+  margin-bottom: 0.75rem;
+
+  font-size: 0.95rem;
+  font-weight: 700;
+
+  color: black;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardStack {
+  --card-overlap: -220px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cardStack > * {
+  position: relative;
+  width: 215px;
+
+  margin-bottom: var(--card-overlap);
+
+  transition:
+    transform 0.14s ease,
+    filter 0.14s ease;
+}
+
+.cardStack > *:hover {
+  transform: translateY(-20px);
+  filter: brightness(1.06);
+}
+
+.cardStack > *:last-child {
+  margin-bottom: 0;
+}

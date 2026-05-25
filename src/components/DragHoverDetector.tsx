@@ -1,4 +1,5 @@
 import {useDroppable} from '@dnd-kit/react'
+import styles from "./DragHoverDetector.module.css";
 
 
 function DragHoverDetector({ id } : { id: string }) {
@@ -6,11 +7,7 @@ function DragHoverDetector({ id } : { id: string }) {
     id: id,
     type: 'detector'
   })
-  return (<div ref={ref} style={{
-      width: "250px",
-      height: "100%",
-      backgroundColor: "lightgray"
-    }}/>)
+  return (<div ref={ref} className={styles.dragHoverDetector}/>)
 }
 
 export default DragHoverDetector;

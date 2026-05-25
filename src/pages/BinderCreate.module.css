@@ -1,0 +1,49 @@
+.binderCreatePage {
+}
+
+.topArea {
+}
+
+.sortSelect {
+}
+
+.pageIndicator {
+  margin: 0;
+  max-width: 38rem;
+  color: #4a4a4a;
+  line-height: 1.65;
+}
+
+.binderLayout {
+  display: grid;
+  grid-template-columns: 250px auto 250px;
+  column-gap: 24px;
+  align-items: start;
+  justify-content: center;
+}
+
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.65);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalPanel {
+  background: #1f1f1f;
+  border-radius: 16px;
+  padding: 1rem;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+}
+
+.exportButton {
+}
+
+.importInput {
+}

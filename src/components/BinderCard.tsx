@@ -1,5 +1,6 @@
 import { useDraggable } from "@dnd-kit/react";
 import type { CardInstance } from "../types/scryfall";
+import styles from "./BinderCard.module.css";
 
 type BinderCardProps = {
   card: CardInstance;
@@ -27,14 +28,10 @@ function BinderCard({ card, index, onSelect, onCtrlClick }: BinderCardProps) {
 
   return (
     <img
+      className={styles.binderCardImage}
       ref={ref}
       src={src}
       alt={card.card.name}
-      style={{
-        height: "300px",
-        width: "auto",
-        borderRadius: "13px",
-      }}
       onClick={(e) => {
                         if (e.ctrlKey&& card.card.card_faces?.length === 2) {
                             e.preventDefault();

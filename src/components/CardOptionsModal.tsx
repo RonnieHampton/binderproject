@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { CardInstance, ScryfallCard } from "../types/scryfall";
 import { fetchPrintings } from "../api/scryfall";
 import ManaText from "./ManaText";
+import styles from "./CardOptionsModal.module.css";
 
 type CardOptionsModalProps = {
   card: CardInstance | null;
@@ -15,11 +16,11 @@ type CardOptionsModalProps = {
   ) => void;
 };
 
-const rarityColors = {
-  common: "#f0f0f0",
-  uncommon: "#c0c0c0",
-  rare: "#d4af37",
-  mythic: "#f97316",
+const rarityClassNames = {
+  common: styles.rarityCommon,
+  uncommon: styles.rarityUncommon,
+  rare: styles.rarityRare,
+  mythic: styles.rarityMythic,
 };
 
 function CardOptionsModal({
@@ -76,8 +77,11 @@ function CardOptionsModal({
   const typeLine =
     currentCard.type_line ?? selectedFace?.type_line;
 
-  const rarityColor =
-    rarityColors[currentCard.rarity as keyof typeof rarityColors] ?? "#f0f0f0";
+  const rarityClassName =
+    rarityClassNames[currentCard.rarity as keyof typeof rarityClassNames] ??
+    styles.rarityDefault;
+
+  const canFlipCard = currentCard.card_faces?.length === 2;
 
   useEffect(() => {
     async function loadPrintings() {
@@ -90,88 +94,59 @@ function CardOptionsModal({
   }, [uri]);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "1rem",
-        padding: "1rem",
-        maxHeight: "90vh",
-        overflow: "hidden",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          gap: "1.5rem",
-          alignItems: "flex-start",
-          overflow: "hidden",
-        }}
-      >
-        <section className="card-image" style={{ flexShrink: 0 }}>
+    <div className={styles.cardOptionsModal}>
+      <div className={styles.cardSummary}>
+        <section className={styles.cardImage}>
           <img
+            className={`${styles.previewImage} ${
+              canFlipCard ? styles.previewImageFlippable : styles.previewImageStatic
+            }`}
             src={imageSrc}
             onClick={() => {
-              if (currentCard.card_faces?.length === 2) {
+              if (canFlipCard) {
                 setClicked((prev) => !prev);
               }
             }}
             alt={currentCard.name}
-            style={{
-              width: "300px",
-              borderRadius: "8px",
-              cursor: currentCard.card_faces?.length === 2 ? "pointer" : "default",
-            }}
           />
         </section>
 
-        <section
-          className="card-details"
-          style={{
-            flex: 1,
-            overflowY: "auto",
-            maxHeight: "70vh",
-            paddingRight: "0.5rem",
-            color: "#f0f0f0",
-            textAlign: "left",
-            maxWidth: "700px",
-          }}
-        >
-          <h2>{currentCard.name}</h2>
+        <section className={styles.cardDetails}>
+          <h2 className={styles.cardTitle}>{currentCard.name}</h2>
 
           {manaCost && (
-            <p>
+            <p className={styles.cardDetailRow}>
               <strong>Mana Cost:</strong> <ManaText text={manaCost} />
             </p>
           )}
 
           {currentCard.cmc !== undefined && (
-            <p>
+            <p className={styles.cardDetailRow}>
               <strong>Mana Value:</strong> {currentCard.cmc}
             </p>
           )}
 
           {typeLine && (
-            <p>
+            <p className={styles.cardDetailRow}>
               <strong>Type:</strong> {typeLine}
             </p>
           )}
 
           {textBlocks.map((block, textIndex) => (
-            <div key={textIndex}>
-              {shouldShowAllFaceText && block.name && <h3>{block.name}</h3>}
+            <div className={styles.textBlock} key={textIndex}>
+              {shouldShowAllFaceText && block.name && <h3 className={styles.faceTitle}>{block.name}</h3>}
 
               {block.oracleText && (
-                <div>
+                <div className={styles.rulesText}>
                   <strong>Rules Text:</strong>
-                  <p>
+                  <p className={styles.cardDetailRow}>
                     <ManaText text={block.oracleText} />
                   </p>
                 </div>
               )}
 
               {block.flavorText && (
-                <div>
+                <div className={styles.flavorText}>
                   <strong>Flavor Text:</strong>{" "}
                   <em>
                     <ManaText text={block.flavorText} />
@@ -182,27 +157,23 @@ function CardOptionsModal({
           ))}
 
           {currentCard.color_identity && currentCard.color_identity.length > 0 && (
-            <p>
+            <p className={styles.cardDetailRow}>
               <strong>Color Identity:</strong>{" "}
               {currentCard.color_identity.map((color) => (
                 <img
+                  className={styles.colorIdentityIcon}
                   key={color}
                   src={`https://svgs.scryfall.io/card-symbols/${color}.svg`}
                   alt={color}
-                  style={{
-                    width: "1em",
-                    height: "1em",
-                    verticalAlign: "middle",
-                  }}
                 />
               ))}
             </p>
           )}
 
           {currentCard.rarity && (
-            <p>
+            <p className={styles.cardDetailRow}>
               <strong>Rarity:</strong>{" "}
-              <span style={{ color: rarityColor }}>
+              <span className={rarityClassName}>
                 {currentCard.rarity.charAt(0).toUpperCase() +
                   currentCard.rarity.slice(1)}
               </span>
@@ -210,32 +181,25 @@ function CardOptionsModal({
           )}
 
           {currentCard.set_name && currentCard.collector_number && (
-            <p>
+            <p className={styles.cardDetailRow}>
               <strong>Printing:</strong> {currentCard.set_name} #
               {currentCard.collector_number}
             </p>
           )}
 
           {currentCard.released_at && (
-            <p>
+            <p className={styles.cardDetailRow}>
               <strong>Released:</strong> {currentCard.released_at}
             </p>
           )}
         </section>
       </div>
 
-      <div>
-        <section
-          className="card-printings"
-          style={{
-            display: "flex",
-            gap: "0.5rem",
-            overflowX: "auto",
-            paddingBottom: "0.5rem",
-          }}
-        >
+      <div className={styles.printingsArea}>
+        <section className={styles.cardPrintings}>
           {altPrintings.map((printing) => (
             <img
+              className={styles.printingImage}
               key={printing.id}
               onClick={() => {
                 setCurrentCard(printing);
@@ -246,18 +210,12 @@ function CardOptionsModal({
                 printing.card_faces?.[0]?.image_uris?.small
               }
               alt={printing.name}
-              style={{
-                width: "80px",
-                borderRadius: "6px",
-                cursor: "pointer",
-                flexShrink: 0,
-              }}
             />
           ))}
         </section>
       </div>
 
-      <div style={{ display: "flex", gap: "1rem" }}>
+      <div className={styles.modalActions}>
         <button
           type="button"
           onClick={() => {

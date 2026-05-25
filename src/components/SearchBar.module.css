@@ -1,0 +1,10 @@
+.searchBar {
+  position: relative;
+  width: 260px;
+  margin: 0 auto;
+}
+
+.searchInput {
+  width: 100%;
+  box-sizing: border-box;
+}

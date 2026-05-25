@@ -1,5 +1,6 @@
 // TrashDroppable.tsx
 import { useDroppable } from "@dnd-kit/react";
+import styles from "./Trash.module.css";
 
 function TrashDroppable() {
   const { ref, isDropTarget } = useDroppable({
@@ -10,19 +11,9 @@ function TrashDroppable() {
   return (
     <div
       ref={ref}
-      style={{
-        width: "140px",
-        height: "80px",
-        border: "2px dashed crimson",
-        borderRadius: "12px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: isDropTarget ? "#ffcccc" : "#fff0f0",
-        color: "crimson",
-        fontWeight: "bold",
-        margin: "1rem auto",
-      }}
+      className={`${styles.trashDroppable} ${
+        isDropTarget ? styles.trashDroppableTarget : styles.trashDroppableIdle
+      }`}
     >
       Trash
     </div>

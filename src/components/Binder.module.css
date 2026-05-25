@@ -1,0 +1,30 @@
+.binder {
+  position: relative;
+}
+
+.binderPage {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  top: 0;
+}
+
+.binderPageVisible {
+  position: relative;
+  visibility: visible;
+  pointer-events: auto;
+  opacity: 1;
+  left: auto;
+}
+
+.binderPageHidden {
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
+  opacity: 0;
+  left: -9999px;
+}
+
+.pageControls {
+  margin-top: 12px;
+}

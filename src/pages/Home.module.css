@@ -1,0 +1,15 @@
+.page {
+}
+
+.heading {
+  margin: 0;
+  font-size: clamp(2rem, 3vw, 3rem);
+}
+
+.navLinks {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}

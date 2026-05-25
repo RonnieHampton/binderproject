@@ -1,5 +1,6 @@
 import parseManaCost from "../utils/manaSymbolParser";
 import type { ManaToken } from "../types/scryfall";
+import styles from "./ManaText.module.css";
 
 type ManaTextProps = {
   text?: string;
@@ -17,14 +18,10 @@ function ManaText({ text = "" }: ManaTextProps) {
 
         return (
           <img
+            className={styles.manaSymbol}
             key={index}
             src={`https://svgs.scryfall.io/card-symbols/${token.value.replace("/", "")}.svg`}
             alt={token.value}
-            style={{
-              width: "1em",
-              height: "1em",
-              verticalAlign: "middle",
-            }}
           />
         );
       })}

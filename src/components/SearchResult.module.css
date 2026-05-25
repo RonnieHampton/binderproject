@@ -1,15 +1,4 @@
-.search-bar {
-  position: relative;
-  width: 260px;
-  margin: 0 auto;
-}
-
-.search-bar input {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.result-list {
+.resultList {
   position: absolute;
   top: 100%;
   left: 0;
@@ -24,7 +13,7 @@
   overflow: auto;
 }
 
-.result-row {
+.resultRow {
   width: 100%;
   display: flex;
   align-items: center;
@@ -40,21 +29,21 @@
   text-align: left;
 }
 
-.result-row:hover {
+.resultRow:hover {
   background: white;
 }
 
-.result-thumb {
+.resultThumb {
   width: 42px;
   border-radius: 4px;
 }
 
-.result-text {
+.resultText {
   display: flex;
   flex-direction: column;
 }
 
-.result-text span {
+.resultText span {
   color: #999;
   font-size: 12px;
 }

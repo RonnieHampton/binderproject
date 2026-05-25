@@ -1,5 +1,6 @@
 import BinderDroppable from "./BinderDroppable";
 import type { CardInstance } from "../types/scryfall";
+import styles from "./Binder.module.css";
 
 type BinderProps = {
   cards: (CardInstance | null)[];
@@ -15,7 +16,7 @@ function Binder({ cards, page, onPageChange, onSelect, onCtrlClick }: BinderProp
   const totalPages = Math.ceil(cards.length / CARDS_PER_PAGE);
 
   return (
-    <div style={{ position: "relative" }}>
+    <div className={styles.binder}>
       {Array.from({ length: totalPages }).map((_, pageIndex) => {
         const start = pageIndex * CARDS_PER_PAGE;
         const end = start + CARDS_PER_PAGE;
@@ -26,18 +27,9 @@ function Binder({ cards, page, onPageChange, onSelect, onCtrlClick }: BinderProp
         return (
           <div
             key={pageIndex}
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(4, 1fr)",
-              gap: "12px",
-
-              position: isVisible ? "relative" : "absolute",
-              visibility: isVisible ? "visible" : "hidden",
-              pointerEvents: isVisible ? "auto" : "none",
-              opacity: isVisible ? 1 : 0,
-              left: isVisible ? "auto" : "-9999px",
-              top: 0,
-            }}
+            className={`${styles.binderPage} ${
+              isVisible ? styles.binderPageVisible : styles.binderPageHidden
+            }`}
           >
             {pageCards.map((card, index) => (
               <BinderDroppable
@@ -52,7 +44,7 @@ function Binder({ cards, page, onPageChange, onSelect, onCtrlClick }: BinderProp
         );
       })}
 
-      <div style={{ marginTop: "12px" }}>
+      <div className={styles.pageControls}>
         <button onClick={() => onPageChange(-1)} disabled={page === 0}>
           Previous Page
         </button>
