@@ -39,8 +39,17 @@ export function useBinderManager() {
         }
         return next;
       });
-    }
-  };
+    } else if (zone === "tableau") {
+      setTableauCards((prev) => {
+        const next = [...prev];
+        if (card.face === "front") {
+          next[index] = { ...card, face: "back" };
+        } else {
+          next[index] = { ...card, face: "front" };
+        }
+        return next;
+      });
+  }};
 
   const handleModalSelect = (
     card: CardInstance | null,

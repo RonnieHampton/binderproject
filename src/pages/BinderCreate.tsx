@@ -125,6 +125,7 @@ function BinderCreate() {
         </select>
 
         <Tableau
+          onCtrlClick={(card, index) => handleCtrlClick(card, index, "tableau")}
           onSelect={handleModalSelect}
           sortType={sortMode}
           cards={tableauCards}

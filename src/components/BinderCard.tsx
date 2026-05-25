@@ -1,28 +1,52 @@
-import {useDraggable} from '@dnd-kit/react';
-import type { CardInstance } from "../types/scryfall"
+import { useDraggable } from "@dnd-kit/react";
+import type { CardInstance } from "../types/scryfall";
 
 type BinderCardProps = {
   card: CardInstance;
   index: number;
   onSelect: (card: CardInstance, index: number) => void;
+  onCtrlClick: (card: CardInstance, index: number) => void;
 };
 
-function BinderCard({card, index, onSelect }: BinderCardProps) {
+function BinderCard({ card, index, onSelect, onCtrlClick }: BinderCardProps) {
   const { ref } = useDraggable({
     id: `${index}-${card.id}`,
     type: "tableau-draggable",
-    data: {index, card}
+    data: { index, card },
   });
+
+  const defaultFace = card.card.image_uris?.normal;
+  const front = card.card.card_faces?.[0]?.image_uris?.normal;
+  const back = card.card.card_faces?.[1]?.image_uris?.normal;
+
+  const src =
+    defaultFace ??
+    (card.face === "back" ? back : front) ??
+    front ??
+    back;
 
   return (
     <img
       ref={ref}
-      src={card.card.image_uris?.normal ?? card.card.card_faces?.[0]?.image_uris?.normal}
-      alt={card.card?.name}
-      style={{height: '300px', width:"auto", borderRadius: "13px"}}
-      onClick={() => onSelect(card, index)}
+      src={src}
+      alt={card.card.name}
+      style={{
+        height: "300px",
+        width: "auto",
+        borderRadius: "13px",
+      }}
+      onClick={(e) => {
+                        if (e.ctrlKey&& card.card.card_faces?.length === 2) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            onCtrlClick(card, index);
+                            return;
+                        }
+
+                        onSelect(card, index);
+                    }}
     />
   );
 }
 
-export default BinderCard
+export default BinderCard;

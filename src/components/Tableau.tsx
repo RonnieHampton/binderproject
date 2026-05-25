@@ -9,9 +9,10 @@ type TableauProps = {
   cards: (CardInstance | null)[]
   sortType: TableauSortMode;
   onSelect: (card: CardInstance, index: number, zone: string) => void;
+  onCtrlClick: (card: CardInstance, index: number, zone: string) => void;
 }
 
-function Tableau({ cards, sortType, onSelect }: TableauProps) {
+function Tableau({ cards, sortType, onSelect, onCtrlClick }: TableauProps) {
   const {ref} = useDroppable({
     id: 'tableau',
     type: 'tableau'
@@ -32,7 +33,8 @@ function Tableau({ cards, sortType, onSelect }: TableauProps) {
               <header className="column-header">{column.title}</header>
               <div className="card-stack">
                 {column.cards.map((card) => (
-                  <BinderCard onSelect={() => onSelect(card.instance, card.sourceIndex, "tableau")} key={card.sourceIndex} card={card.instance} index={card.sourceIndex} />
+                  <BinderCard onCtrlClick={() => onCtrlClick(card.instance, card.sourceIndex, "tableau")} 
+                  onSelect={() => onSelect(card.instance, card.sourceIndex, "tableau")} key={card.sourceIndex} card={card.instance} index={card.sourceIndex} />
                 ))}
               </div>
             </section>
