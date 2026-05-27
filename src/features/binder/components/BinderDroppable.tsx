@@ -1,4 +1,4 @@
-import type { CardInstance } from "../types/scryfall"
+import type { CardInstance } from "../state/binderTypes"
 import { useDroppable, useDraggable } from "@dnd-kit/react";
 import styles from "./BinderDroppable.module.css";
 

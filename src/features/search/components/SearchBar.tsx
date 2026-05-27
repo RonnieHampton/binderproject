@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import SearchResult from "./SearchResult";
-import type { ScryfallCard } from "../types/scryfall"
-import { fetchCards } from "../api/scryfall";
+import type { ScryfallCard } from "../../../types/scryfall"
+import { fetchCards } from "../../../api/scryfall";
 import styles from "./SearchBar.module.css";
 
 type SearchBarProps = {

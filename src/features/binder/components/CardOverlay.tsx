@@ -1,4 +1,4 @@
-import type { CardInstance } from "../types/scryfall";
+import type { CardInstance } from "../state/binderTypes";
 import styles from "./CardOverlay.module.css";
 
 function CardOverlay({ card }: { card: CardInstance }) {

@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
-import type { CardInstance, ScryfallCard } from "../types/scryfall";
-import { fetchPrintings } from "../api/scryfall";
+import type { ScryfallCard } from "../../../types/scryfall";
+import type { CardFace, CardInstance, CardZone } from "../../binder/state/binderTypes";
+import { fetchPrintings } from "../../../api/scryfall";
 import ManaText from "./ManaText";
 import styles from "./CardOptionsModal.module.css";
 
 type CardOptionsModalProps = {
   card: CardInstance | null;
   index: number;
-  zone: string;
+  zone: CardZone;
   handleSave: (
     changedCard: ScryfallCard,
     index: number,
-    zone: string,
-    face: string
+    zone: CardZone,
+    face: CardFace
   ) => void;
 };
 
@@ -37,7 +38,7 @@ function CardOptionsModal({
 
   const uri = card?.card.prints_search_uri;
 
-  const displayedFace =
+  const displayedFace: CardFace =
     clicked
       ? card?.face === "front"
         ? "back"

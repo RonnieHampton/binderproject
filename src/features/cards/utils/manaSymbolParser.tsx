@@ -1,4 +1,4 @@
-import type { ManaToken } from "../types/scryfall";
+import type { ManaToken } from "../../../types/scryfall";
 
 function parseManaCost(originalString = ""): ManaToken[] {
   const manaSymbolRegex = /(\{[^}]+\})/g;

@@ -1,5 +1,5 @@
-import type { CardInstance } from "../types/scryfall";
-import BinderCard from "./BinderCard";
+import type { CardInstance, CardZone } from "../../binder/state/binderTypes";
+import BinderCard from "../../binder/components/BinderCard";
 import { useDroppable } from "@dnd-kit/react";
 import type { TableauSortMode } from "../types/tableau";
 import SortTableau from '../utils/tableauUtils'
@@ -8,8 +8,8 @@ import styles from './Tableau.module.css'
 type TableauProps = {
   cards: (CardInstance | null)[]
   sortType: TableauSortMode;
-  onSelect: (card: CardInstance, index: number, zone: string) => void;
-  onCtrlClick: (card: CardInstance, index: number, zone: string) => void;
+  onSelect: (card: CardInstance, index: number, zone: CardZone) => void;
+  onCtrlClick: (card: CardInstance, index: number, zone: CardZone) => void;
 }
 
 function Tableau({ cards, sortType, onSelect, onCtrlClick }: TableauProps) {

@@ -1,16 +1,16 @@
 import { Link } from "react-router-dom";
-import SearchBar from "../components/SearchBar";
-import type { CardInstance } from "../types/scryfall";
-import Tableau from "../components/Tableau";
+import SearchBar from "../features/search/components/SearchBar";
+import type { CardInstance } from "../features/binder/state/binderTypes";
+import Tableau from "../features/tableau/components/Tableau";
 import { useRef, useState } from "react";
-import Binder from "../components/Binder";
+import Binder from "../features/binder/components/Binder";
 import { DragDropProvider, DragOverlay } from "@dnd-kit/react";
-import TrashDroppable from "../components/Trash";
-import CardOverlay from "../components/CardOverlay";
-import DragHoverDetector from "../components/DragHoverDetector";
-import type { TableauSortMode } from "../types/tableau";
-import CardOptionsModal from "../components/CardOptionsModal";
-import { useBinderManager } from "../hooks/useBinderManager";
+import TrashDroppable from "../features/binder/components/Trash";
+import CardOverlay from "../features/binder/components/CardOverlay";
+import DragHoverDetector from "../features/binder/components/DragHoverDetector";
+import type { TableauSortMode } from "../features/tableau/types/tableau";
+import CardOptionsModal from "../features/cards/components/CardOptionsModal";
+import { useBinderManager } from "../features/binder/hooks/useBinderManager";
 import styles from "./BinderCreate.module.css";
 
 const MAX_PAGE = 4;

@@ -1,5 +1,5 @@
 import { useDraggable } from "@dnd-kit/react";
-import type { CardInstance } from "../types/scryfall";
+import type { CardInstance } from "../state/binderTypes";
 import styles from "./BinderCard.module.css";
 
 type BinderCardProps = {

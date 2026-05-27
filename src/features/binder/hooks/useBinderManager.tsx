@@ -1,10 +1,11 @@
 // src/hooks/useBinderCards.ts
 import { useState } from "react";
-import type { CardInstance, ScryfallCard, ModalCard } from "../types/scryfall";
+import type { ScryfallCard } from "../../../types/scryfall";
+import type { CardFace, CardInstance, CardZone, ModalCard } from "../state/binderTypes";
 
 const BINDER_SIZE = 60;
 
-function createCardInstance(card: ScryfallCard, face: "front" | "back", UUID: string | null): CardInstance {
+function createCardInstance(card: ScryfallCard, face: CardFace, UUID: string | null): CardInstance {
   return {
     card,
     face: face ?? "front",
@@ -28,7 +29,7 @@ export function useBinderManager() {
     setModalCard(null);
   };
 
-  const handleCtrlClick = (card: CardInstance, index: number, zone: string) => {
+  const handleCtrlClick = (card: CardInstance, index: number, zone: CardZone) => {
     if (zone === "binder") {
       setBinderCards((prev) => {
         const next = [...prev];
@@ -54,7 +55,7 @@ export function useBinderManager() {
   const handleModalSelect = (
     card: CardInstance | null,
     index: number,
-    zone: string
+    zone: CardZone
   ) => {
     setModalCard({ card, index, zone });
   };
@@ -62,10 +63,10 @@ export function useBinderManager() {
   const handleCardSave = (
     changedCard: ScryfallCard,
     index: number,
-    zone: string,
+    zone: CardZone,
     face: string
   ) => {
-    const card = createCardInstance(changedCard, face as "front" | "back", changedCard?.id);
+    const card = createCardInstance(changedCard, face as CardFace, changedCard?.id);
 
     if (zone === "binder") {
       setBinderCards((prev) => {

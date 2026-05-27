@@ -45,18 +45,6 @@ export type ScryfallCard = {
   layout: string
 }
 
-export type CardInstance = {
-  card: ScryfallCard
-  face: string
-  id: string
-}
-
-export type ModalCard = {
-  card: CardInstance | null
-  index: number
-  zone: string
-}
-
 export type ManaToken =
   | {
       type: "text";

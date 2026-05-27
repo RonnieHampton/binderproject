@@ -1,5 +1,5 @@
 import parseManaCost from "../utils/manaSymbolParser";
-import type { ManaToken } from "../types/scryfall";
+import type { ManaToken } from "../../../types/scryfall";
 import styles from "./ManaText.module.css";
 
 type ManaTextProps = {

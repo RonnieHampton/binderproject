@@ -1,4 +1,4 @@
-import type { CardInstance } from "../types/scryfall";
+import type { CardInstance } from "../../binder/state/binderTypes";
 import type { TableauRenderableCard, TableauSortMode } from "../types/tableau";
 const CARD_TYPES = [
   "Creature",

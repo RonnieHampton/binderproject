@@ -1,13 +1,13 @@
 import BinderDroppable from "./BinderDroppable";
-import type { CardInstance } from "../types/scryfall";
+import type { CardInstance, CardZone } from "../state/binderTypes";
 import styles from "./Binder.module.css";
 
 type BinderProps = {
   cards: (CardInstance | null)[];
   page: number;
   onPageChange: (direction: number) => void;
-  onSelect: (card: CardInstance | null, index: number, zone: string) => void;
-  onCtrlClick: (card: CardInstance, index: number, zone: string) => void;
+  onSelect: (card: CardInstance | null, index: number, zone: CardZone) => void;
+  onCtrlClick: (card: CardInstance, index: number, zone: CardZone) => void;
 };
 
 const CARDS_PER_PAGE = 12;
