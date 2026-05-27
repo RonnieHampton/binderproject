@@ -1,18 +1,17 @@
-import BinderDroppable from "./BinderDroppable";
-import type { CardInstance, CardZone } from "../state/binderTypes";
+import BinderSlot from "../../cards/components/BinderSlot";
+import type { CardInstance } from "../state/binderTypes";
 import styles from "./Binder.module.css";
 
 type BinderProps = {
   cards: (CardInstance | null)[];
   page: number;
   onPageChange: (direction: number) => void;
-  onSelect: (card: CardInstance | null, index: number, zone: CardZone) => void;
-  onCtrlClick: (card: CardInstance, index: number, zone: CardZone) => void;
+  onCardClick: (index: number, event: React.MouseEvent) => void;
 };
 
 const CARDS_PER_PAGE = 12;
 
-function Binder({ cards, page, onPageChange, onSelect, onCtrlClick }: BinderProps) {
+function Binder({ cards, page, onPageChange, onCardClick }: BinderProps) {
   const totalPages = Math.ceil(cards.length / CARDS_PER_PAGE);
 
   return (
@@ -31,13 +30,12 @@ function Binder({ cards, page, onPageChange, onSelect, onCtrlClick }: BinderProp
               isVisible ? styles.binderPageVisible : styles.binderPageHidden
             }`}
           >
-            {pageCards.map((card, index) => (
-              <BinderDroppable
-                onCtrlClick={(card, index) => onCtrlClick(card, index, "binder")}
-                onSelect={() => onSelect(card, index, "binder")}
+            {pageCards.map((instance, index) => (
+              <BinderSlot
                 key={start + index}
-                card={card}
+                instance={instance}
                 index={start + index}
+                onCardClick={onCardClick}
               />
             ))}
           </div>

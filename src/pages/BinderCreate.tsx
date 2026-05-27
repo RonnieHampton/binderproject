@@ -13,6 +13,8 @@ import CardOptionsModal from "../features/cards/components/CardOptionsModal";
 import { useBinderManager } from "../features/binder/hooks/useBinderManager";
 import styles from "./BinderCreate.module.css";
 
+// TODO(refactor): After card wrappers and binderReducer exist, move drag/drop branching out of this page.
+
 const MAX_PAGE = 4;
 const PAGE_CHANGE_INTERVAL = 500;
 
@@ -48,6 +50,23 @@ function BinderCreate() {
 
   const handlePageChange = (increment: number) => {
     setPage((prev) => Math.max(0, Math.min(prev + increment, MAX_PAGE)));
+  };
+
+  const handleBinderCardClick = (
+    index: number,
+    event: React.MouseEvent
+  ) => {
+    const card = binderCards[index];
+    if (!card) return;
+
+    if (event.ctrlKey && card.card.card_faces?.length === 2) {
+      event.preventDefault();
+      event.stopPropagation();
+      handleCtrlClick(card, index, "binder");
+      return;
+    }
+
+    handleModalSelect(card, index, "binder");
   };
 
   return (
@@ -137,8 +156,7 @@ function BinderCreate() {
         <div className={styles.binderLayout}>
           <DragHoverDetector id="left" />
           <Binder
-            onCtrlClick={(card, index, zone) => handleCtrlClick(card, index, zone)}
-            onSelect={handleModalSelect}
+            onCardClick={handleBinderCardClick}
             onPageChange={handlePageChange}
             page={page}
             cards={binderCards}

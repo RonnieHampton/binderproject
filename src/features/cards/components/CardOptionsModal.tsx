@@ -5,6 +5,8 @@ import { fetchPrintings } from "../../../api/scryfall";
 import ManaText from "./ManaText";
 import styles from "./CardOptionsModal.module.css";
 
+// TODO(refactor): Split this into ModalCard/CardDetails/CardPrintingList and reuse DisplayCard for the preview.
+
 type CardOptionsModalProps = {
   card: CardInstance | null;
   index: number;

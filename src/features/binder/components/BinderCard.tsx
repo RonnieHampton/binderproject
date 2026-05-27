@@ -2,6 +2,7 @@ import { useDraggable } from "@dnd-kit/react";
 import type { CardInstance } from "../state/binderTypes";
 import styles from "./BinderCard.module.css";
 
+// TODO(refactor): Legacy card component. Move behavior into cards/components/BinderCard and rendering into DisplayCard.
 type BinderCardProps = {
   card: CardInstance;
   index: number;

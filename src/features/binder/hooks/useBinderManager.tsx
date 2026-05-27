@@ -5,6 +5,7 @@ import type { CardFace, CardInstance, CardZone, ModalCard } from "../state/binde
 
 const BINDER_SIZE = 60;
 
+// TODO(refactor): Move state transitions into binderReducer and keep this hook as the dispatch wrapper.
 function createCardInstance(card: ScryfallCard, face: CardFace, UUID: string | null): CardInstance {
   return {
     card,

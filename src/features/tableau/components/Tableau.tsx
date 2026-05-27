@@ -5,6 +5,8 @@ import type { TableauSortMode } from "../types/tableau";
 import SortTableau from '../utils/tableauUtils'
 import styles from './Tableau.module.css'
 
+// TODO(refactor): Use cards/components/TableauCard instead of the legacy binder card component.
+
 type TableauProps = {
   cards: (CardInstance | null)[]
   sortType: TableauSortMode;
