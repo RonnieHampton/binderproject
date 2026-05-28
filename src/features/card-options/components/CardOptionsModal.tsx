@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { ScryfallCard } from "../../../types/scryfall";
 import type { CardFace, CardInstance, CardZone } from "../../binder/state/binderTypes";
 import { fetchPrintings } from "../../../api/scryfall";
-import ManaText from "./ManaText";
+import ManaText from "../../cards/components/ManaText";
 import styles from "./CardOptionsModal.module.css";
 
 // TODO(refactor): Split this into ModalCard/CardDetails/CardPrintingList and reuse DisplayCard for the preview.

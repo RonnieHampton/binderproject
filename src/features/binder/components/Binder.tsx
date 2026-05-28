@@ -1,4 +1,4 @@
-import BinderSlot from "../../cards/components/BinderSlot";
+import BinderSlot from "./BinderSlot";
 import type { CardInstance } from "../state/binderTypes";
 import styles from "./Binder.module.css";
 

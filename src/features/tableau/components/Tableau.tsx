@@ -1,11 +1,9 @@
 import type { CardInstance, CardZone } from "../../binder/state/binderTypes";
-import BinderCard from "../../binder/components/BinderCard";
+import TableauCard from "../../binder/components/TableauCard";
 import { useDroppable } from "@dnd-kit/react";
 import type { TableauSortMode } from "../types/tableau";
 import SortTableau from '../utils/tableauUtils'
 import styles from './Tableau.module.css'
-
-// TODO(refactor): Use cards/components/TableauCard instead of the legacy binder card component.
 
 type TableauProps = {
   cards: (CardInstance | null)[]
@@ -31,7 +29,7 @@ function Tableau({ cards, sortType, onSelect, onCtrlClick }: TableauProps) {
               <header className={styles.columnHeader}>{column.title}</header>
               <div className={styles.cardStack}>
                 {column.cards.map((card) => (
-                  <BinderCard onCtrlClick={() => onCtrlClick(card.instance, card.sourceIndex, "tableau")} 
+                  <TableauCard onCtrlClick={() => onCtrlClick(card.instance, card.sourceIndex, "tableau")} 
                   onSelect={() => onSelect(card.instance, card.sourceIndex, "tableau")} key={card.sourceIndex} card={card.instance} index={card.sourceIndex} />
                 ))}
               </div>

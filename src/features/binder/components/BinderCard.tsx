@@ -1,50 +1,25 @@
-import { useDraggable } from "@dnd-kit/react";
 import type { CardInstance } from "../state/binderTypes";
-import styles from "./BinderCard.module.css";
+import getCardDisplayData from "../../cards/utils/getCardDisplayData";
+import DisplayCard from "../../cards/components/DisplayCard";
+import { useDraggable } from "@dnd-kit/react";
 
-// TODO(refactor): Legacy card component. Move behavior into cards/components/BinderCard and rendering into DisplayCard.
 type BinderCardProps = {
-  card: CardInstance;
-  index: number;
-  onSelect: (card: CardInstance, index: number) => void;
-  onCtrlClick: (card: CardInstance, index: number) => void;
-};
+    instance: CardInstance,
+    index: number
+    onCardClick: (index: number, event: React.MouseEvent) => void;
+}
 
-function BinderCard({ card, index, onSelect, onCtrlClick }: BinderCardProps) {
-  const { ref } = useDraggable({
-    id: `${index}-${card.id}`,
-    type: "tableau-draggable",
-    data: { index, card },
-  });
-
-  const defaultFace = card.card.image_uris?.normal;
-  const front = card.card.card_faces?.[0]?.image_uris?.normal;
-  const back = card.card.card_faces?.[1]?.image_uris?.normal;
-
-  const src =
-    defaultFace ??
-    (card.face === "back" ? back : front) ??
-    front ??
-    back;
-
-  return (
-    <img
-      className={styles.binderCardImage}
-      ref={ref}
-      src={src}
-      alt={card.card.name}
-      onClick={(e) => {
-                        if (e.ctrlKey&& card.card.card_faces?.length === 2) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            onCtrlClick(card, index);
-                            return;
-                        }
-
-                        onSelect(card, index);
-                    }}
-    />
-  );
+function BinderCard({ instance, index, onCardClick }: BinderCardProps) {
+    const {ref: ref } = useDraggable({
+        id: `binder-${index}`,
+        data: { index, card: instance },
+        type: "binder-draggable",
+    });
+    return (
+        <div ref={ref} onClick={(e) => {onCardClick(index, e)}}>
+            <DisplayCard cardData={getCardDisplayData(instance)} size="normal" face={instance.face} />
+        </div>
+    );
 }
 
 export default BinderCard;

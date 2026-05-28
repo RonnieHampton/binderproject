@@ -9,7 +9,7 @@ import TrashDroppable from "../features/binder/components/Trash";
 import CardOverlay from "../features/binder/components/CardOverlay";
 import DragHoverDetector from "../features/binder/components/DragHoverDetector";
 import type { TableauSortMode } from "../features/tableau/types/tableau";
-import CardOptionsModal from "../features/cards/components/CardOptionsModal";
+import CardOptionsModal from "../features/card-options/components/CardOptionsModal";
 import { useBinderManager } from "../features/binder/hooks/useBinderManager";
 import styles from "./BinderCreate.module.css";
 
