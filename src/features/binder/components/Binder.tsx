@@ -31,6 +31,7 @@ function Binder({ cards, page, onPageChange, onCardClick }: BinderProps) {
           >
             {pageCards.map((instance, index) => (
               <BinderSlot
+                active={isVisible}
                 key={start + index}
                 instance={instance}
                 index={start + index}
