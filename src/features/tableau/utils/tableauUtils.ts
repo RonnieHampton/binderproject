@@ -46,19 +46,19 @@ function normalizeBucket(
       return card.card.set_name || "unknown";
 
     default:
-      return "bwaerg";
+      return "Other";
   }
 }
 
 
-export default function SortTableau(cards: (CardInstance | null)[], sortType: TableauSortMode) {
+export default function SortTableau(cards: CardInstance[], sortType: TableauSortMode) {
   // Implementation of sorting logic based on sortType
   const buckets = new Map<string, TableauRenderableCard[]>();
   
   for (const [sourceIndex, card] of cards.entries()) {
-    const bucketName = normalizeBucket(card as CardInstance, sortType);
+    const bucketName = normalizeBucket(card, sortType);
     const bucket = buckets.get(bucketName) ?? [];
-    bucket.push(CreateInstance(card as CardInstance, sourceIndex));
+    bucket.push(CreateInstance(card, sourceIndex));
     buckets.set(bucketName, bucket);
   }
 

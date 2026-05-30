@@ -17,9 +17,10 @@ import {
   handleBinderDragStart,
 } from "../features/binder/utils/binderDragHandlers";
 import styles from "./BinderCreate.module.css";
-
-const MAX_PAGE = 4;
-const PAGE_CHANGE_INTERVAL = 500;
+import {
+  MAX_BINDER_PAGE_INDEX,
+  PAGE_CHANGE_INTERVAL,
+} from "../features/binder/config/binderConfig";
 
 function BinderCreate() {
   const {
@@ -51,7 +52,7 @@ function BinderCreate() {
   };
 
   const handlePageChange = (increment: number) => {
-    setPage((prev) => Math.max(0, Math.min(prev + increment, MAX_PAGE)));
+    setPage((prev) => Math.max(0, Math.min(prev + increment, MAX_BINDER_PAGE_INDEX)));
   };
 
   const selectedModalCard =
@@ -73,7 +74,7 @@ function BinderCreate() {
           handleBinderDragOver({
             event,
             page,
-            maxPage: MAX_PAGE,
+            maxPage: MAX_BINDER_PAGE_INDEX,
             pageChangeInterval: PAGE_CHANGE_INTERVAL,
             hoverInterval,
             setPage,
@@ -115,7 +116,7 @@ function BinderCreate() {
           cards={tableauCards}
         />
 
-        <p className={styles.pageIndicator}>{`Current page: ${page + 1}/${MAX_PAGE + 1}`}</p>
+        <p className={styles.pageIndicator}>{`Current page: ${page + 1}/${MAX_BINDER_PAGE_INDEX + 1}`}</p>
 
         <div className={styles.binderLayout}>
           <DragHoverDetector id="left" />

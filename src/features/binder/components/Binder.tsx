@@ -1,6 +1,7 @@
 import BinderSlot from "./BinderSlot";
 import type { CardInstance, CardLocation } from "../state/binderTypes";
 import styles from "./Binder.module.css";
+import { CARDS_PER_PAGE } from "../config/binderConfig";
 
 type BinderProps = {
   cards: (CardInstance | null)[];
@@ -8,8 +9,6 @@ type BinderProps = {
   onPageChange: (direction: number) => void;
   onCardClick: (location: CardLocation, event: React.MouseEvent) => void;
 };
-
-const CARDS_PER_PAGE = 12;
 
 function Binder({ cards, page, onPageChange, onCardClick }: BinderProps) {
   const totalPages = Math.ceil(cards.length / CARDS_PER_PAGE);

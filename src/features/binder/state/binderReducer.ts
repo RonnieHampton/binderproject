@@ -1,8 +1,7 @@
 import type { ScryfallCard } from "../../../types/scryfall";
 import createCardInstance from "../utils/createCardInstance";
 import type { CardInstance, CardLocation } from "./binderTypes";
-
-const BINDER_SIZE = 60;
+import { BINDER_SIZE, TABLEAU_SIZE_LIMIT } from "../config/binderConfig";
 
 // State
 export type BinderState = {
@@ -35,7 +34,7 @@ type BinderAction =
     }
   | {
       type: "saveModalCard";
-      changedCard: CardInstance;
+      card: CardInstance;
       location: CardLocation;
     }
 
@@ -75,6 +74,8 @@ function binderReducer(state: BinderState, action: BinderAction): BinderState {
   switch (action.type) {
     // Search
     case "cardSearchSelect": {
+      if (state.tableauCards.length >= TABLEAU_SIZE_LIMIT) return state;
+
       const newCard = createCardInstance(action.card, "front", null);
       return {
         ...state,
@@ -96,7 +97,7 @@ function binderReducer(state: BinderState, action: BinderAction): BinderState {
       };
 
     case "saveModalCard": {
-      const nextCard = action.changedCard;
+      const nextCard = action.card;
 
       if (action.location.zone === "binder") {
         const binderCards = [...state.binderCards];
@@ -195,6 +196,7 @@ function binderReducer(state: BinderState, action: BinderAction): BinderState {
       const card = binderCards[action.source.index];
 
       if (!card) return state;
+      if (state.tableauCards.length >= TABLEAU_SIZE_LIMIT) return state;
 
       binderCards[action.source.index] = null;
       tableauCards.push(card);

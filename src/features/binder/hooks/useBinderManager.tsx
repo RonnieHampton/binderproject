@@ -1,4 +1,3 @@
-// src/hooks/useBinderCards.ts
 import { useReducer } from "react";
 import type { ScryfallCard } from "../../../types/scryfall";
 import type { CardInstance, CardLocation } from "../state/binderTypes";
@@ -45,7 +44,7 @@ export function useBinderManager() {
 
   const handleCardSave = (card: CardInstance) => {
     if (!modalLocation) return;
-    dispatch({ type: "saveModalCard", changedCard: card, location: modalLocation });
+    dispatch({ type: "saveModalCard", card: card, location: modalLocation });
   };
 
   const handleToBinder = (sourceIndex: number, targetIndex: number) => {
@@ -120,6 +119,10 @@ export function useBinderManager() {
 
       if (data.version !== 1 || !Array.isArray(data.cards)) {
         throw new Error("Invalid binder file");
+      }
+
+      if (data.cards.length !== binderCards.length) {
+        throw new Error("Incompatible binder file");
       }
 
       dispatch({ type: "importBinder", cards: data.cards });

@@ -4,9 +4,10 @@ import { useDroppable } from "@dnd-kit/react";
 import type { TableauSortMode } from "../types/tableau";
 import SortTableau from '../utils/tableauUtils'
 import styles from './Tableau.module.css'
+import { TABLEAU_SIZE_LIMIT } from "../../binder/config/binderConfig";
 
 type TableauProps = {
-  cards: (CardInstance | null)[]
+  cards: CardInstance[]
   sortType: TableauSortMode;
   onCardClick: (location: CardLocation, event: React.MouseEvent) => void;
 }
@@ -21,6 +22,7 @@ function Tableau({ cards, sortType, onCardClick }: TableauProps) {
 
   return (
     <>
+      <span>{`Cards: ${cards.length}/${TABLEAU_SIZE_LIMIT}`}</span>
       <div ref={ref} className={styles.tableauBoard}>
         {sortedCards.map((column) => (
 
