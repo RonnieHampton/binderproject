@@ -8,7 +8,7 @@ function BinderView() {
       <p className={styles.copy}>
         You can view your binders here. 
         <br />
-        <Link to="/">Home</Link>
+        <Link className={styles.homeLink} to="/">Home</Link>
       </p>
     </div>
   )

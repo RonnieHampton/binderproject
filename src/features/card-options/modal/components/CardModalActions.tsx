@@ -4,11 +4,11 @@ import styles from "./CardOptionsModal.module.css";
 function CardModalActions({ onReset, onSave }: CardModalActionsProps) {
   return (
     <div className={styles.modalActions}>
-      <button type="button" onClick={onSave}>
+      <button className={styles.modalActionButton} type="button" onClick={onSave}>
         Save Selection
       </button>
 
-      <button type="button" onClick={onReset}>
+      <button className={styles.modalActionButton} type="button" onClick={onReset}>
         Reset
       </button>
     </div>

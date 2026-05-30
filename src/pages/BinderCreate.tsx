@@ -65,7 +65,7 @@ function BinderCreate() {
   return (
     <div className={styles.binderCreatePage}>
       <div className={styles.topArea}>
-        <Link to="/">Home</Link>
+        <Link className={styles.homeLink} to="/">Home</Link>
         <SearchBar onSelectCard={handleSelectCard} />
       </div>
 

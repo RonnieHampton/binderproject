@@ -27,7 +27,7 @@ function SearchResult({ result, onSelectCard }: SearchResultProps) {
 
           <div className={styles.resultText}>
             <strong>{card.name}</strong>
-            <span>
+            <span className={styles.resultMeta}>
               {card.set?.toUpperCase()} · {card.collector_number}
             </span>
           </div>

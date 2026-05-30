@@ -61,6 +61,7 @@ export function handleBinderDragOver({
 
   if (canGoLeft || canGoRight) {
     if (hoverInterval.current === null) {
+      // Keep turning pages while a dragged card remains over a page detector.
       hoverInterval.current = window.setInterval(() => {
         setPage((prev) => {
           if (targetID === "left") return Math.max(prev - 1, 0);

@@ -177,6 +177,7 @@ function binderReducer(state: BinderState, action: BinderAction): BinderState {
       binderCards[action.target.index] = card;
 
       const filteredTableau = tableauCards.filter((_, i) => i !== action.source.index);
+      // Replacing an occupied binder slot returns the displaced card to staging.
       if (displacedCard) {
         filteredTableau.push(displacedCard);
       }

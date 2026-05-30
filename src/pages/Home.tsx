@@ -7,8 +7,8 @@ function Home() {
       <h1 className={styles.heading}>Welcome to Binder Project</h1>
         <br />
         <div className={styles.navLinks}>
-        <Link to="/BinderView">Go to BinderView</Link>
-        <Link to="/BinderCreate">Go to BinderCreate</Link>
+        <Link className={styles.navLink} to="/BinderView">Go to BinderView</Link>
+        <Link className={styles.navLink} to="/BinderCreate">Go to BinderCreate</Link>
         </div>
     </div>
   )

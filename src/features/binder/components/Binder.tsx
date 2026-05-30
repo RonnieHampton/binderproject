@@ -43,11 +43,19 @@ function Binder({ cards, page, onPageChange, onCardClick }: BinderProps) {
       })}
 
       <div className={styles.pageControls}>
-        <button onClick={() => onPageChange(-1)} disabled={page === 0}>
+        <button
+          className={styles.pageControlButton}
+          onClick={() => onPageChange(-1)}
+          disabled={page === 0}
+        >
           Previous Page
         </button>
 
-        <button onClick={() => onPageChange(1)} disabled={page >= totalPages - 1}>
+        <button
+          className={styles.pageControlButton}
+          onClick={() => onPageChange(1)}
+          disabled={page >= totalPages - 1}
+        >
           Next Page
         </button>
       </div>

@@ -21,8 +21,8 @@ function Tableau({ cards, sortType, onCardClick }: TableauProps) {
   const sortedCards = SortTableau(cards, sortType);
 
   return (
-    <>
-      <span>{`Cards: ${cards.length}/${TABLEAU_SIZE_LIMIT}`}</span>
+    <section className={styles.tableau}>
+      <span className={styles.cardCount}>{`Cards: ${cards.length}/${TABLEAU_SIZE_LIMIT}`}</span>
       <div ref={ref} className={styles.tableauBoard}>
         {sortedCards.map((column) => (
 
@@ -37,7 +37,7 @@ function Tableau({ cards, sortType, onCardClick }: TableauProps) {
           
         ))}
       </div>
-    </>
+    </section>
   )
 }
 

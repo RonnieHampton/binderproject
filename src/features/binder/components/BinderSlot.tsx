@@ -20,6 +20,7 @@ function BinderSlot({active, instance, index, onCardClick}: BinderSlotProps) {
     });
 
     useEffect(() => {
+        // Page changes during a drag require newly visible slots to be remeasured.
         if (active) {
             droppable.refreshShape();
         }

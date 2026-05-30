@@ -11,7 +11,7 @@ function DisplayCard({ cardData, size, face }: DisplayCardProps) {
 
 
     return (
-        <div className="display-card">
+        <div className={styles.displayCard}>
             <img
                 className={`${styles.cardImage} ${styles[size]}`}
                 src={cardData[face]?.[size] || cardData.default?.[size]}

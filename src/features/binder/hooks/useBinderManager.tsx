@@ -43,6 +43,7 @@ export function useBinderManager() {
   };
 
   const handleCardSave = (card: CardInstance) => {
+    // The modal edits a card snapshot; its original location stays in reducer state.
     if (!modalLocation) return;
     dispatch({ type: "saveModalCard", card: card, location: modalLocation });
   };
