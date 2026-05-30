@@ -1,4 +1,4 @@
-import type { CardInstance } from "../state/binderTypes";
+import type { CardInstance, CardLocation } from "../state/binderTypes";
 import {useDroppable} from "@dnd-kit/react";
 import BinderCard from "./BinderCard";
 import styles from "./BinderSlot.module.css";
@@ -6,7 +6,7 @@ import styles from "./BinderSlot.module.css";
 type BinderSlotProps = {
     instance: CardInstance | null;
     index: number;
-    onCardClick: (index: number, event: React.MouseEvent) => void;
+    onCardClick: (location: CardLocation, event: React.MouseEvent) => void;
 }
 
 function BinderSlot({instance, index, onCardClick}: BinderSlotProps) {

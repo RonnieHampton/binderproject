@@ -1,4 +1,4 @@
-import type { CardInstance } from "../state/binderTypes";
+import type { CardInstance, CardLocation } from "../state/binderTypes";
 import getCardDisplayData from "../../cards/utils/getCardDisplayData";
 import DisplayCard from "../../cards/components/DisplayCard";
 import { useDraggable } from "@dnd-kit/react";
@@ -6,7 +6,7 @@ import { useDraggable } from "@dnd-kit/react";
 type BinderCardProps = {
     instance: CardInstance,
     index: number
-    onCardClick: (index: number, event: React.MouseEvent) => void;
+    onCardClick: (location: CardLocation, event: React.MouseEvent) => void;
 }
 
 function BinderCard({ instance, index, onCardClick }: BinderCardProps) {
@@ -16,7 +16,7 @@ function BinderCard({ instance, index, onCardClick }: BinderCardProps) {
         type: "binder-draggable",
     });
     return (
-        <div ref={ref} onClick={(e) => {onCardClick(index, e)}}>
+        <div ref={ref} onClick={(e) => {onCardClick({ zone: "binder", index }, e)}}>
             <DisplayCard cardData={getCardDisplayData(instance)} size="normal" face={instance.face} />
         </div>
     );

@@ -1,4 +1,4 @@
-import type { CardInstance, CardZone } from "../../binder/state/binderTypes";
+import type { CardInstance, CardLocation } from "../../binder/state/binderTypes";
 import TableauCard from "../../binder/components/TableauCard";
 import { useDroppable } from "@dnd-kit/react";
 import type { TableauSortMode } from "../types/tableau";
@@ -8,11 +8,10 @@ import styles from './Tableau.module.css'
 type TableauProps = {
   cards: (CardInstance | null)[]
   sortType: TableauSortMode;
-  onSelect: (card: CardInstance, index: number, zone: CardZone) => void;
-  onCtrlClick: (card: CardInstance, index: number, zone: CardZone) => void;
+  onCardClick: (location: CardLocation, event: React.MouseEvent) => void;
 }
 
-function Tableau({ cards, sortType, onSelect, onCtrlClick }: TableauProps) {
+function Tableau({ cards, sortType, onCardClick }: TableauProps) {
   const {ref} = useDroppable({
     id: 'tableau',
     type: 'tableau'
@@ -29,8 +28,7 @@ function Tableau({ cards, sortType, onSelect, onCtrlClick }: TableauProps) {
               <header className={styles.columnHeader}>{column.title}</header>
               <div className={styles.cardStack}>
                 {column.cards.map((card) => (
-                  <TableauCard onCtrlClick={() => onCtrlClick(card.instance, card.sourceIndex, "tableau")} 
-                  onSelect={() => onSelect(card.instance, card.sourceIndex, "tableau")} key={card.sourceIndex} card={card.instance} index={card.sourceIndex} />
+                  <TableauCard onCardClick={onCardClick} key={card.sourceIndex} card={card.instance} index={card.sourceIndex} />
                 ))}
               </div>
             </section>

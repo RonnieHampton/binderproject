@@ -1,49 +1,31 @@
 import { useDraggable } from "@dnd-kit/react";
-import type { CardInstance } from "../state/binderTypes";
+import type { CardInstance, CardLocation } from "../state/binderTypes";
 import styles from "./TableauCard.module.css";
+import DisplayCard from "../../cards/components/DisplayCard";
+import getCardDisplayData from "../../cards/utils/getCardDisplayData";
 
-// TODO(refactor): Legacy tableau card component. Move rendering into DisplayCard.
 type TableauCardProps = {
   card: CardInstance;
   index: number;
-  onSelect: (card: CardInstance, index: number) => void;
-  onCtrlClick: (card: CardInstance, index: number) => void;
+  onCardClick: (location: CardLocation, event: React.MouseEvent) => void;
 };
 
-function TableauCard({ card, index, onSelect, onCtrlClick }: TableauCardProps) {
+function TableauCard({ card, index, onCardClick }: TableauCardProps) {
   const { ref } = useDraggable({
     id: `${index}-${card.id}`,
     type: "tableau-draggable",
     data: { index, card },
   });
 
-  const defaultFace = card.card.image_uris?.normal;
-  const front = card.card.card_faces?.[0]?.image_uris?.normal;
-  const back = card.card.card_faces?.[1]?.image_uris?.normal;
-
-  const src =
-    defaultFace ??
-    (card.face === "back" ? back : front) ??
-    front ??
-    back;
 
   return (
-    <img
-      className={styles.binderCardImage}
+    <div
       ref={ref}
-      src={src}
-      alt={card.card.name}
-      onClick={(e) => {
-                        if (e.ctrlKey&& card.card.card_faces?.length === 2) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            onCtrlClick(card, index);
-                            return;
-                        }
-
-                        onSelect(card, index);
-                    }}
-    />
+      className={styles.tableauCard}
+      onClick={(e) => {onCardClick({ zone: "tableau", index }, e)}}
+    >
+      <DisplayCard cardData={getCardDisplayData(card)} size="normal" face={card.face} />
+    </div>
   );
 }
 

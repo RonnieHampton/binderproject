@@ -1,12 +1,12 @@
 import BinderSlot from "./BinderSlot";
-import type { CardInstance } from "../state/binderTypes";
+import type { CardInstance, CardLocation } from "../state/binderTypes";
 import styles from "./Binder.module.css";
 
 type BinderProps = {
   cards: (CardInstance | null)[];
   page: number;
   onPageChange: (direction: number) => void;
-  onCardClick: (index: number, event: React.MouseEvent) => void;
+  onCardClick: (location: CardLocation, event: React.MouseEvent) => void;
 };
 
 const CARDS_PER_PAGE = 12;

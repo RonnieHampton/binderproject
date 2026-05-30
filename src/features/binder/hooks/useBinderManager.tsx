@@ -1,142 +1,73 @@
 // src/hooks/useBinderCards.ts
-import { useState } from "react";
+import { useReducer } from "react";
 import type { ScryfallCard } from "../../../types/scryfall";
-import type { CardFace, CardInstance, CardZone, ModalCard } from "../state/binderTypes";
+import type { CardInstance, CardLocation } from "../state/binderTypes";
+import binderReducer, { initialBinderState } from "../state/binderReducer";
+import handleCardClick from "../utils/handleCardClick";
 
-const BINDER_SIZE = 60;
-
-// TODO(refactor): Move state transitions into binderReducer and keep this hook as the dispatch wrapper.
-function createCardInstance(card: ScryfallCard, face: CardFace, UUID: string | null): CardInstance {
-  return {
-    card,
-    face: face ?? "front",
-    id: UUID ?? crypto.randomUUID(),
-  };
+function getCardAtLocation(
+  binderCards: (CardInstance | null)[],
+  tableauCards: CardInstance[],
+  location: CardLocation
+) {
+  return location.zone === "binder"
+    ? binderCards[location.index]
+    : tableauCards[location.index];
 }
 
 export function useBinderManager() {
-  const [tableauCards, setTableauCards] = useState<CardInstance[]>([]);
-  const [binderCards, setBinderCards] = useState<(CardInstance | null)[]>(
-    Array(BINDER_SIZE).fill(null)
-  );
-  const [modalCard, setModalCard] = useState<ModalCard | null>(null);
+  const [state, dispatch] = useReducer(binderReducer, initialBinderState);
+  const { tableauCards, binderCards, modalLocation } = state;
 
   const handleSelectCard = (card: ScryfallCard) => {
-    const newCard = createCardInstance(card, "front", null);
-    setTableauCards((prev) => [...prev, newCard]);
+    dispatch({ type: "cardSearchSelect", card });
   };
 
   const closeModal = () => {
-    setModalCard(null);
+    dispatch({ type: "closeModal" });
   };
 
-  const handleCtrlClick = (card: CardInstance, index: number, zone: CardZone) => {
-    if (zone === "binder") {
-      setBinderCards((prev) => {
-        const next = [...prev];
-        if (card.face === "front") {
-          next[index] = { ...card, face: "back" };
-        } else {
-          next[index] = { ...card, face: "front" };
-        }
-        return next;
-      });
-    } else if (zone === "tableau") {
-      setTableauCards((prev) => {
-        const next = [...prev];
-        if (card.face === "front") {
-          next[index] = { ...card, face: "back" };
-        } else {
-          next[index] = { ...card, face: "front" };
-        }
-        return next;
-      });
-  }};
-
-  const handleModalSelect = (
-    card: CardInstance | null,
-    index: number,
-    zone: CardZone
+  const handleCardInteraction = (
+    location: CardLocation,
+    event: React.MouseEvent
   ) => {
-    setModalCard({ card, index, zone });
+    const cardInstance = getCardAtLocation(binderCards, tableauCards, location);
+    if (!cardInstance) return;
+
+    handleCardClick({
+      cardInstance,
+      event,
+      location,
+      onFlipCard: (location) => dispatch({ type: "flipCard", location }),
+      onOpenModal: (location) => dispatch({ type: "openModal", location }),
+    });
   };
 
-  const handleCardSave = (
-    changedCard: ScryfallCard,
-    index: number,
-    zone: CardZone,
-    face: string
-  ) => {
-    const card = createCardInstance(changedCard, face as CardFace, changedCard?.id);
-
-    if (zone === "binder") {
-      setBinderCards((prev) => {
-        const next = [...prev];
-        next[index] = card;
-        return next;
-      });
-    } else if (zone === "tableau") {
-      setTableauCards((prev) => {
-        const next = [...prev];
-        next[index] = card;
-        return next;
-      });
-    }
-
-    closeModal();
+  const handleCardSave = (card: CardInstance) => {
+    if (!modalLocation) return;
+    dispatch({ type: "saveModalCard", changedCard: card, location: modalLocation });
   };
 
   const handleToBinder = (sourceIndex: number, targetIndex: number) => {
-    const neededCard = tableauCards[sourceIndex];
-    if (!neededCard) return;
-
-    const displacedCard = binderCards[targetIndex];
-
-    setBinderCards((prevBinder) => {
-      const nextBinder = [...prevBinder];
-      nextBinder[targetIndex] = neededCard;
-      return nextBinder;
-    });
-
-    setTableauCards((prevTableau) => {
-      const nextTableau = prevTableau.filter((_, i) => i !== sourceIndex);
-
-      if (displacedCard) {
-        nextTableau.push(displacedCard);
-      }
-
-      return nextTableau;
+    dispatch({
+      type: "moveTableauToBinder",
+      source: { zone: "tableau", index: sourceIndex },
+      target: { zone: "binder", index: targetIndex },
     });
   };
 
   const handleToTableau = (sourceIndex: number) => {
-    const neededCard = binderCards[sourceIndex];
-    if (!neededCard) return;
-
-    setBinderCards((prev) => {
-      const next = [...prev];
-      next[sourceIndex] = null;
-      return next;
+    dispatch({
+      type: "moveBinderToTableau",
+      source: { zone: "binder", index: sourceIndex },
     });
-
-    setTableauCards((prev) => [...prev, neededCard]);
   };
 
   const handleBinderMove = (sourceIndex: number, targetIndex: number) => {
-    if (sourceIndex === targetIndex) return;
-
-    setBinderCards((prev) => {
-      const next = [...prev];
-
-      const neededCard = next[sourceIndex];
-      if (!neededCard) return prev;
-
-      const oldCard = next[targetIndex];
-
-      next[sourceIndex] = oldCard ?? null;
-      next[targetIndex] = neededCard;
-
-      return next;
+    dispatch({
+      type: "moveBinderCard",
+      source: { zone: "binder", index: sourceIndex },
+      target: { zone: "binder", index: targetIndex },
     });
   };
 
@@ -145,25 +76,25 @@ export function useBinderManager() {
     sourceIndex: number
   ) => {
     if (sourceType === "binder-draggable") {
-      setBinderCards((prev) => {
-        const next = [...prev];
-        next[sourceIndex] = null;
-        return next;
+      dispatch({
+        type: "trashCard",
+        source: { zone: "binder", index: sourceIndex },
       });
-
-      return;
     }
 
     if (sourceType === "tableau-draggable") {
-      setTableauCards((prev) => prev.filter((_, i) => i !== sourceIndex));
+      dispatch({
+        type: "trashCard",
+        source: { zone: "tableau", index: sourceIndex },
+      });
     }
   };
 
   const handleExport = () => {
     const data = {
-        version: 1,
-        cards: binderCards
-    }
+      version: 1,
+      cards: binderCards,
+    };
 
     const json = JSON.stringify(data, null, 2);
     const blob = new Blob([json], { type: "application/json" });
@@ -175,36 +106,36 @@ export function useBinderManager() {
     a.click();
 
     URL.revokeObjectURL(url);
-  }
+  };
 
-    const handleImport = async (
-        event: React.ChangeEvent<HTMLInputElement>
-        ) => {
-        const file = event.target.files?.[0];
-        if (!file) return;
+  const handleImport = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
 
-        try {
-            const text = await file.text();
-            const data = JSON.parse(text);
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
 
-            if (data.version !== 1 || !Array.isArray(data.cards)) {
-            throw new Error("Invalid binder file");
-            }
+      if (data.version !== 1 || !Array.isArray(data.cards)) {
+        throw new Error("Invalid binder file");
+      }
 
-            setBinderCards(data.cards);
-        } catch (error) {
-            console.error("Could not import binder:", error);
-        } finally {
-            event.target.value = "";
+      dispatch({ type: "importBinder", cards: data.cards });
+    } catch (error) {
+      console.error("Could not import binder:", error);
+    } finally {
+      event.target.value = "";
     }
-    };
+  };
 
   return {
     tableauCards,
     binderCards,
-    modalCard,
+    modalLocation,
     handleSelectCard,
-    handleModalSelect,
+    handleCardInteraction,
     handleCardSave,
     handleToBinder,
     handleToTableau,
@@ -213,6 +144,5 @@ export function useBinderManager() {
     closeModal,
     handleExport,
     handleImport,
-    handleCtrlClick
   };
 }

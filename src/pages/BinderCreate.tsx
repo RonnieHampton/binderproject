@@ -9,11 +9,14 @@ import TrashDroppable from "../features/binder/components/Trash";
 import CardOverlay from "../features/binder/components/CardOverlay";
 import DragHoverDetector from "../features/binder/components/DragHoverDetector";
 import type { TableauSortMode } from "../features/tableau/types/tableau";
-import CardOptionsModal from "../features/card-options/components/CardOptionsModal";
+import CardOptionsModal from "../features/card-options/modal/components/CardOptionsModal";
 import { useBinderManager } from "../features/binder/hooks/useBinderManager";
+import {
+  handleBinderDragEnd,
+  handleBinderDragOver,
+  handleBinderDragStart,
+} from "../features/binder/utils/binderDragHandlers";
 import styles from "./BinderCreate.module.css";
-
-// TODO(refactor): After card wrappers and binderReducer exist, move drag/drop branching out of this page.
 
 const MAX_PAGE = 4;
 const PAGE_CHANGE_INTERVAL = 500;
@@ -22,9 +25,9 @@ function BinderCreate() {
   const {
     tableauCards,
     binderCards,
-    modalCard,
+    modalLocation,
     handleSelectCard,
-    handleModalSelect,
+    handleCardInteraction,
     handleCardSave,
     handleToBinder,
     handleToTableau,
@@ -32,8 +35,7 @@ function BinderCreate() {
     handleToTrash,
     closeModal,
     handleExport,
-    handleImport,
-    handleCtrlClick
+    handleImport
   } = useBinderManager();
 
   const [overlayCard, setOverlayCard] = useState<CardInstance | null>(null);
@@ -52,22 +54,12 @@ function BinderCreate() {
     setPage((prev) => Math.max(0, Math.min(prev + increment, MAX_PAGE)));
   };
 
-  const handleBinderCardClick = (
-    index: number,
-    event: React.MouseEvent
-  ) => {
-    const card = binderCards[index];
-    if (!card) return;
-
-    if (event.ctrlKey && card.card.card_faces?.length === 2) {
-      event.preventDefault();
-      event.stopPropagation();
-      handleCtrlClick(card, index, "binder");
-      return;
-    }
-
-    handleModalSelect(card, index, "binder");
-  };
+  const selectedModalCard =
+    modalLocation?.zone === "binder"
+      ? binderCards[modalLocation.index]
+      : modalLocation?.zone === "tableau"
+        ? tableauCards[modalLocation.index]
+        : null;
 
   return (
     <div className={styles.binderCreatePage}>
@@ -78,56 +70,29 @@ function BinderCreate() {
 
       <DragDropProvider
         onDragOver={(event) => {
-          const targetID = event.operation.target?.id;
-
-          const canGoLeft = targetID === "left" && page > 0;
-          const canGoRight = targetID === "right" && page < MAX_PAGE;
-
-          if (canGoLeft || canGoRight) {
-            if (hoverInterval.current === null) {
-              hoverInterval.current = window.setInterval(() => {
-                setPage((prev) => {
-                  if (targetID === "left") return Math.max(prev - 1, 0);
-                  if (targetID === "right") return Math.min(prev + 1, MAX_PAGE);
-                  return prev;
-                });
-              }, PAGE_CHANGE_INTERVAL);
-            }
-          } else {
-            clearHoverInterval();
-          }
+          handleBinderDragOver({
+            event,
+            page,
+            maxPage: MAX_PAGE,
+            pageChangeInterval: PAGE_CHANGE_INTERVAL,
+            hoverInterval,
+            setPage,
+            clearHoverInterval,
+          });
         }}
         onDragStart={(event) => {
-          setOverlayCard(event.operation.source?.data?.card || null);
+          handleBinderDragStart({ event, setOverlayCard });
         }}
         onDragEnd={(event) => {
-          if (event.canceled) return;
-
-          const sourceType = String(event.operation.source?.type);
-          const targetType = String(event.operation.target?.type);
-          const sourceIndex = event.operation.source?.data?.index;
-          const targetIndex = event.operation.target?.data?.index;
-
-          if (
-            sourceType === "tableau-draggable" &&
-            targetType === "binder-droppable"
-          ) {
-            handleToBinder(sourceIndex, targetIndex);
-          } else if (
-            sourceType === "binder-draggable" &&
-            targetType === "tableau"
-          ) {
-            handleToTableau(sourceIndex);
-          } else if (
-            sourceType === "binder-draggable" &&
-            targetType === "binder-droppable"
-          ) {
-            handleBinderMove(sourceIndex, targetIndex);
-          } else if (targetType === "trash") {
-            handleToTrash(sourceType, sourceIndex);
-          }
-
-          clearHoverInterval();
+          handleBinderDragEnd({
+            event,
+            handleToBinder,
+            handleToTableau,
+            handleBinderMove,
+            handleToTrash,
+            clearHoverInterval,
+            setOverlayCard
+          });
         }}
       >
         <TrashDroppable />
@@ -145,8 +110,7 @@ function BinderCreate() {
         </select>
 
         <Tableau
-          onCtrlClick={(card, index) => handleCtrlClick(card, index, "tableau")}
-          onSelect={handleModalSelect}
+          onCardClick={handleCardInteraction}
           sortType={sortMode}
           cards={tableauCards}
         />
@@ -156,7 +120,7 @@ function BinderCreate() {
         <div className={styles.binderLayout}>
           <DragHoverDetector id="left" />
           <Binder
-            onCardClick={handleBinderCardClick}
+            onCardClick={handleCardInteraction}
             onPageChange={handlePageChange}
             page={page}
             cards={binderCards}
@@ -169,14 +133,12 @@ function BinderCreate() {
         </DragOverlay>
       </DragDropProvider>
 
-      {modalCard !== null && (
+      {modalLocation !== null && selectedModalCard !== null && (
         <div className={styles.modalBackdrop} onClick={closeModal}>
           <div className={styles.modalPanel} onClick={(e) => e.stopPropagation()}>
            <CardOptionsModal
-            card={modalCard.card}
-            index={modalCard.index}
-            zone={modalCard.zone}
-            handleSave={(card, index, zone, face) => handleCardSave(card, index, zone, face)}
+            card={selectedModalCard}
+            handleSave={(card) => handleCardSave(card)}
             />
           </div>
         </div>

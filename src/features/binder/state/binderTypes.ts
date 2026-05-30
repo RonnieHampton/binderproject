@@ -10,8 +10,7 @@ export type CardInstance = {
   id: string;
 };
 
-export type ModalCard = {
-  card: CardInstance | null;
+export type CardLocation = {
   index: number;
   zone: CardZone;
 };

@@ -8,10 +8,15 @@ type DisplayCardProps = {
 }
 
 function DisplayCard({ cardData, size, face }: DisplayCardProps) {
+
+
     return (
         <div className="display-card">
-            {face === "front" && <img className={`${styles.cardImage} ${styles[size]}`} src={cardData.front?.[size] || cardData.default?.[size]} alt={cardData.name} />}
-            {face === "back" && <img className={`${styles.cardImage} ${styles[size]}`} src={cardData.back?.[size] || cardData.default?.[size]} alt={cardData.name} />}
+            <img
+                className={`${styles.cardImage} ${styles[size]}`}
+                src={cardData[face]?.[size] || cardData.default?.[size]}
+                alt={cardData.name}
+            />
         </div>
     )
 }
