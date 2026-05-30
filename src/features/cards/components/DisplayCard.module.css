@@ -1,0 +1,23 @@
+.displayCard {
+  height: 100%;
+  width: fit-content;
+}
+
+.cardImage {
+  display: block;
+  width: auto;
+  border-radius: 13px;
+}
+
+.small {
+  height: 204px;
+}
+
+.normal {
+  height: 300px;
+}
+
+.large {
+  height: 420px;
+}
+

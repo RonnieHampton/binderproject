@@ -1,4 +1,4 @@
-import type { ScryfallCard } from "../types/scryfall";
+import type { ScryfallCard } from "../../../types/scryfall";
 import styles from "./SearchResult.module.css";
 
 type SearchResultProps = {

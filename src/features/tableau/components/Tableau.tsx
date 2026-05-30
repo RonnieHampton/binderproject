@@ -1,18 +1,18 @@
-import type { CardInstance } from "../types/scryfall";
-import BinderCard from "./BinderCard";
+import type { CardInstance, CardLocation } from "../../binder/state/binderTypes";
+import TableauCard from "../../binder/components/TableauCard";
 import { useDroppable } from "@dnd-kit/react";
 import type { TableauSortMode } from "../types/tableau";
 import SortTableau from '../utils/tableauUtils'
 import styles from './Tableau.module.css'
+import { TABLEAU_SIZE_LIMIT } from "../../binder/config/binderConfig";
 
 type TableauProps = {
-  cards: (CardInstance | null)[]
+  cards: CardInstance[]
   sortType: TableauSortMode;
-  onSelect: (card: CardInstance, index: number, zone: string) => void;
-  onCtrlClick: (card: CardInstance, index: number, zone: string) => void;
+  onCardClick: (location: CardLocation, event: React.MouseEvent) => void;
 }
 
-function Tableau({ cards, sortType, onSelect, onCtrlClick }: TableauProps) {
+function Tableau({ cards, sortType, onCardClick }: TableauProps) {
   const {ref} = useDroppable({
     id: 'tableau',
     type: 'tableau'
@@ -22,6 +22,7 @@ function Tableau({ cards, sortType, onSelect, onCtrlClick }: TableauProps) {
 
   return (
     <>
+      <span>{`Cards: ${cards.length}/${TABLEAU_SIZE_LIMIT}`}</span>
       <div ref={ref} className={styles.tableauBoard}>
         {sortedCards.map((column) => (
 
@@ -29,8 +30,7 @@ function Tableau({ cards, sortType, onSelect, onCtrlClick }: TableauProps) {
               <header className={styles.columnHeader}>{column.title}</header>
               <div className={styles.cardStack}>
                 {column.cards.map((card) => (
-                  <BinderCard onCtrlClick={() => onCtrlClick(card.instance, card.sourceIndex, "tableau")} 
-                  onSelect={() => onSelect(card.instance, card.sourceIndex, "tableau")} key={card.sourceIndex} card={card.instance} index={card.sourceIndex} />
+                  <TableauCard onCardClick={onCardClick} key={card.sourceIndex} card={card.instance} index={card.sourceIndex} />
                 ))}
               </div>
             </section>

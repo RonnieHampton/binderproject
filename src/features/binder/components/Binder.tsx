@@ -1,18 +1,16 @@
-import BinderDroppable from "./BinderDroppable";
-import type { CardInstance } from "../types/scryfall";
+import BinderSlot from "./BinderSlot";
+import type { CardInstance, CardLocation } from "../state/binderTypes";
 import styles from "./Binder.module.css";
+import { CARDS_PER_PAGE } from "../config/binderConfig";
 
 type BinderProps = {
   cards: (CardInstance | null)[];
   page: number;
   onPageChange: (direction: number) => void;
-  onSelect: (card: CardInstance | null, index: number, zone: string) => void;
-  onCtrlClick: (card: CardInstance, index: number, zone: string) => void;
+  onCardClick: (location: CardLocation, event: React.MouseEvent) => void;
 };
 
-const CARDS_PER_PAGE = 12;
-
-function Binder({ cards, page, onPageChange, onSelect, onCtrlClick }: BinderProps) {
+function Binder({ cards, page, onPageChange, onCardClick }: BinderProps) {
   const totalPages = Math.ceil(cards.length / CARDS_PER_PAGE);
 
   return (
@@ -31,13 +29,13 @@ function Binder({ cards, page, onPageChange, onSelect, onCtrlClick }: BinderProp
               isVisible ? styles.binderPageVisible : styles.binderPageHidden
             }`}
           >
-            {pageCards.map((card, index) => (
-              <BinderDroppable
-                onCtrlClick={(card, index) => onCtrlClick(card, index, "binder")}
-                onSelect={() => onSelect(card, index, "binder")}
+            {pageCards.map((instance, index) => (
+              <BinderSlot
+                active={isVisible}
                 key={start + index}
-                card={card}
+                instance={instance}
                 index={start + index}
+                onCardClick={onCardClick}
               />
             ))}
           </div>
