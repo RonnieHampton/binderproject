@@ -1,20 +1,41 @@
 import BinderSlot from "./BinderSlot";
+import type { ReactNode } from "react";
 import type { CardInstance, CardLocation } from "../state/binderTypes";
 import styles from "./Binder.module.css";
 import { CARDS_PER_PAGE } from "../config/binderConfig";
+import BinderPageControls from "./BinderPageControls";
 
 type BinderProps = {
   cards: (CardInstance | null)[];
   page: number;
+  footerStart?: ReactNode;
   onPageChange: (direction: number) => void;
   onCardClick: (location: CardLocation, event: React.MouseEvent) => void;
+  onFlipCard: (location: CardLocation) => void;
+  onTrashCard: (location: CardLocation) => void;
 };
 
-function Binder({ cards, page, onPageChange, onCardClick }: BinderProps) {
+function Binder({
+  cards,
+  page,
+  footerStart,
+  onPageChange,
+  onCardClick,
+  onFlipCard,
+  onTrashCard,
+}: BinderProps) {
   const totalPages = Math.ceil(cards.length / CARDS_PER_PAGE);
 
   return (
     <div className={styles.binder}>
+      <div className={styles.topControls}>
+        <BinderPageControls
+          page={page}
+          totalPages={totalPages}
+          onPageChange={onPageChange}
+        />
+      </div>
+
       {Array.from({ length: totalPages }).map((_, pageIndex) => {
         const start = pageIndex * CARDS_PER_PAGE;
         const end = start + CARDS_PER_PAGE;
@@ -36,28 +57,24 @@ function Binder({ cards, page, onPageChange, onCardClick }: BinderProps) {
                 instance={instance}
                 index={start + index}
                 onCardClick={onCardClick}
+                onFlipCard={onFlipCard}
+                onTrashCard={onTrashCard}
               />
             ))}
           </div>
         );
       })}
 
-      <div className={styles.pageControls}>
-        <button
-          className={styles.pageControlButton}
-          onClick={() => onPageChange(-1)}
-          disabled={page === 0}
-        >
-          Previous Page
-        </button>
+      <div className={styles.binderFooter}>
+        <div className={styles.footerStart}>{footerStart}</div>
 
-        <button
-          className={styles.pageControlButton}
-          onClick={() => onPageChange(1)}
-          disabled={page >= totalPages - 1}
-        >
-          Next Page
-        </button>
+        <BinderPageControls
+          page={page}
+          totalPages={totalPages}
+          onPageChange={onPageChange}
+        />
+
+        <div aria-hidden="true" />
       </div>
     </div>
   );

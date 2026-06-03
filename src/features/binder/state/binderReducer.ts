@@ -2,6 +2,7 @@ import type { ScryfallCard } from "../../../types/scryfall";
 import createCardInstance from "../utils/createCardInstance";
 import type { CardInstance, CardLocation } from "./binderTypes";
 import { BINDER_SIZE, TABLEAU_SIZE_LIMIT } from "../config/binderConfig";
+import { hasDistinctCardFaces } from "../../cards/utils/cardFaceUtils";
 
 // State
 export type BinderState = {
@@ -68,6 +69,10 @@ type BinderAction =
   | {
       type: "importBinder";
       cards: (CardInstance | null)[];
+    }
+
+  | {
+      type: "clearTableau";
     };
 
 function binderReducer(state: BinderState, action: BinderAction): BinderState {
@@ -133,6 +138,7 @@ function binderReducer(state: BinderState, action: BinderAction): BinderState {
         const card = binderCards[index];
 
         if (!card) return state;
+        if (!hasDistinctCardFaces(card.card)) return state;
 
         binderCards[index] = {
           ...card,
@@ -150,6 +156,7 @@ function binderReducer(state: BinderState, action: BinderAction): BinderState {
         const card = tableauCards[index];
 
         if (!card) return state;
+        if (!hasDistinctCardFaces(card.card)) return state;
 
         tableauCards[index] = {
           ...card,
@@ -251,6 +258,13 @@ function binderReducer(state: BinderState, action: BinderAction): BinderState {
         ...state,
         binderCards: action.cards,
         modalLocation: null,
+      };
+    }
+
+    case "clearTableau": {
+      return {
+        ...state,
+        tableauCards: [],
       };
     }
 

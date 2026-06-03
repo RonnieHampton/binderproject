@@ -4,11 +4,10 @@ import type { CardInstance } from "../features/binder/state/binderTypes";
 import Tableau from "../features/tableau/components/Tableau";
 import { useRef, useState } from "react";
 import Binder from "../features/binder/components/Binder";
+import BinderFileControls from "../features/binder/components/BinderFileControls";
 import { DragDropProvider, DragOverlay } from "@dnd-kit/react";
-import TrashDroppable from "../features/binder/components/Trash";
 import CardOverlay from "../features/binder/components/CardOverlay";
 import DragHoverDetector from "../features/binder/components/DragHoverDetector";
-import type { TableauSortMode } from "../features/tableau/types/tableau";
 import CardOptionsModal from "../features/card-options/modal/components/CardOptionsModal";
 import { useBinderManager } from "../features/binder/hooks/useBinderManager";
 import {
@@ -30,19 +29,21 @@ function BinderCreate() {
     handleSelectCard,
     handleCardInteraction,
     handleCardSave,
+    handleFlipCard,
+    handleTrashCard,
     handleToBinder,
     handleToTableau,
     handleBinderMove,
     handleToTrash,
     closeModal,
     handleExport,
-    handleImport
+    handleImport,
+    clearTableau,
   } = useBinderManager();
 
   const [overlayCard, setOverlayCard] = useState<CardInstance | null>(null);
   const [page, setPage] = useState(0);
   const hoverInterval = useRef<number | null>(null);
-  const [sortMode, setSortMode] = useState<TableauSortMode>("cmc");
 
   const clearHoverInterval = () => {
     if (hoverInterval.current !== null) {
@@ -96,38 +97,33 @@ function BinderCreate() {
           });
         }}
       >
-        <TrashDroppable />
-
-        <select
-          className={styles.sortSelect}
-          value={sortMode}
-          onChange={(e) => setSortMode(e.target.value as TableauSortMode)}
-        >
-          <option value="cmc">Mana Value</option>
-          <option value="color_identity">Color Identity</option>
-          <option value="type_line">Type</option>
-          <option value="rarity">Rarity</option>
-          <option value="set">Set</option>
-        </select>
 
         <Tableau
           onCardClick={handleCardInteraction}
-          sortType={sortMode}
           cards={tableauCards}
+          onClearTableau={clearTableau}
         />
 
-        <p className={styles.pageIndicator}>{`Current page: ${page + 1}/${MAX_BINDER_PAGE_INDEX + 1}`}</p>
-
-        <div className={styles.binderLayout}>
-          <DragHoverDetector id="left" />
-          <Binder
-            onCardClick={handleCardInteraction}
-            onPageChange={handlePageChange}
-            page={page}
-            cards={binderCards}
-          />
-          <DragHoverDetector id="right" />
-        </div>
+        <section className={styles.binderSection}>
+          <div className={styles.binderLayout}>
+            <DragHoverDetector id="left" />
+            <Binder
+              onCardClick={handleCardInteraction}
+              onFlipCard={handleFlipCard}
+              onTrashCard={handleTrashCard}
+              footerStart={
+                <BinderFileControls
+                  onExport={handleExport}
+                  onImport={handleImport}
+                />
+              }
+              onPageChange={handlePageChange}
+              page={page}
+              cards={binderCards}
+            />
+            <DragHoverDetector id="right" />
+          </div>
+        </section>
 
         <DragOverlay dropAnimation={null}>
           {overlayCard ? <CardOverlay card={overlayCard} /> : null}
@@ -140,18 +136,11 @@ function BinderCreate() {
            <CardOptionsModal
             card={selectedModalCard}
             handleSave={(card) => handleCardSave(card)}
+            onClose={closeModal}
             />
           </div>
         </div>
       )}
-      <button className={styles.exportButton} onClick={handleExport}>Export Binder</button>
-
-      <input
-        className={styles.importInput}
-        type="file"
-        accept="application/json,.json"
-        onChange={handleImport}
-        />
     </div>
   );
 }

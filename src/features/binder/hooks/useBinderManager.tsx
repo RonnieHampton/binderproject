@@ -48,6 +48,14 @@ export function useBinderManager() {
     dispatch({ type: "saveModalCard", card: card, location: modalLocation });
   };
 
+  const handleFlipCard = (location: CardLocation) => {
+    dispatch({ type: "flipCard", location });
+  };
+
+  const handleTrashCard = (location: CardLocation) => {
+    dispatch({ type: "trashCard", source: location });
+  };
+
   const handleToBinder = (sourceIndex: number, targetIndex: number) => {
     dispatch({
       type: "moveTableauToBinder",
@@ -134,6 +142,11 @@ export function useBinderManager() {
     }
   };
 
+  const clearTableau = () => {
+    if (!window.confirm("Clear all cards from the tableau?")) return;
+    dispatch({ type: "clearTableau" });
+  };
+
   return {
     tableauCards,
     binderCards,
@@ -141,6 +154,8 @@ export function useBinderManager() {
     handleSelectCard,
     handleCardInteraction,
     handleCardSave,
+    handleFlipCard,
+    handleTrashCard,
     handleToBinder,
     handleToTableau,
     handleBinderMove,
@@ -148,5 +163,6 @@ export function useBinderManager() {
     closeModal,
     handleExport,
     handleImport,
+    clearTableau,
   };
 }

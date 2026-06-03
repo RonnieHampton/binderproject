@@ -17,6 +17,7 @@ export type CardDetailsData = {
 export type CardOptionsModalProps = {
   card: CardInstance;
   handleSave: (card: CardInstance) => void;
+  onClose: () => void;
 };
 
 export type CardPrintingListProps = {

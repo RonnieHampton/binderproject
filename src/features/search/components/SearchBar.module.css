@@ -1,10 +1,32 @@
 .searchBar {
   position: relative;
-  width: 260px;
+  width: min(100%, 31rem);
   margin: 0 auto;
 }
 
 .searchInput {
-  width: 100%;
+  background: var(--app-surface-solid);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius-lg);
   box-sizing: border-box;
+  box-shadow: var(--app-shadow-sm);
+  color: var(--app-text);
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  transition:
+    border-color 0.14s ease,
+    box-shadow 0.14s ease;
+  width: 100%;
+}
+
+.searchInput::placeholder {
+  color: #8b95a1;
+}
+
+.searchInput:focus {
+  border-color: rgba(37, 99, 235, 0.42);
+  box-shadow:
+    0 0 0 4px var(--app-accent-soft),
+    var(--app-shadow-sm);
+  outline: none;
 }

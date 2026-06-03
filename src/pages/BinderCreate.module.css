@@ -1,20 +1,46 @@
 .binderCreatePage {
+  min-height: 100vh;
+  padding: 1.25rem clamp(1rem, 2.5vw, 2rem) 2rem;
 }
 
 .topArea {
+  align-items: center;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr minmax(18rem, 31rem) 1fr;
+  margin: 0 auto 1.5rem;
+  max-width: 84rem;
 }
 
 .homeLink {
+  align-items: center;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius-sm);
+  color: var(--app-text);
+  display: inline-flex;
+  font-size: 0.9rem;
+  font-weight: 700;
+  justify-self: start;
+  min-height: 2.5rem;
+  padding: 0 0.85rem;
+  text-decoration: none;
+  transition:
+    background 0.14s ease,
+    border-color 0.14s ease,
+    box-shadow 0.14s ease;
 }
 
-.sortSelect {
+.homeLink:hover {
+  background: var(--app-surface-solid);
+  border-color: var(--app-border-strong);
+  box-shadow: var(--app-shadow-sm);
 }
 
-.pageIndicator {
-  margin: 0;
-  max-width: 38rem;
-  color: #4a4a4a;
-  line-height: 1.65;
+.binderSection {
+  border-top: 1px solid var(--app-border);
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
 }
 
 .binderLayout {
@@ -37,16 +63,22 @@
 }
 
 .modalPanel {
-  background: #1f1f1f;
-  border-radius: 16px;
-  padding: 1rem;
+  background: transparent;
+  border-radius: var(--app-radius-lg);
+  padding: 0;
   max-width: 90vw;
   max-height: 90vh;
   overflow: auto;
 }
 
-.exportButton {
-}
+@media (max-width: 720px) {
+  .topArea {
+    grid-template-columns: 1fr;
+  }
 
-.importInput {
+  .homeLink {
+    justify-self: stretch;
+    justify-content: center;
+  }
+
 }

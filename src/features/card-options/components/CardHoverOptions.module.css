@@ -1,0 +1,106 @@
+.cardHoverOptions {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 13px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+:global([data-card-hover-options-parent]:hover) .cardHoverOptions {
+  opacity: 1;
+}
+
+.flipButton,
+.trashButton {
+  position: absolute;
+  width: 38%;
+  height: 24%;
+  border: 0;
+  color: white;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.flipButton {
+  top: 0;
+  left: 0;
+  background: rgba(37, 37, 37, 0.65);
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
+.trashButton {
+  right: 0;
+  bottom: 0;
+  background: rgba(37, 37, 37, 0.65);
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+}
+
+.buttonIcon {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+  transform-origin: center;
+}
+
+.flipButton .buttonIcon {
+  top: 10px;
+  left: 10px;
+  transform: scaleX(-1) rotate(0deg);
+  transition: transform 0.35s ease;
+}
+
+.flipButton:hover .buttonIcon {
+  transform: scaleX(-1) rotate(-180deg);
+}
+
+.trashButton .buttonIcon {
+  right: 10px;
+  bottom: 10px;
+}
+
+.trashButton:hover .buttonIcon {
+  animation: trashIconShake 0.35s ease;
+}
+
+@keyframes trashIconShake {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(-10deg);
+  }
+
+  75% {
+    transform: rotate(10deg);
+  }
+}
+
+.modalHint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: 10px;
+  border-radius: 50%;
+  color: white;
+  background: rgba(37, 37, 37, 0.65);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.modalHintIcon {
+  display: block;
+  width: 28px;
+  height: 28px;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}

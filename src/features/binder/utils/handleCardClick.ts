@@ -1,4 +1,5 @@
 import type { CardInstance, CardLocation } from "../state/binderTypes";
+import { hasDistinctCardFaces } from "../../cards/utils/cardFaceUtils";
 
 type CardClickProps = {
   cardInstance: CardInstance;
@@ -15,7 +16,7 @@ function handleCardClick({
   onFlipCard,
   onOpenModal,
 }: CardClickProps) {
-  const canFlipCard = cardInstance.card.card_faces?.length === 2;
+  const canFlipCard = hasDistinctCardFaces(cardInstance.card);
 
   if (event.ctrlKey && canFlipCard) {
     event.preventDefault();

@@ -1,26 +1,41 @@
 .tableau {
-}
-
-.cardCount {
+  position: relative;
+  height: 60vh;
+  max-height: 60vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
 }
 
 .tableauBoard {
   max-width: 100%;
   min-height: 320px;
   padding: 1rem;
-  border: 2px dashed gray;
-  border-radius: 12px;
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
-  align-items: flex-start;
-  overflow-x: auto;
+
+  column-width: 230px;
+  column-gap: 0.25rem;
+
+  overflow: visible;
+
   width: 100%;
+
+}
+.trashArea {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 20;
+  width: min(16.666%, 180px);
+  min-width: 140px;
 }
 
 .tableauColumn {
   width: 230px;
-  flex: 0 0 230px;
+  display: inline-block;
+  break-inside: avoid;
+  margin-bottom: 1rem;
   padding: 0.75rem;
 }
 

@@ -2,6 +2,10 @@
   position: relative;
 }
 
+.topControls {
+  margin: 1rem auto 0.75rem;
+}
+
 .binderPage {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -25,9 +29,24 @@
   left: -9999px;
 }
 
-.pageControls {
-  margin-top: 12px;
+.binderFooter {
+  align-items: center;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr auto 1fr;
+  margin: 0.9rem auto 0;
 }
 
-.pageControlButton {
+.footerStart {
+  justify-self: start;
+}
+
+@media (max-width: 720px) {
+  .binderFooter {
+    grid-template-columns: 1fr;
+  }
+
+  .footerStart {
+    justify-self: stretch;
+  }
 }
