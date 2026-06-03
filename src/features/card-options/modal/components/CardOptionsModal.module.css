@@ -190,6 +190,13 @@
   padding: 0.65rem;
 }
 
+.printingStatus {
+  color: #c6cfdb;
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 0 0 0.65rem;
+}
+
 .cardPrintings {
   display: flex;
   gap: 0.5rem;

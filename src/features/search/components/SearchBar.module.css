@@ -30,3 +30,19 @@
     var(--app-shadow-sm);
   outline: none;
 }
+
+.searchStatusPanel {
+  background: var(--app-surface-solid);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius-lg);
+  box-shadow: var(--app-shadow-md);
+  color: var(--app-muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+  left: 0;
+  padding: 0.9rem 1rem;
+  position: absolute;
+  top: calc(100% + 0.45rem);
+  width: 100%;
+  z-index: 1000;
+}
