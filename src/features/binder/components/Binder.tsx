@@ -11,6 +11,7 @@ type BinderProps = {
   footerStart?: ReactNode;
   onPageChange: (direction: number) => void;
   onCardClick: (location: CardLocation, event: React.MouseEvent) => void;
+  onCardContextMenu: (location: CardLocation, event: React.MouseEvent) => void;
   onFlipCard: (location: CardLocation) => void;
   onTrashCard: (location: CardLocation) => void;
 };
@@ -21,6 +22,7 @@ function Binder({
   footerStart,
   onPageChange,
   onCardClick,
+  onCardContextMenu,
   onFlipCard,
   onTrashCard,
 }: BinderProps) {
@@ -57,6 +59,7 @@ function Binder({
                 instance={instance}
                 index={start + index}
                 onCardClick={onCardClick}
+                onCardContextMenu={onCardContextMenu}
                 onFlipCard={onFlipCard}
                 onTrashCard={onTrashCard}
               />

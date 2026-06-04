@@ -11,10 +11,11 @@ import TrashDroppable from "../../binder/components/Trash";
 type TableauProps = {
   cards: CardInstance[]
   onCardClick: (location: CardLocation, event: React.MouseEvent) => void;
+  onCardContextMenu: (location: CardLocation, event: React.MouseEvent) => void;
   onClearTableau: () => void;
 }
 
-function Tableau({ cards, onCardClick, onClearTableau }: TableauProps) {
+function Tableau({ cards, onCardClick, onCardContextMenu, onClearTableau }: TableauProps) {
   const [sortMode, setSortMode] = useState<TableauSortMode>("cmc");
   const [trashVisible, setTrashVisible] = useState<boolean>(false);
   const [tableauVisible, setTableauVisible] = useState<boolean>(true);
@@ -50,7 +51,7 @@ function Tableau({ cards, onCardClick, onClearTableau }: TableauProps) {
               <header className={styles.columnHeader}>{column.title}</header>
               <div className={styles.cardStack}>
                 {column.cards.map((card) => (
-                  <TableauCard onCardClick={onCardClick} key={card.sourceIndex} card={card.instance} index={card.sourceIndex} />
+                  <TableauCard onCardClick={onCardClick} onCardContextMenu={onCardContextMenu} key={card.sourceIndex} card={card.instance} index={card.sourceIndex} />
                 ))}
               </div>
             </section>

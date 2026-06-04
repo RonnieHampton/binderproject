@@ -10,12 +10,13 @@ import { hasDistinctCardFaces } from "../../cards/utils/cardFaceUtils";
 type BinderCardProps = {
     instance: CardInstance,
     index: number
-    onCardClick: (location: CardLocation, event: React.MouseEvent) => void;
+    onCardClick: (location: CardLocation, event: React.MouseEvent<HTMLDivElement>) => void;
+    onCardContextMenu: (location: CardLocation, event: React.MouseEvent<HTMLDivElement>) => void;
     onFlipCard: (location: CardLocation) => void;
     onTrashCard: (location: CardLocation) => void;
 }
 
-function BinderCard({ instance, index, onCardClick, onFlipCard, onTrashCard }: BinderCardProps) {
+function BinderCard({ instance, index, onCardClick, onCardContextMenu, onFlipCard, onTrashCard }: BinderCardProps) {
     const canFlip = hasDistinctCardFaces(instance.card);
 
     const {ref: ref } = useDraggable({
@@ -29,6 +30,7 @@ function BinderCard({ instance, index, onCardClick, onFlipCard, onTrashCard }: B
             className={styles.binderCard}
             data-card-hover-options-parent
             onClick={(e) => {onCardClick({ zone: "binder", index }, e)}}
+            onContextMenu={(e) => {onCardContextMenu({ zone: "binder", index }, e)}}
         >
             <CardFlipAnimation face={instance.face}>
                 {(displayFace) => (

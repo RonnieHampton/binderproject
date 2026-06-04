@@ -1,4 +1,4 @@
-import useCardPrintings from "../hooks/useCardPrintings";
+import useCardPrintings from "../../hooks/useCardPrintings";
 import type { CardPrintingListProps } from "../types/cardOptionsTypes";
 import styles from "./CardOptionsModal.module.css";
 
@@ -19,9 +19,9 @@ function CardPrintingList({ instance, handlePrintingClick }: CardPrintingListPro
 
       <section className={styles.cardPrintings}>
         {printings.map((printing) => (
+          <div key={printing.id} className={styles.printingContainer}>
           <img
             className={styles.printingImage}
-            key={printing.id}
             onClick={() => handlePrintingClick(printing)}
             src={
               printing.image_uris?.small ??
@@ -29,6 +29,8 @@ function CardPrintingList({ instance, handlePrintingClick }: CardPrintingListPro
             }
             alt={printing.name}
           />
+          <p>{printing.collector_number}</p>
+          </div>
         ))}
       </section>
     </div>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { fetchPrintings } from "../../../../api/scryfall";
-import type { ScryfallCard } from "../../../../types/scryfall";
+import { fetchPrintings } from "../../../api/scryfall";
+import type { ScryfallCard } from "../../../types/scryfall";
 
 type SearchStatus = "idle" | "loading" | "success" | "error";
 

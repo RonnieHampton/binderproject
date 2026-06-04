@@ -71,7 +71,7 @@ export async function fetchPrintings(
 ): Promise<ApiResult<ScryfallCard[]>> {
   try {
     const response = await fetchWithTimeout(uri);
-
+    
     if (!response.ok) {
       return {
         status: "error",

@@ -1,6 +1,6 @@
 import type { ScryfallCard } from "../../../types/scryfall";
 import createCardInstance from "../utils/createCardInstance";
-import type { CardInstance, CardLocation } from "./binderTypes";
+import type { CardInstance, CardLocation, CardZone } from "./binderTypes";
 import { BINDER_SIZE, TABLEAU_SIZE_LIMIT } from "../config/binderConfig";
 import { hasDistinctCardFaces } from "../../cards/utils/cardFaceUtils";
 
@@ -73,7 +73,21 @@ type BinderAction =
 
   | {
       type: "clearTableau";
-    };
+    }
+  | {
+      type: "updateCardAtLocation";
+      card: CardInstance;
+      location: CardLocation;
+  }
+  | {
+      type: "moveCardToZone";
+      source: CardLocation;
+      targetZone: CardZone;
+  }
+  | {
+      type: "duplicateCard";
+      source: CardLocation;
+  };
 
 function binderReducer(state: BinderState, action: BinderAction): BinderState {
   switch (action.type) {
@@ -266,6 +280,118 @@ function binderReducer(state: BinderState, action: BinderAction): BinderState {
         ...state,
         tableauCards: [],
       };
+    }
+
+    case "updateCardAtLocation": {
+      const { card, location } = action;
+      if (location.zone === "binder") {
+        const binderCards = [...state.binderCards];
+        binderCards[location.index] = card;
+        return {
+          ...state,
+          binderCards,
+        };
+      }
+
+      if (location.zone === "tableau") {
+        const tableauCards = [...state.tableauCards];
+        tableauCards[location.index] = card;
+        return {
+          ...state,
+          tableauCards,
+        };
+      }
+
+      return state;
+    }
+
+    case "moveCardToZone": {
+      const { source, targetZone } = action;
+      if (targetZone === "binder") {
+        const binderCards = [...state.binderCards];
+        const tableauCards = [...state.tableauCards];
+        const card = tableauCards[source.index];
+        const freeCardIndex = binderCards.findIndex((c) => c === null);
+
+        if (!card) return state;
+        if (freeCardIndex === -1) return state;
+
+        binderCards[freeCardIndex] = card;
+        tableauCards.splice(source.index, 1);
+
+        return {
+          ...state,
+          binderCards,
+          tableauCards,
+        };
+      }
+
+      if (targetZone === "tableau") {
+        const binderCards = [...state.binderCards];
+        const tableauCards = [...state.tableauCards];
+        const card = binderCards[source.index];
+
+        if (!card) return state;
+        if (tableauCards.length >= TABLEAU_SIZE_LIMIT) return state;
+
+        tableauCards.push(card);
+        binderCards[source.index] = null;
+
+        return {
+          ...state,
+          binderCards,
+          tableauCards,
+        };
+      }
+
+      return state;
+    }
+
+    case "duplicateCard": {
+      const { source } = action;
+
+      if (source.zone === "binder") {
+        const binderCards = [...state.binderCards];
+        const cardToDuplicate = binderCards[source.index];
+        const freeCardIndex = binderCards.findIndex((c) => c === null);
+
+        if (!cardToDuplicate) return state;
+        if (freeCardIndex === -1) return state;
+        
+        const duplicatedCard = {
+          ...cardToDuplicate,
+          id: crypto.randomUUID(),
+        };
+        
+        binderCards[freeCardIndex] = duplicatedCard;
+
+        return {
+          ...state,
+          binderCards,
+        };
+      }
+
+      if (source.zone === "tableau") {
+        const tableauCards = [...state.tableauCards];
+        const cardToDuplicate = tableauCards[source.index];
+
+        if (!cardToDuplicate) return state;
+        if (tableauCards.length >= TABLEAU_SIZE_LIMIT) return state;
+
+        const duplicatedCard = {
+          ...cardToDuplicate,
+          id: crypto.randomUUID(),
+        };
+
+        tableauCards.push(duplicatedCard);
+
+        return {
+          ...state,
+          tableauCards,
+        };
+      }
+
+      return state;
     }
 
     default:

@@ -1,0 +1,156 @@
+.contextMenu {
+  background: var(--app-surface-solid);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius-md);
+  box-shadow: var(--app-shadow-md);
+  color: var(--app-text);
+  display: flex;
+  flex-direction: column;
+  min-width: 13rem;
+  padding: 0.35rem;
+  position: relative;
+  z-index: 10000;
+}
+
+.menuItem,
+.submenuTrigger {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: var(--app-radius-sm);
+  color: var(--app-text);
+  cursor: pointer;
+  display: flex;
+  font-size: 0.9rem;
+  font-weight: 700;
+  justify-content: space-between;
+  min-height: 2.1rem;
+  padding: 0 0.65rem;
+  text-align: left;
+  transition:
+    background 0.14s ease,
+    color 0.14s ease;
+  width: 100%;
+}
+
+.menuItem:hover,
+.submenuTrigger:hover,
+.menuItem:focus-visible,
+.submenuTrigger:focus-visible {
+  background: var(--app-accent-soft);
+  color: var(--app-accent);
+  outline: none;
+}
+
+.dangerItem {
+  color: var(--app-danger);
+}
+
+.dangerItem:hover,
+.dangerItem:focus-visible {
+  background: var(--app-danger-soft);
+  color: var(--app-danger);
+}
+
+.submenuArea {
+  position: relative;
+}
+
+.submenuArea::after {
+  content: "";
+  height: 100%;
+  left: 100%;
+  position: absolute;
+  top: 0;
+  width: 0.45rem;
+}
+
+.submenuArrow {
+  color: var(--app-muted);
+  font-size: 0.95rem;
+  line-height: 1;
+  margin-left: 1.25rem;
+}
+
+.printingSubmenu {
+  background: var(--app-surface-solid);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius-md);
+  box-shadow: var(--app-shadow-md);
+  left: calc(100% + 0.35rem);
+  min-width: 18rem;
+  padding: 0.55rem;
+  position: absolute;
+  top: -0.35rem;
+  z-index: 10001;
+}
+
+.printingStatus {
+  color: var(--app-muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin: 0.15rem 0.25rem 0.55rem;
+}
+
+.cardPrintings {
+  display: grid;
+  gap: 0.55rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-height: 18rem;
+  overflow-y: auto;
+  padding: 0.1rem;
+  scrollbar-color: rgba(17, 24, 39, 0.24) transparent;
+}
+
+.printingOption {
+  background: transparent;
+  border: 0;
+  border-radius: var(--app-radius-sm);
+  color: var(--app-muted);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  transition:
+    background 0.14s ease,
+    transform 0.14s ease;
+}
+
+.printingOption:hover,
+.printingOption:focus-visible {
+  background: var(--app-accent-soft);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.printingImage {
+  border-radius: 6px;
+  box-shadow: var(--app-shadow-sm);
+  width: 100%;
+}
+
+.setName {
+  color: var(--app-text);
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 750;
+  line-height: 1.2;
+  margin: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.collectorNumber {
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

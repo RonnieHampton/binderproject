@@ -9,11 +9,12 @@ type BinderSlotProps = {
     instance: CardInstance | null;
     index: number;
     onCardClick: (location: CardLocation, event: React.MouseEvent) => void;
+    onCardContextMenu: (location: CardLocation, event: React.MouseEvent) => void;
     onFlipCard: (location: CardLocation) => void;
     onTrashCard: (location: CardLocation) => void;
 }
 
-function BinderSlot({active, instance, index, onCardClick, onFlipCard, onTrashCard}: BinderSlotProps) {
+function BinderSlot({active, instance, index, onCardClick, onCardContextMenu, onFlipCard, onTrashCard}: BinderSlotProps) {
     const {droppable, ref: ref } = useDroppable({
         id: `slot-${index}`,
         data: { index },
@@ -30,7 +31,7 @@ function BinderSlot({active, instance, index, onCardClick, onFlipCard, onTrashCa
 
     return (
         <div ref={ref} className={styles.binderSlot}>
-            {instance && <BinderCard instance={instance} index={index} onCardClick={onCardClick} onFlipCard={onFlipCard} onTrashCard={onTrashCard} />}
+            {instance && <BinderCard instance={instance} index={index} onCardClick={onCardClick} onCardContextMenu={onCardContextMenu} onFlipCard={onFlipCard} onTrashCard={onTrashCard} />}
             {!instance && <p className={styles.slotIndex}>+</p>}
         </div>
     )

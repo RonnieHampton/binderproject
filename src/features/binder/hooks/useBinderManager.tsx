@@ -1,6 +1,6 @@
 import { useReducer } from "react";
 import type { ScryfallCard } from "../../../types/scryfall";
-import type { CardInstance, CardLocation } from "../state/binderTypes";
+import type { CardInstance, CardLocation, CardZone } from "../state/binderTypes";
 import binderReducer, { initialBinderState } from "../state/binderReducer";
 import handleCardClick from "../utils/handleCardClick";
 
@@ -24,6 +24,10 @@ export function useBinderManager() {
 
   const closeModal = () => {
     dispatch({ type: "closeModal" });
+  };
+
+  const openModal = (location: CardLocation) => {
+    dispatch({ type: "openModal", location });
   };
 
   const handleCardInteraction = (
@@ -147,6 +151,18 @@ export function useBinderManager() {
     dispatch({ type: "clearTableau" });
   };
 
+  const handleUpdateCardAtLocation = (card: CardInstance, location: CardLocation) => {
+    dispatch({ type: "updateCardAtLocation", card, location });
+  }
+
+  const handleMoveCardToZone = (source: CardLocation, targetZone: CardZone) => {
+    dispatch({ type: "moveCardToZone", source, targetZone });
+  }
+
+  const handleDuplicateCard = (location: CardLocation) => {
+    dispatch({ type: "duplicateCard", source: location });
+  }
+
   return {
     tableauCards,
     binderCards,
@@ -161,8 +177,12 @@ export function useBinderManager() {
     handleBinderMove,
     handleToTrash,
     closeModal,
+    openModal,
     handleExport,
     handleImport,
     clearTableau,
+    handleUpdateCardAtLocation,
+    handleMoveCardToZone,
+    handleDuplicateCard,
   };
 }

@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import SearchBar from "../features/search/components/SearchBar";
-import type { CardInstance } from "../features/binder/state/binderTypes";
+import type { CardInstance, CardLocation } from "../features/binder/state/binderTypes";
 import Tableau from "../features/tableau/components/Tableau";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Binder from "../features/binder/components/Binder";
 import BinderFileControls from "../features/binder/components/BinderFileControls";
 import { DragDropProvider, DragOverlay } from "@dnd-kit/react";
@@ -20,6 +20,7 @@ import {
   MAX_BINDER_PAGE_INDEX,
   PAGE_CHANGE_INTERVAL,
 } from "../features/binder/config/binderConfig";
+import RightClickMenu from "../features/card-options/ContextMenu/RightClickMenu";
 
 function BinderCreate() {
   const {
@@ -36,11 +37,21 @@ function BinderCreate() {
     handleBinderMove,
     handleToTrash,
     closeModal,
+    openModal,
     handleExport,
     handleImport,
     clearTableau,
+    handleUpdateCardAtLocation,
+    handleMoveCardToZone,
+    handleDuplicateCard,
   } = useBinderManager();
 
+
+  const [contextMenu, setContextMenu] = useState<{
+    location: CardLocation;
+    x: number;
+    y: number;
+  } | null>(null);
   const [overlayCard, setOverlayCard] = useState<CardInstance | null>(null);
   const [page, setPage] = useState(0);
   const hoverInterval = useRef<number | null>(null);
@@ -62,6 +73,48 @@ function BinderCreate() {
       : modalLocation?.zone === "tableau"
         ? tableauCards[modalLocation.index]
         : null;
+
+  const contextMenuCard =
+    contextMenu?.location.zone === "binder"
+      ? binderCards[contextMenu.location.index]
+      : contextMenu?.location.zone === "tableau"
+        ? tableauCards[contextMenu.location.index]
+        : null;
+
+  const handleCardContextMenu = (
+    location: CardLocation,
+    event: React.MouseEvent
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setContextMenu({
+      location,
+      x: event.clientX,
+      y: event.clientY,
+    });
+  };
+
+  const closeContextMenu = () => {
+    setContextMenu(null);
+  };
+
+  useEffect(() => {
+    if (!contextMenu) return;
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeContextMenu();
+      }
+    };
+
+    document.addEventListener("click", closeContextMenu);
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("click", closeContextMenu);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [contextMenu]);
 
   return (
     <div className={styles.binderCreatePage}>
@@ -100,6 +153,7 @@ function BinderCreate() {
 
         <Tableau
           onCardClick={handleCardInteraction}
+          onCardContextMenu={handleCardContextMenu}
           cards={tableauCards}
           onClearTableau={clearTableau}
         />
@@ -109,6 +163,7 @@ function BinderCreate() {
             <DragHoverDetector id="left" />
             <Binder
               onCardClick={handleCardInteraction}
+              onCardContextMenu={handleCardContextMenu}
               onFlipCard={handleFlipCard}
               onTrashCard={handleTrashCard}
               footerStart={
@@ -141,6 +196,21 @@ function BinderCreate() {
           </div>
         </div>
       )}
+
+      {contextMenu && contextMenuCard && <RightClickMenu
+        instance={contextMenuCard}
+        location={contextMenu.location}
+        x={contextMenu.x}
+        y={contextMenu.y}
+        onUpdateCardAtLocation={handleUpdateCardAtLocation}
+        onDetailsClick={openModal}
+        onFlipCard={handleFlipCard}
+        onTrashCard={handleTrashCard}
+        onClose={closeContextMenu}
+        onMoveCardToZone={handleMoveCardToZone}
+        onDuplicateCard={handleDuplicateCard}
+      />}
+
     </div>
   );
 }
