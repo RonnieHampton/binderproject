@@ -77,12 +77,9 @@
   border: 1px solid var(--app-border);
   border-radius: var(--app-radius-md);
   box-shadow: var(--app-shadow-md);
-  left: calc(100% + 0.35rem);
   max-width: min(26rem, calc(100vw - 2rem));
   min-width: min(22rem, calc(100vw - 2rem));
   padding: 0.35rem;
-  position: absolute;
-  top: -0.35rem;
   z-index: 10001;
 }
 

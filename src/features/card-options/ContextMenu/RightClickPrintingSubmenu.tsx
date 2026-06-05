@@ -8,6 +8,8 @@ type RightClickPrintingSubmenuProps = {
   printings: ScryfallCard[];
   status: SearchStatus;
   errorMessage: string;
+  x: number;
+  y: number;
   onPrintingClick?: (printing: CardInstance) => void;
 };
 
@@ -16,10 +18,15 @@ function RightClickPrintingSubmenu({
   printings,
   status,
   errorMessage,
+  x,
+  y,
   onPrintingClick,
 }: RightClickPrintingSubmenuProps) {
   return (
-     <div className={styles.printingSubmenu}>
+     <div
+      className={styles.printingSubmenu}
+      style={{ left: x, position: "fixed", top: y }}
+    >
       {status === "loading" && (
         <p className={styles.printingStatus}>Loading printings...</p>
       )}

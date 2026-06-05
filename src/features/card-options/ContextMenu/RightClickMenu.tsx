@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { CardInstance, CardLocation, CardZone } from "../../../binder/state/binderTypes";
 import { hasDistinctCardFaces } from "../../cards/utils/cardFaceUtils";
 import useCardPrintings from "../hooks/useCardPrintings";
+import getClampedFixedPosition from "./getClampedFixedPosition";
 import RightClickPrintingSubmenu from "./RightClickPrintingSubmenu";
 import styles from "./RightClickMenu.module.css";
 
@@ -33,6 +34,8 @@ function RightClickMenu({
     onDuplicateCard,
 }: RightClickMenuProps) {
     const [showPrintingSubmenu, setShowPrintingSubmenu] = useState(false);
+    const [submenuPosition, setSubmenuPosition] = useState({ x: 0, y: 0 });
+    const submenuAreaRef = useRef<HTMLDivElement | null>(null);
     const targetZone = location.zone === "binder" ? "tableau" : "binder";
     const canFlip = hasDistinctCardFaces(instance.card);
     const { printings, status, errorMessage } = useCardPrintings(
@@ -41,15 +44,14 @@ function RightClickMenu({
     const hasAlternatePrintings = printings.length > 0;
     const menuWidth = 220;
     const menuHeight = 260;
-    const viewportMargin = 8;
-    const clampedX = Math.max(
-        viewportMargin,
-        Math.min(x, window.innerWidth - menuWidth - viewportMargin)
-    );
-    const clampedY = Math.max(
-        viewportMargin,
-        Math.min(y, window.innerHeight - menuHeight - viewportMargin)
-    );
+    const submenuWidth = 416;
+    const submenuHeight = 370;
+    const menuPosition = getClampedFixedPosition({
+        x,
+        y,
+        width: menuWidth,
+        height: menuHeight,
+    });
 
     const handleDetailsClick = () => {
         onDetailsClick(location);
@@ -81,13 +83,35 @@ function RightClickMenu({
         onClose();
     }
 
+    const openPrintingSubmenu = () => {
+        const triggerRect = submenuAreaRef.current?.getBoundingClientRect();
+        if (!triggerRect) {
+            setShowPrintingSubmenu(true);
+            return;
+        }
 
+        const gap = 6;
+        const opensRight = triggerRect.right + gap + submenuWidth <= window.innerWidth;
+        const baseX = opensRight
+            ? triggerRect.right + gap
+            : triggerRect.left - submenuWidth - gap;
+        const baseY = triggerRect.top - 6;
+        setSubmenuPosition(
+            getClampedFixedPosition({
+                x: baseX,
+                y: baseY,
+                width: submenuWidth,
+                height: submenuHeight,
+            })
+        );
+        setShowPrintingSubmenu(true);
+    };
 
     return (
         <div
             className={styles.contextMenu}
             onClick={(event) => event.stopPropagation()}
-            style={{ left: clampedX, position: "fixed", top: clampedY }}
+            style={{ left: menuPosition.x, position: "fixed", top: menuPosition.y }}
         >
             <button className={styles.menuItem} onClick={handleDetailsClick} type="button">Details</button>
             {canFlip && (
@@ -96,8 +120,9 @@ function RightClickMenu({
             <button className={styles.menuItem} onClick={() => handleMoveCardToZone(location, targetZone)} type="button">Move to {targetZone}</button>
             {hasAlternatePrintings && (
                 <div
+                    ref={submenuAreaRef}
                     className={styles.submenuArea}
-                    onMouseEnter={() => setShowPrintingSubmenu(true)}
+                    onMouseEnter={openPrintingSubmenu}
                     onMouseLeave={() => setShowPrintingSubmenu(false)}
                 >
                     <button className={styles.submenuTrigger} type="button">
@@ -111,6 +136,8 @@ function RightClickMenu({
                             printings={printings}
                             status={status}
                             errorMessage={errorMessage}
+                            x={submenuPosition.x}
+                            y={submenuPosition.y}
                             onPrintingClick={handlePrintingChange}
                         />
                     )}
