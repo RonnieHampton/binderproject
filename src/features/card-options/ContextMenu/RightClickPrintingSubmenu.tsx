@@ -1,22 +1,25 @@
-import useCardPrintings from "../hooks/useCardPrintings";
+import type { SearchStatus } from "../hooks/useCardPrintings";
 import type { CardInstance } from "../../binder/state/binderTypes";
+import type { ScryfallCard } from "../../../types/scryfall";
 import styles from "./RightClickMenu.module.css";
 
 type RightClickPrintingSubmenuProps = {
   instance: CardInstance;
+  printings: ScryfallCard[];
+  status: SearchStatus;
+  errorMessage: string;
   onPrintingClick?: (printing: CardInstance) => void;
 };
 
 function RightClickPrintingSubmenu({
   instance,
+  printings,
+  status,
+  errorMessage,
   onPrintingClick,
 }: RightClickPrintingSubmenuProps) {
-  const { printings, status, errorMessage } = useCardPrintings(
-      instance.card.prints_search_uri
-    );
-
   return (
-    <div className={styles.printingSubmenu}>
+     <div className={styles.printingSubmenu}>
       {status === "loading" && (
         <p className={styles.printingStatus}>Loading printings...</p>
       )}
@@ -25,12 +28,13 @@ function RightClickPrintingSubmenu({
         <p className={styles.printingStatus}>{errorMessage}</p>
       )}
 
-      <section className={styles.cardPrintings}>
-        {printings.map((printing) => (
-          <button
-            className={styles.printingOption}
-            key={printing.id}
-            onClick={() => onPrintingClick?.({
+      
+        <section className={styles.cardPrintings}>
+          {printings.map((printing) => (
+            <button
+              className={styles.printingOption}
+              key={printing.id}
+              onClick={() => onPrintingClick?.({
                 ...instance,
                 card: printing,
               })}

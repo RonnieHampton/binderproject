@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchPrintings } from "../../../api/scryfall";
 import type { ScryfallCard } from "../../../types/scryfall";
 
-type SearchStatus = "idle" | "loading" | "success" | "error";
+export type SearchStatus = "idle" | "loading" | "success" | "error";
 
 export default function useCardPrintings(uri?: string) {
   const [printings, setPrintings] = useState<ScryfallCard[]>([]);
@@ -34,7 +34,8 @@ export default function useCardPrintings(uri?: string) {
         return;
       }
 
-      setPrintings(result.data);
+      const printings = result.data.length <= 1 ? [] : result.data;
+      setPrintings(printings);
       setStatus("success");
     }
 

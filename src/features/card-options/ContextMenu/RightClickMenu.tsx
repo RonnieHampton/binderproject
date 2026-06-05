@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { CardInstance, CardLocation, CardZone } from "../../binder/state/binderTypes";
 import { hasDistinctCardFaces } from "../../cards/utils/cardFaceUtils";
+import useCardPrintings from "../hooks/useCardPrintings";
 import RightClickPrintingSubmenu from "./RightClickPrintingSubmenu";
 import styles from "./RightClickMenu.module.css";
 
@@ -34,6 +35,10 @@ function RightClickMenu({
     const [showPrintingSubmenu, setShowPrintingSubmenu] = useState(false);
     const targetZone = location.zone === "binder" ? "tableau" : "binder";
     const canFlip = hasDistinctCardFaces(instance.card);
+    const { printings, status, errorMessage } = useCardPrintings(
+        instance.card.prints_search_uri
+    );
+    const hasAlternatePrintings = printings.length > 0;
     const menuWidth = 220;
     const menuHeight = 260;
     const viewportMargin = 8;
@@ -89,20 +94,28 @@ function RightClickMenu({
                 <button className={styles.menuItem} onClick={handleFlipClick} type="button">Flip Card</button>
             )}
             <button className={styles.menuItem} onClick={() => handleMoveCardToZone(location, targetZone)} type="button">Move to {targetZone}</button>
-            <div
-                className={styles.submenuArea}
-                onMouseEnter={() => setShowPrintingSubmenu(true)}
-                onMouseLeave={() => setShowPrintingSubmenu(false)}
-            >
-                <button className={styles.submenuTrigger} type="button">
-                    <span>Change printing</span>
-                    <span className={styles.submenuArrow} aria-hidden="true">›</span>
-                </button>
+            {hasAlternatePrintings && (
+                <div
+                    className={styles.submenuArea}
+                    onMouseEnter={() => setShowPrintingSubmenu(true)}
+                    onMouseLeave={() => setShowPrintingSubmenu(false)}
+                >
+                    <button className={styles.submenuTrigger} type="button">
+                        <span>Change printing</span>
+                        <span className={styles.submenuArrow} aria-hidden="true">›</span>
+                    </button>
 
-                {showPrintingSubmenu && (
-                    <RightClickPrintingSubmenu instance={instance} onPrintingClick={handlePrintingChange} />
-                )}
-            </div>
+                    {showPrintingSubmenu && (
+                        <RightClickPrintingSubmenu
+                            instance={instance}
+                            printings={printings}
+                            status={status}
+                            errorMessage={errorMessage}
+                            onPrintingClick={handlePrintingChange}
+                        />
+                    )}
+                </div>
+            )}
             <button className={styles.menuItem} onClick={() => handleDuplicateCard(location)}type="button">Duplicate</button>
             <button className={`${styles.menuItem} ${styles.dangerItem}`} onClick={handleTrashClick} type="button">Delete</button>
         </div>

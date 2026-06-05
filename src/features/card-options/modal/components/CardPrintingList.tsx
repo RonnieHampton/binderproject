@@ -8,7 +8,7 @@ function CardPrintingList({ instance, handlePrintingClick }: CardPrintingListPro
   );
 
   return (
-    <div className={styles.printingsArea}>
+    printings.length > 0 && (<div className={styles.printingsArea}>
       {status === "loading" && (
         <p className={styles.printingStatus}>Loading printings...</p>
       )}
@@ -17,12 +17,13 @@ function CardPrintingList({ instance, handlePrintingClick }: CardPrintingListPro
         <p className={styles.printingStatus}>{errorMessage}</p>
       )}
 
-      <section className={styles.cardPrintings}>
-        {printings.map((printing) => (
-          <div key={printing.id} className={styles.printingContainer}>
-          <img
-            className={styles.printingImage}
-            onClick={() => handlePrintingClick(printing)}
+      
+        <section className={styles.cardPrintings}>
+          {printings.map((printing) => (
+            <div key={printing.id} className={styles.printingContainer}>
+            <img
+              className={styles.printingImage}
+              onClick={() => handlePrintingClick(printing)}
             src={
               printing.image_uris?.small ??
               printing.card_faces?.[0]?.image_uris?.small
@@ -33,7 +34,7 @@ function CardPrintingList({ instance, handlePrintingClick }: CardPrintingListPro
           </div>
         ))}
       </section>
-    </div>
+    </div>)
   );
 }
 
