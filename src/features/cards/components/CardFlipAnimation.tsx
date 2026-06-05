@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import type { CardFace } from "../../binder/state/binderTypes";
+import type { CardFace } from "../../../binder/state/binderTypes";
 
 type CardFlipAnimationProps = {
   children: (displayFace: CardFace) => ReactNode;

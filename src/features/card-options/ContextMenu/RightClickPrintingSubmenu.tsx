@@ -1,5 +1,5 @@
 import type { SearchStatus } from "../hooks/useCardPrintings";
-import type { CardInstance } from "../../binder/state/binderTypes";
+import type { CardInstance } from "../../../binder/state/binderTypes";
 import type { ScryfallCard } from "../../../types/scryfall";
 import styles from "./RightClickMenu.module.css";
 
@@ -48,8 +48,12 @@ function RightClickPrintingSubmenu({
               }
               alt={printing.name}
             />
-            <span className={styles.setName}>{printing.set_name}</span>
-            <p className={styles.collectorNumber}>{printing.collector_number}</p>
+            <span className={styles.printingText}>
+              <strong>{printing.set_name}</strong>
+              <span className={styles.printingMeta}>
+                {printing.set?.toUpperCase()} · {printing.collector_number}
+              </span>
+            </span>
           </button>
         ))}
       </section>

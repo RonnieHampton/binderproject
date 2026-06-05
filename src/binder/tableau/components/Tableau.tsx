@@ -1,4 +1,4 @@
-import type { CardInstance, CardLocation } from "../../binder/state/binderTypes";
+import type { CardInstance, CardLocation } from "../../state/binderTypes";
 import TableauCard from "./TableauCard";
 import { useDroppable } from "@dnd-kit/react";
 import type { TableauSortMode } from "../types/tableau";
@@ -6,7 +6,7 @@ import SortTableau from '../utils/tableauUtils'
 import styles from './Tableau.module.css'
 import { useState } from "react";
 import TableauOptionbar from "./TableauOptionbar";
-import TrashDroppable from "../../binder/components/Trash";
+import TrashDroppable from "../../components/Trash";
 
 type TableauProps = {
   cards: CardInstance[]

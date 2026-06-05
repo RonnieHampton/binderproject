@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { CardInstance, CardLocation, CardZone } from "../../binder/state/binderTypes";
+import type { CardInstance, CardLocation, CardZone } from "../../../binder/state/binderTypes";
 import { hasDistinctCardFaces } from "../../cards/utils/cardFaceUtils";
 import useCardPrintings from "../hooks/useCardPrintings";
 import RightClickPrintingSubmenu from "./RightClickPrintingSubmenu";

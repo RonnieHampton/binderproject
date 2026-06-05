@@ -24,13 +24,16 @@ function CardPrintingList({ instance, handlePrintingClick }: CardPrintingListPro
             <img
               className={styles.printingImage}
               onClick={() => handlePrintingClick(printing)}
+              title={`${printing.set_name} (${printing.set?.toUpperCase()} · ${printing.collector_number})`}
             src={
               printing.image_uris?.small ??
               printing.card_faces?.[0]?.image_uris?.small
             }
             alt={printing.name}
           />
-          <p>{printing.collector_number}</p>
+          <p className={styles.printingCollectorNumber}>
+            {printing.collector_number}
+          </p>
           </div>
         ))}
       </section>

@@ -1,5 +1,5 @@
-import DisplayCard from "../../cards/components/DisplayCard";
-import getCardDisplayData from "../../cards/utils/getCardDisplayData";
+import DisplayCard from "../../features/cards/components/DisplayCard";
+import getCardDisplayData from "../../features/cards/utils/getCardDisplayData";
 import type { CardInstance } from "../state/binderTypes";
 import styles from "./CardOverlay.module.css";
 

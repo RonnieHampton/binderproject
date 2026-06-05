@@ -1,5 +1,5 @@
 import type { ScryfallCard } from "../../../../types/scryfall";
-import type { CardInstance } from "../../../binder/state/binderTypes";
+import type { CardInstance } from "../../../../binder/state/binderTypes";
 
 export type CardTextBlock = {
   name?: string;

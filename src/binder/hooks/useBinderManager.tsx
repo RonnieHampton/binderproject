@@ -1,5 +1,5 @@
 import { useReducer } from "react";
-import type { ScryfallCard } from "../../../types/scryfall";
+import type { ScryfallCard } from "../../types/scryfall";
 import type { CardInstance, CardLocation, CardZone } from "../state/binderTypes";
 import binderReducer, { initialBinderState } from "../state/binderReducer";
 import handleCardClick from "../utils/handleCardClick";
@@ -41,7 +41,7 @@ export function useBinderManager() {
       cardInstance,
       event,
       location,
-      onFlipCard: (location) => dispatch({ type: "flipCard", location }),
+      onDuplicateCard: (location) => dispatch({ type: "duplicateCard", source: location }),
       onOpenModal: (location) => dispatch({ type: "openModal", location }),
     });
   };

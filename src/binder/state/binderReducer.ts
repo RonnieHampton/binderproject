@@ -1,8 +1,8 @@
-import type { ScryfallCard } from "../../../types/scryfall";
+import type { ScryfallCard } from "../../types/scryfall";
 import createCardInstance from "../utils/createCardInstance";
 import type { CardInstance, CardLocation, CardZone } from "./binderTypes";
 import { BINDER_SIZE, TABLEAU_SIZE_LIMIT } from "../config/binderConfig";
-import { hasDistinctCardFaces } from "../../cards/utils/cardFaceUtils";
+import { hasDistinctCardFaces } from "../../features/cards/utils/cardFaceUtils";
 
 // State
 export type BinderState = {

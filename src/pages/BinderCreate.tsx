@@ -1,25 +1,25 @@
 import { Link } from "react-router-dom";
 import SearchBar from "../features/search/components/SearchBar";
-import type { CardInstance, CardLocation } from "../features/binder/state/binderTypes";
-import Tableau from "../features/tableau/components/Tableau";
+import type { CardInstance, CardLocation } from "../binder/state/binderTypes";
+import Tableau from "../binder/tableau/components/Tableau";
 import { useEffect, useRef, useState } from "react";
-import Binder from "../features/binder/components/Binder";
-import BinderFileControls from "../features/binder/components/BinderFileControls";
+import Binder from "../binder/components/Binder";
+import BinderFileControls from "../binder/components/BinderFileControls";
 import { DragDropProvider, DragOverlay } from "@dnd-kit/react";
-import CardOverlay from "../features/binder/components/CardOverlay";
-import DragHoverDetector from "../features/binder/components/DragHoverDetector";
+import CardOverlay from "../binder/components/CardOverlay";
+import DragHoverDetector from "../binder/components/DragHoverDetector";
 import CardOptionsModal from "../features/card-options/modal/components/CardOptionsModal";
-import { useBinderManager } from "../features/binder/hooks/useBinderManager";
+import { useBinderManager } from "../binder/hooks/useBinderManager";
 import {
   handleBinderDragEnd,
   handleBinderDragOver,
   handleBinderDragStart,
-} from "../features/binder/utils/binderDragHandlers";
+} from "../binder/utils/binderDragHandlers";
 import styles from "./BinderCreate.module.css";
 import {
   MAX_BINDER_PAGE_INDEX,
   PAGE_CHANGE_INTERVAL,
-} from "../features/binder/config/binderConfig";
+} from "../binder/config/binderConfig";
 import RightClickMenu from "../features/card-options/ContextMenu/RightClickMenu";
 
 function BinderCreate() {

@@ -4,7 +4,7 @@ import styles from "./CardOptionsModal.module.css";
 import ModalCard from "./ModalCard";
 import CardPrintingList from "./CardPrintingList";
 import CardModalActions from "./CardModalActions";
-import type { CardInstance } from "../../../binder/state/binderTypes";
+import type { CardInstance } from "../../../../binder/state/binderTypes";
 import type { CardOptionsModalProps } from "../types/cardOptionsTypes";
 import { getCardDetailsData } from "../utils/cardTextUtils";
 import { hasDistinctCardFaces } from "../../../cards/utils/cardFaceUtils";

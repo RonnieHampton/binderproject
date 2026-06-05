@@ -1,11 +1,10 @@
 import type { CardInstance, CardLocation } from "../state/binderTypes";
-import { hasDistinctCardFaces } from "../../cards/utils/cardFaceUtils";
 
 type CardClickProps = {
   cardInstance: CardInstance;
   event: React.MouseEvent;
   location: CardLocation;
-  onFlipCard: (location: CardLocation) => void;
+  onDuplicateCard: (location: CardLocation) => void;
   onOpenModal: (location: CardLocation) => void;
 };
 
@@ -13,15 +12,15 @@ function handleCardClick({
   cardInstance,
   event,
   location,
-  onFlipCard,
+  onDuplicateCard,
   onOpenModal,
 }: CardClickProps) {
-  const canFlipCard = hasDistinctCardFaces(cardInstance.card);
+  void cardInstance;
 
-  if (event.ctrlKey && canFlipCard) {
+  if (event.ctrlKey) {
     event.preventDefault();
     event.stopPropagation();
-    onFlipCard(location);
+    onDuplicateCard(location);
     return;
   }
 

@@ -1,9 +1,10 @@
 import { useDraggable } from "@dnd-kit/react";
-import type { CardInstance, CardLocation } from "../../binder/state/binderTypes";
+import type { CardInstance, CardLocation } from "../../state/binderTypes";
 import styles from "./TableauCard.module.css";
-import DisplayCard from "../../cards/components/DisplayCard";
-import getCardDisplayData from "../../cards/utils/getCardDisplayData";
-import CardFlipAnimation from "../../cards/components/CardFlipAnimation";
+import DisplayCard from "../../../features/cards/components/DisplayCard";
+import getCardDisplayData from "../../../features/cards/utils/getCardDisplayData";
+import getCardTooltip from "../../../features/cards/utils/getCardTooltip";
+import CardFlipAnimation from "../../../features/cards/components/CardFlipAnimation";
 
 type TableauCardProps = {
   card: CardInstance;
@@ -26,6 +27,7 @@ function TableauCard({ card, index, onCardClick, onCardContextMenu }: TableauCar
       className={styles.tableauCard}
       onClick={(e) => {onCardClick({ zone: "tableau", index }, e)}}
       onContextMenu={(e) => {onCardContextMenu({ zone: "tableau", index }, e)}}
+      title={getCardTooltip(card)}
     >
       <CardFlipAnimation face={card.face}>
         {(displayFace) => (

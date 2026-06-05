@@ -1,4 +1,4 @@
-import type { CardInstance } from "../../../binder/state/binderTypes";
+import type { CardInstance } from "../../../../binder/state/binderTypes";
 import type { CardDetailsData } from "../types/cardOptionsTypes";
 
 export function getCardDetailsData(instance: CardInstance): CardDetailsData {

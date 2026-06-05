@@ -1,11 +1,12 @@
 import type { CardInstance, CardLocation } from "../state/binderTypes";
-import getCardDisplayData from "../../cards/utils/getCardDisplayData";
-import DisplayCard from "../../cards/components/DisplayCard";
+import getCardDisplayData from "../../features/cards/utils/getCardDisplayData";
+import DisplayCard from "../../features/cards/components/DisplayCard";
+import getCardTooltip from "../../features/cards/utils/getCardTooltip";
 import { useDraggable } from "@dnd-kit/react";
 import styles from "./BinderCard.module.css";
-import CardHoverOptions from "../../card-options/components/CardHoverOptions";
-import CardFlipAnimation from "../../cards/components/CardFlipAnimation";
-import { hasDistinctCardFaces } from "../../cards/utils/cardFaceUtils";
+import CardHoverOptions from "../../features/card-options/components/CardHoverOptions";
+import CardFlipAnimation from "../../features/cards/components/CardFlipAnimation";
+import { hasDistinctCardFaces } from "../../features/cards/utils/cardFaceUtils";
 
 type BinderCardProps = {
     instance: CardInstance,
@@ -31,6 +32,7 @@ function BinderCard({ instance, index, onCardClick, onCardContextMenu, onFlipCar
             data-card-hover-options-parent
             onClick={(e) => {onCardClick({ zone: "binder", index }, e)}}
             onContextMenu={(e) => {onCardContextMenu({ zone: "binder", index }, e)}}
+            title={getCardTooltip(instance)}
         >
             <CardFlipAnimation face={instance.face}>
                 {(displayFace) => (

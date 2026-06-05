@@ -1,4 +1,4 @@
-import type { ScryfallCard } from "../../../types/scryfall";
+import type { ScryfallCard } from "../../types/scryfall";
 
 export type CardFace = "front" | "back";
 
@@ -14,4 +14,3 @@ export type CardLocation = {
   index: number;
   zone: CardZone;
 };
-

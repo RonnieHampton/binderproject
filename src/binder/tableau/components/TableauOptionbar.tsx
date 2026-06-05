@@ -1,7 +1,7 @@
 import type { Dispatch, SetStateAction } from "react";
 import type { TableauSortMode } from "../types/tableau";
 import styles from "./TableauOptionbar.module.css";
-import { TABLEAU_SIZE_LIMIT } from "../../binder/config/binderConfig";
+import { TABLEAU_SIZE_LIMIT } from "../../config/binderConfig";
 
 type TableauOptionbarProps = {
   sortMode: TableauSortMode;
