@@ -4,6 +4,7 @@ import type { CardInstance, CardLocation } from "../state/binderTypes";
 import styles from "./Binder.module.css";
 import { CARDS_PER_PAGE } from "../config/binderConfig";
 import BinderPageControls from "./BinderPageControls";
+import type { BinderSettings } from "../types/binderSettings";
 
 type BinderProps = {
   cards: (CardInstance | null)[];
@@ -14,6 +15,10 @@ type BinderProps = {
   onCardContextMenu: (location: CardLocation, event: React.MouseEvent) => void;
   onFlipCard: (location: CardLocation) => void;
   onTrashCard: (location: CardLocation) => void;
+  onMouseEnter: (location: CardLocation) => void;
+  onMouseLeave: () => void;
+  selectedCard: CardLocation | null;
+  settings: BinderSettings;
 };
 
 function Binder({
@@ -25,6 +30,10 @@ function Binder({
   onCardContextMenu,
   onFlipCard,
   onTrashCard,
+  onMouseEnter,
+  onMouseLeave,
+  selectedCard,
+  settings
 }: BinderProps) {
   const totalPages = Math.ceil(cards.length / CARDS_PER_PAGE);
 
@@ -62,6 +71,10 @@ function Binder({
                 onCardContextMenu={onCardContextMenu}
                 onFlipCard={onFlipCard}
                 onTrashCard={onTrashCard}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
+                selectedCard={selectedCard}
+                settings={settings}
               />
             ))}
           </div>

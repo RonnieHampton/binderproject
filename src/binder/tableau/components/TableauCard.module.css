@@ -3,3 +3,8 @@
   width: auto;
   border-radius: 13px;
 }
+
+.selectedCard {
+  outline: 3px solid var(--app-accent);
+  outline-offset: 3px;
+}

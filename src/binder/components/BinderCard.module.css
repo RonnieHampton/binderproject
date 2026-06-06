@@ -19,3 +19,8 @@
     0 6px 14px rgba(0, 0, 0, 0.14),
     0 14px 28px rgba(0, 0, 0, 0.10);
 }
+
+.selectedCard {
+  outline: 3px solid var(--app-accent);
+  outline-offset: 3px;
+}

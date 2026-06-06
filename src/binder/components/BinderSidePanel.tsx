@@ -72,7 +72,7 @@ function BinderSidePanel({ settings, sidePanelOpen, setSidePanelOpen, updateSett
                 <span>Close menu</span>
               </div>
 
-              <h3>Compatibility Only</h3>
+              <h3>Keyboard Only Mode Controls</h3>
 
               <div className={styles.shortcutRow}>
                 <kbd>Arrow keys</kbd>
@@ -102,6 +102,12 @@ function BinderSidePanel({ settings, sidePanelOpen, setSidePanelOpen, updateSett
               </label>
 
               <label className={styles.settingRow}>
+                <input type="checkbox" checked={settings.keyboardOnlyMode} onChange={(e) =>
+                    updateSetting('keyboardOnlyMode', e.target.checked)} />
+                Keyboard only mode
+              </label>
+
+              <label className={styles.settingRow}>
                 <input type="checkbox" checked={settings.confirmBeforeDelete} onChange={(e) => 
                     updateSetting('confirmBeforeDelete', e.target.checked)} />
                 Confirm before delete
@@ -117,12 +123,6 @@ function BinderSidePanel({ settings, sidePanelOpen, setSidePanelOpen, updateSett
                 <input type="checkbox" checked={settings.clickCompatibilityMode} onChange={(e) => 
                     updateSetting('clickCompatibilityMode', e.target.checked)} />
                 Click compatibility mode
-              </label>
-
-              <label className={styles.settingRow}>
-                <input type="checkbox" checked={settings.compactTableau} 
-                onChange={(e) => updateSetting('compactTableau', e.target.checked)} />
-                Compact tableau
               </label>
 
               <label className={styles.settingRow}>

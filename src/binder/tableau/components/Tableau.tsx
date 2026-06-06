@@ -7,15 +7,20 @@ import styles from './Tableau.module.css'
 import { useState } from "react";
 import TableauOptionbar from "./TableauOptionbar";
 import TrashDroppable from "../../components/Trash";
+import type { BinderSettings } from "../../types/binderSettings";
 
 type TableauProps = {
   cards: CardInstance[]
+  settings: BinderSettings;
+  selectedCard: CardLocation | null;
   onCardClick: (location: CardLocation, event: React.MouseEvent) => void;
   onCardContextMenu: (location: CardLocation, event: React.MouseEvent) => void;
   onClearTableau: () => void;
+  onMouseEnter: (location: CardLocation) => void;
+  onMouseLeave: () => void;
 }
 
-function Tableau({ cards, onCardClick, onCardContextMenu, onClearTableau }: TableauProps) {
+function Tableau({ cards, onCardClick, onCardContextMenu, onClearTableau, onMouseEnter, onMouseLeave, settings, selectedCard }: TableauProps) {
   const [sortMode, setSortMode] = useState<TableauSortMode>("cmc");
   const [trashVisible, setTrashVisible] = useState<boolean>(false);
   const [tableauVisible, setTableauVisible] = useState<boolean>(true);
@@ -51,7 +56,15 @@ function Tableau({ cards, onCardClick, onCardContextMenu, onClearTableau }: Tabl
               <header className={styles.columnHeader}>{column.title}</header>
               <div className={styles.cardStack}>
                 {column.cards.map((card) => (
-                  <TableauCard onCardClick={onCardClick} onCardContextMenu={onCardContextMenu} key={card.sourceIndex} card={card.instance} index={card.sourceIndex} />
+                  <TableauCard 
+                  onCardClick={onCardClick} 
+                  onCardContextMenu={onCardContextMenu} 
+                  onMouseEnter={onMouseEnter}
+                  onMouseLeave={onMouseLeave}
+                  key={card.sourceIndex} card={card.instance} 
+                  index={card.sourceIndex} 
+                  selectedCard={selectedCard} 
+                  settings={settings} />
                 ))}
               </div>
             </section>

@@ -1,9 +1,9 @@
 export type BinderSettings = {
   keyboardShortcuts: boolean;
+  keyboardOnlyMode: boolean;
   confirmBeforeDelete: boolean;
   showHoverControls: boolean;
   clickCompatibilityMode: boolean;
-  compactTableau: boolean;
   showCardTooltips: boolean;
   showEmptySlotNumbers: boolean;
 };

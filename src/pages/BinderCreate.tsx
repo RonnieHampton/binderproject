@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import SearchBar from "../features/search/components/SearchBar";
-import type { CardInstance, CardLocation } from "../binder/state/binderTypes";
+import type { CardInstance } from "../binder/state/binderTypes";
 import Tableau from "../binder/tableau/components/Tableau";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Binder from "../binder/components/Binder";
 import BinderFileControls from "../binder/components/BinderFileControls";
 import { DragDropProvider, DragOverlay } from "@dnd-kit/react";
@@ -23,6 +23,11 @@ import {
 import RightClickMenu from "../features/card-options/ContextMenu/RightClickMenu";
 import BinderSidePanel from "../binder/components/BinderSidePanel";
 import type { BinderSettings } from "../binder/types/binderSettings";
+import { useBinderKeyboardShortcuts } from "../binder/hooks/useBinderKeyboardShortcuts.ts";
+import { useBinderSelectionTarget } from "../binder/hooks/useBinderSelectionTarget";
+import { useBinderContextMenu } from "../binder/hooks/useBinderContextMenu";
+import { useConfirmedCardDelete } from "../binder/hooks/useConfirmedCardDelete";
+import { useEscapeToClose } from "../binder/hooks/useEscapeToClose";
 
 function BinderCreate() {
   const {
@@ -48,29 +53,58 @@ function BinderCreate() {
     handleDuplicateCard,
   } = useBinderManager();
 
-
-  const [contextMenu, setContextMenu] = useState<{
-    location: CardLocation;
-    x: number;
-    y: number;
-  } | null>(null);
   const [overlayCard, setOverlayCard] = useState<CardInstance | null>(null);
   const [page, setPage] = useState(0);
   const [sidePanelOpen, setSidePanelOpen] = useState(false);
   const hoverInterval = useRef<number | null>(null);
   const [settings, setSettings] = useState<BinderSettings>({
     keyboardShortcuts: true,
-    confirmBeforeDelete: true,
+    keyboardOnlyMode: false,
+    confirmBeforeDelete: false,
     showHoverControls: true,
     clickCompatibilityMode: false,
-    compactTableau: false,
     showCardTooltips: true,
-    showEmptySlotNumbers: true,
+    showEmptySlotNumbers: false,
   });
 
+  const {
+    selectedCard,
+    handleCardHoverStart,
+    handleCardHoverEnd,
+  } = useBinderSelectionTarget(settings);
+
+  const {
+    contextMenu,
+    contextMenuCard,
+    handleCardContextMenu,
+    closeContextMenu,
+  } = useBinderContextMenu({ binderCards, tableauCards });
+
+  const {
+    handleConfirmedTrashCard,
+    handleConfirmedDraggedCardTrash,
+  } = useConfirmedCardDelete({
+    confirmBeforeDelete: settings.confirmBeforeDelete,
+    onTrashCard: handleTrashCard,
+    onTrashDraggedCard: handleToTrash,
+  });
+
+  useBinderKeyboardShortcuts({
+    enabled: settings.keyboardShortcuts,
+    selectedCard,
+    confirmBeforeDelete: settings.confirmBeforeDelete,
+    onFlipCard: handleFlipCard,
+    onDuplicateCard: handleDuplicateCard,
+    onTrashCard: handleTrashCard,
+    onMoveCardToZone: handleMoveCardToZone,
+    onOpenDetails: openModal,
+  });
+
+  useEscapeToClose(modalLocation !== null, closeModal);
+
   const updateSetting = <K extends keyof BinderSettings>(
-  key: K,
-  value: BinderSettings[K]
+    key: K,
+    value: BinderSettings[K]
   ) => {
     setSettings((prev) => ({
       ...prev,
@@ -95,48 +129,6 @@ function BinderCreate() {
       : modalLocation?.zone === "tableau"
         ? tableauCards[modalLocation.index]
         : null;
-
-  const contextMenuCard =
-    contextMenu?.location.zone === "binder"
-      ? binderCards[contextMenu.location.index]
-      : contextMenu?.location.zone === "tableau"
-        ? tableauCards[contextMenu.location.index]
-        : null;
-
-  const handleCardContextMenu = (
-    location: CardLocation,
-    event: React.MouseEvent
-  ) => {
-    event.preventDefault();
-    event.stopPropagation();
-    setContextMenu({
-      location,
-      x: event.clientX,
-      y: event.clientY,
-    });
-  };
-
-  const closeContextMenu = () => {
-    setContextMenu(null);
-  };
-
-  useEffect(() => {
-    if (!contextMenu) return;
-
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        closeContextMenu();
-      }
-    };
-
-    document.addEventListener("click", closeContextMenu);
-    document.addEventListener("keydown", handleEscape);
-
-    return () => {
-      document.removeEventListener("click", closeContextMenu);
-      document.removeEventListener("keydown", handleEscape);
-    };
-  }, [contextMenu]);
 
   return (
     <div className={styles.binderCreatePage}>
@@ -166,7 +158,7 @@ function BinderCreate() {
             handleToBinder,
             handleToTableau,
             handleBinderMove,
-            handleToTrash,
+            handleToTrash: handleConfirmedDraggedCardTrash,
             clearHoverInterval,
             setOverlayCard
           });
@@ -178,6 +170,10 @@ function BinderCreate() {
           onCardContextMenu={handleCardContextMenu}
           cards={tableauCards}
           onClearTableau={clearTableau}
+          onMouseEnter={handleCardHoverStart}
+          onMouseLeave={handleCardHoverEnd}
+          selectedCard={selectedCard}
+          settings={settings}
         />
 
         <section className={styles.binderSection}>
@@ -187,16 +183,20 @@ function BinderCreate() {
               onCardClick={handleCardInteraction}
               onCardContextMenu={handleCardContextMenu}
               onFlipCard={handleFlipCard}
-              onTrashCard={handleTrashCard}
+              onTrashCard={handleConfirmedTrashCard}
               footerStart={
                 <BinderFileControls
                   onExport={handleExport}
                   onImport={handleImport}
                 />
               }
+              onMouseEnter={handleCardHoverStart}
+              onMouseLeave={handleCardHoverEnd}
               onPageChange={handlePageChange}
               page={page}
               cards={binderCards}
+              selectedCard={selectedCard}
+              settings={settings}
             />
             <DragHoverDetector id="right" />
           </div>
@@ -227,7 +227,7 @@ function BinderCreate() {
         onUpdateCardAtLocation={handleUpdateCardAtLocation}
         onDetailsClick={openModal}
         onFlipCard={handleFlipCard}
-        onTrashCard={handleTrashCard}
+        onTrashCard={handleConfirmedTrashCard}
         onClose={closeContextMenu}
         onMoveCardToZone={handleMoveCardToZone}
         onDuplicateCard={handleDuplicateCard}
