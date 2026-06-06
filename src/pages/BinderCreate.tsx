@@ -21,6 +21,8 @@ import {
   PAGE_CHANGE_INTERVAL,
 } from "../binder/config/binderConfig";
 import RightClickMenu from "../features/card-options/ContextMenu/RightClickMenu";
+import BinderSidePanel from "../binder/components/BinderSidePanel";
+import type { BinderSettings } from "../binder/types/binderSettings";
 
 function BinderCreate() {
   const {
@@ -54,7 +56,27 @@ function BinderCreate() {
   } | null>(null);
   const [overlayCard, setOverlayCard] = useState<CardInstance | null>(null);
   const [page, setPage] = useState(0);
+  const [sidePanelOpen, setSidePanelOpen] = useState(false);
   const hoverInterval = useRef<number | null>(null);
+  const [settings, setSettings] = useState<BinderSettings>({
+    keyboardShortcuts: true,
+    confirmBeforeDelete: true,
+    showHoverControls: true,
+    clickCompatibilityMode: false,
+    compactTableau: false,
+    showCardTooltips: true,
+    showEmptySlotNumbers: true,
+  });
+
+  const updateSetting = <K extends keyof BinderSettings>(
+  key: K,
+  value: BinderSettings[K]
+  ) => {
+    setSettings((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
 
   const clearHoverInterval = () => {
     if (hoverInterval.current !== null) {
@@ -210,6 +232,13 @@ function BinderCreate() {
         onMoveCardToZone={handleMoveCardToZone}
         onDuplicateCard={handleDuplicateCard}
       />}
+
+      <BinderSidePanel 
+        sidePanelOpen={sidePanelOpen} 
+        setSidePanelOpen={setSidePanelOpen} 
+        settings={settings}
+        updateSetting={updateSetting}
+      />
 
     </div>
   );
