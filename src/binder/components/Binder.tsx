@@ -19,6 +19,8 @@ type BinderProps = {
   onMouseLeave: () => void;
   selectedCard: CardLocation | null;
   settings: BinderSettings;
+  dragAndDropEnabled: boolean;
+  onSlotClick: (location: CardLocation) => void;
 };
 
 function Binder({
@@ -33,7 +35,9 @@ function Binder({
   onMouseEnter,
   onMouseLeave,
   selectedCard,
-  settings
+  settings,
+  dragAndDropEnabled,
+  onSlotClick
 }: BinderProps) {
   const totalPages = Math.ceil(cards.length / CARDS_PER_PAGE);
 
@@ -75,6 +79,8 @@ function Binder({
                 onMouseLeave={onMouseLeave}
                 selectedCard={selectedCard}
                 settings={settings}
+                dragAndDropEnabled={dragAndDropEnabled}
+                onSlotClick={onSlotClick}
               />
             ))}
           </div>

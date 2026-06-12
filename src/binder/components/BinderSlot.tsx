@@ -17,17 +17,29 @@ type BinderSlotProps = {
     onMouseLeave: () => void;
     selectedCard: CardLocation | null;
     settings: BinderSettings;
+    dragAndDropEnabled: boolean;
+    onSlotClick: (location: CardLocation) => void;
 }
 
 function BinderSlot({
     active, 
     instance, 
     index, 
-    onCardClick, onCardContextMenu, onFlipCard, onTrashCard, onMouseEnter, onMouseLeave, selectedCard, settings}: BinderSlotProps) {
+    onCardClick, 
+    onCardContextMenu, 
+    onFlipCard, 
+    onTrashCard, 
+    onMouseEnter, 
+    onMouseLeave, 
+    selectedCard, 
+    settings,
+    dragAndDropEnabled,
+    onSlotClick}: BinderSlotProps) {
+
     const {droppable, ref: ref } = useDroppable({
         id: `slot-${index}`,
         data: { index },
-        disabled: !active,
+        disabled: !active || !dragAndDropEnabled,
         type: "binder-droppable",
     });
 
@@ -38,8 +50,20 @@ function BinderSlot({
         }
     }, [active, droppable]);
 
+    const shouldShowSelection =
+        settings.keyboardOnlyMode ||
+        settings.clickCompatibilityMode;
+
+    const isSelected =
+        shouldShowSelection &&
+        selectedCard?.zone === "binder" &&
+        selectedCard.index === index;
+
     return (
-        <div ref={ref} className={styles.binderSlot}>
+        <div 
+        ref={ref} 
+        className={`${styles.binderSlot} ${isSelected ? styles.selectedSlot : ""}`}
+        onClick={() => onSlotClick({index:index, zone:"binder"})}>
             {instance && <BinderCard 
                 instance={instance} 
                 index={index} 
@@ -49,8 +73,8 @@ function BinderSlot({
                 onTrashCard={onTrashCard}
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}
-                selectedCard={selectedCard}
                 settings={settings}
+                dragAndDropEnabled={dragAndDropEnabled}
             />}
             {!instance && <p className={styles.slotIndex}>+</p>}
             {!instance && settings.showEmptySlotNumbers && <p className={styles.slotNumber}>{index + 1}</p>}

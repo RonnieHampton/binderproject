@@ -18,33 +18,23 @@ type BinderCardProps = {
     onTrashCard: (location: CardLocation) => void;
     onMouseEnter: (location: CardLocation) => void;
     onMouseLeave: () => void;
-    selectedCard: CardLocation | null;
     settings: BinderSettings;
+    dragAndDropEnabled: boolean;
 }
 
-function BinderCard({ instance, index, selectedCard, settings,onCardClick, onCardContextMenu, onFlipCard, onTrashCard, onMouseEnter, onMouseLeave }: BinderCardProps) {
+function BinderCard({ instance, index, settings, dragAndDropEnabled, onCardClick, onCardContextMenu, onFlipCard, onTrashCard, onMouseEnter, onMouseLeave }: BinderCardProps) {
     const canFlip = hasDistinctCardFaces(instance.card);
-    const shouldShowSelection =
-        settings.keyboardOnlyMode ||
-        settings.clickCompatibilityMode;
-
-    const isSelected =
-        shouldShowSelection &&
-        selectedCard?.zone === "binder" &&
-        selectedCard.index === index;
-
 
     const {ref: ref } = useDraggable({
         id: `binder-${index}`,
         data: { index, card: instance },
         type: "binder-draggable",
+        disabled: !dragAndDropEnabled
     });
     return (
         <div
             ref={ref}
-                className={`${styles.binderCard} ${
-                isSelected ? styles.selectedCard : ""
-            }`}
+            className={styles.binderCard}
             data-card-hover-options-parent
             onClick={(e) => {onCardClick({ zone: "binder", index }, e)}}
             onContextMenu={(e) => {onCardContextMenu({ zone: "binder", index }, e)}}

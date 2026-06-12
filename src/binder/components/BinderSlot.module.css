@@ -12,6 +12,11 @@
   align-items: center;
 }
 
+.selectedSlot {
+  outline: 3px solid var(--app-accent);
+  outline-offset: 3px;
+}
+
 .slotIndex {
   margin: 0;
   color: #a7a7a7;

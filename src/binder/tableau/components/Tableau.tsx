@@ -18,9 +18,10 @@ type TableauProps = {
   onClearTableau: () => void;
   onMouseEnter: (location: CardLocation) => void;
   onMouseLeave: () => void;
+  dragAndDropEnabled: boolean;
 }
 
-function Tableau({ cards, onCardClick, onCardContextMenu, onClearTableau, onMouseEnter, onMouseLeave, settings, selectedCard }: TableauProps) {
+function Tableau({ cards, onCardClick, onCardContextMenu, onClearTableau, onMouseEnter, onMouseLeave, settings, selectedCard, dragAndDropEnabled }: TableauProps) {
   const [sortMode, setSortMode] = useState<TableauSortMode>("cmc");
   const [trashVisible, setTrashVisible] = useState<boolean>(false);
   const [tableauVisible, setTableauVisible] = useState<boolean>(true);
@@ -28,7 +29,8 @@ function Tableau({ cards, onCardClick, onCardContextMenu, onClearTableau, onMous
 
   const {ref} = useDroppable({
     id: 'tableau',
-    type: 'tableau'
+    type: 'tableau',
+    disabled: !dragAndDropEnabled,
   })
 
   const sortedCards = SortTableau(cards, sortMode);
@@ -64,13 +66,14 @@ function Tableau({ cards, onCardClick, onCardContextMenu, onClearTableau, onMous
                   key={card.sourceIndex} card={card.instance} 
                   index={card.sourceIndex} 
                   selectedCard={selectedCard} 
-                  settings={settings} />
+                  settings={settings}
+                  dragAndDropEnabled={dragAndDropEnabled} />
                 ))}
               </div>
             </section>
           ))}
         </div>
-        {trashVisible && (
+        {trashVisible && dragAndDropEnabled && (
           <aside className={styles.trashArea}>
             <TrashDroppable />
           </aside>

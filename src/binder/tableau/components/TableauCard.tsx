@@ -16,13 +16,15 @@ type TableauCardProps = {
   onMouseLeave: () => void;
   onCardClick: (location: CardLocation, event: React.MouseEvent) => void;
   onCardContextMenu: (location: CardLocation, event: React.MouseEvent) => void;
+  dragAndDropEnabled: boolean;
 };
 
-function TableauCard({ card, index, onCardClick, onCardContextMenu, settings, selectedCard, onMouseEnter, onMouseLeave }: TableauCardProps) {
+function TableauCard({ card, index, onCardClick, onCardContextMenu, settings, selectedCard, onMouseEnter, onMouseLeave, dragAndDropEnabled }: TableauCardProps) {
   const { ref } = useDraggable({
     id: `${index}-${card.id}`,
     type: "tableau-draggable",
     data: { index, card },
+    disabled: !dragAndDropEnabled
   });
 
     const shouldShowSelection =
@@ -37,7 +39,7 @@ function TableauCard({ card, index, onCardClick, onCardContextMenu, settings, se
   return (
     <div
       ref={ref}
-      className={`styles.tableauCard ${isSelected ? styles.selectedCard : ""}`}
+      className={`${styles.tableauCard} ${isSelected ? styles.selectedCard : ""}`}
       onClick={(e) => {onCardClick({ zone: "tableau", index }, e)}}
       onContextMenu={(e) => {onCardContextMenu({ zone: "tableau", index }, e)}}
       title={settings.showCardTooltips ? getCardTooltip(card) : undefined}

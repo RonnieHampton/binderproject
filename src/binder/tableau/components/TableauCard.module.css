@@ -1,7 +1,9 @@
-.binderCardImage {
+.tableauCard {
   height: 300px;
   width: auto;
   border-radius: 13px;
+  cursor: pointer;
+  position: relative;
 }
 
 .selectedCard {

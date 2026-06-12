@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import SearchBar from "../features/search/components/SearchBar";
-import type { CardInstance } from "../binder/state/binderTypes";
+import type { CardInstance, CardLocation } from "../binder/state/binderTypes";
 import Tableau from "../binder/tableau/components/Tableau";
 import { useRef, useState } from "react";
 import Binder from "../binder/components/Binder";
@@ -30,6 +30,20 @@ import { useConfirmedCardDelete } from "../binder/hooks/useConfirmedCardDelete";
 import { useEscapeToClose } from "../binder/hooks/useEscapeToClose";
 
 function BinderCreate() {
+
+  const [settings, setSettings] = useState<BinderSettings>({
+    keyboardShortcuts: true,
+    keyboardOnlyMode: false,
+    confirmBeforeDelete: false,
+    showHoverControls: true,
+    clickCompatibilityMode: false,
+    showCardTooltips: true,
+    showEmptySlotNumbers: false,
+  });
+
+  const dragAndDropEnabled =
+    !settings.keyboardOnlyMode && !settings.clickCompatibilityMode;
+
   const {
     tableauCards,
     binderCards,
@@ -57,21 +71,32 @@ function BinderCreate() {
   const [page, setPage] = useState(0);
   const [sidePanelOpen, setSidePanelOpen] = useState(false);
   const hoverInterval = useRef<number | null>(null);
-  const [settings, setSettings] = useState<BinderSettings>({
-    keyboardShortcuts: true,
-    keyboardOnlyMode: false,
-    confirmBeforeDelete: false,
-    showHoverControls: true,
-    clickCompatibilityMode: false,
-    showCardTooltips: true,
-    showEmptySlotNumbers: false,
-  });
+
 
   const {
     selectedCard,
+    setSelectedCard,
     handleCardHoverStart,
     handleCardHoverEnd,
   } = useBinderSelectionTarget(settings);
+
+  const handleCardClick = (
+    location: CardLocation,
+    event: React.MouseEvent
+  ) => {
+    if (settings.clickCompatibilityMode) {
+      setSelectedCard(location);
+      return;
+    }
+
+    handleCardInteraction(location, event);
+  };
+
+  const handleBinderSlotClick = (location: CardLocation) => {
+    if (!settings.clickCompatibilityMode) return;
+
+    setSelectedCard(location);
+  };
 
   const {
     contextMenu,
@@ -139,6 +164,8 @@ function BinderCreate() {
 
       <DragDropProvider
         onDragOver={(event) => {
+          if (!dragAndDropEnabled) return;
+
           handleBinderDragOver({
             event,
             page,
@@ -150,9 +177,13 @@ function BinderCreate() {
           });
         }}
         onDragStart={(event) => {
+          if (!dragAndDropEnabled) return;
+
           handleBinderDragStart({ event, setOverlayCard });
         }}
         onDragEnd={(event) => {
+          if (!dragAndDropEnabled) return;
+
           handleBinderDragEnd({
             event,
             handleToBinder,
@@ -166,7 +197,7 @@ function BinderCreate() {
       >
 
         <Tableau
-          onCardClick={handleCardInteraction}
+          onCardClick={handleCardClick}
           onCardContextMenu={handleCardContextMenu}
           cards={tableauCards}
           onClearTableau={clearTableau}
@@ -174,13 +205,15 @@ function BinderCreate() {
           onMouseLeave={handleCardHoverEnd}
           selectedCard={selectedCard}
           settings={settings}
+          dragAndDropEnabled={dragAndDropEnabled}
         />
 
         <section className={styles.binderSection}>
           <div className={styles.binderLayout}>
-            <DragHoverDetector id="left" />
+            <DragHoverDetector id="left" enabled={dragAndDropEnabled} />
             <Binder
-              onCardClick={handleCardInteraction}
+              onCardClick={handleCardClick}
+              onSlotClick={handleBinderSlotClick}
               onCardContextMenu={handleCardContextMenu}
               onFlipCard={handleFlipCard}
               onTrashCard={handleConfirmedTrashCard}
@@ -197,14 +230,15 @@ function BinderCreate() {
               cards={binderCards}
               selectedCard={selectedCard}
               settings={settings}
+              dragAndDropEnabled={dragAndDropEnabled}
             />
-            <DragHoverDetector id="right" />
+            <DragHoverDetector id="right" enabled={dragAndDropEnabled} />
           </div>
         </section>
 
-        <DragOverlay dropAnimation={null}>
+        {dragAndDropEnabled && <DragOverlay dropAnimation={null}>
           {overlayCard ? <CardOverlay card={overlayCard} /> : null}
-        </DragOverlay>
+        </DragOverlay>}
       </DragDropProvider>
 
       {modalLocation !== null && selectedModalCard !== null && (
