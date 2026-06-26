@@ -1,0 +1,26 @@
+.binderCard {
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    filter 0.16s ease;
+
+  transform-origin: center;
+  will-change: transform;
+
+  border-radius: 13px;
+  position: relative;
+  cursor: pointer;
+}
+
+.binderCard:hover {
+  filter: brightness(1.03);
+
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.14),
+    0 14px 28px rgba(0, 0, 0, 0.10);
+}
+
+.selectedCard {
+  outline: 3px solid var(--app-accent);
+  outline-offset: 3px;
+}

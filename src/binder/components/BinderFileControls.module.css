@@ -1,0 +1,50 @@
+.fileControls {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.fileControlButton {
+  align-items: center;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius-sm);
+  color: var(--app-text);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 0.9rem;
+  font-weight: 750;
+  min-height: 2.35rem;
+  padding: 0 0.9rem;
+  transition:
+    background 0.14s ease,
+    border-color 0.14s ease,
+    box-shadow 0.14s ease;
+}
+
+.fileControlButton:hover {
+  background: var(--app-surface-solid);
+  border-color: var(--app-border-strong);
+  box-shadow: var(--app-shadow-sm);
+}
+
+.fileControlButton:focus-visible,
+.fileControlButton:focus-within {
+  box-shadow: 0 0 0 4px var(--app-accent-soft);
+  outline: 2px solid rgba(37, 99, 235, 0.35);
+  outline-offset: 2px;
+}
+
+.importInput {
+  height: 1px;
+  opacity: 0;
+  position: absolute;
+  width: 1px;
+}
+
+@media (max-width: 720px) {
+  .fileControls {
+    justify-content: center;
+  }
+}

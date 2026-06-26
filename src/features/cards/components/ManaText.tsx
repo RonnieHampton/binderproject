@@ -10,10 +10,10 @@ function ManaText({ text = "" }: ManaTextProps) {
   const parsedText: ManaToken[] = parseManaCost(text);
 
   return (
-    <>
+    <span className={styles.manaText}>
       {parsedText.map((token, index) => {
         if (token.type === "text") {
-          return <span key={index}>{token.value}</span>;
+          return <span className={styles.textToken} key={index}>{token.value}</span>;
         }
 
         return (
@@ -25,7 +25,7 @@ function ManaText({ text = "" }: ManaTextProps) {
           />
         );
       })}
-    </>
+    </span>
   );
 }
 

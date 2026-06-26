@@ -1,28 +1,50 @@
 import { Link } from "react-router-dom";
 import SearchBar from "../features/search/components/SearchBar";
-import type { CardInstance } from "../features/binder/state/binderTypes";
-import Tableau from "../features/tableau/components/Tableau";
+import type { CardInstance, CardLocation } from "../binder/state/binderTypes";
+import Tableau from "../binder/tableau/components/Tableau";
 import { useRef, useState } from "react";
-import Binder from "../features/binder/components/Binder";
+import Binder from "../binder/components/Binder";
+import BinderFileControls from "../binder/components/BinderFileControls";
 import { DragDropProvider, DragOverlay } from "@dnd-kit/react";
-import TrashDroppable from "../features/binder/components/Trash";
-import CardOverlay from "../features/binder/components/CardOverlay";
-import DragHoverDetector from "../features/binder/components/DragHoverDetector";
-import type { TableauSortMode } from "../features/tableau/types/tableau";
+import CardOverlay from "../binder/components/CardOverlay";
+import DragHoverDetector from "../binder/components/DragHoverDetector";
 import CardOptionsModal from "../features/card-options/modal/components/CardOptionsModal";
-import { useBinderManager } from "../features/binder/hooks/useBinderManager";
+import { useBinderManager } from "../binder/hooks/useBinderManager";
 import {
   handleBinderDragEnd,
   handleBinderDragOver,
   handleBinderDragStart,
-} from "../features/binder/utils/binderDragHandlers";
+} from "../binder/utils/binderDragHandlers";
 import styles from "./BinderCreate.module.css";
 import {
   MAX_BINDER_PAGE_INDEX,
   PAGE_CHANGE_INTERVAL,
-} from "../features/binder/config/binderConfig";
+  TABLEAU_SIZE_LIMIT,
+} from "../binder/config/binderConfig";
+import RightClickMenu from "../features/card-options/ContextMenu/RightClickMenu";
+import BinderSidePanel from "../binder/components/BinderSidePanel";
+import type { BinderSettings } from "../binder/types/binderSettings";
+import { useBinderKeyboardShortcuts } from "../binder/hooks/useBinderKeyboardShortcuts.ts";
+import { useBinderSelectionTarget } from "../binder/hooks/useBinderSelectionTarget";
+import { useBinderContextMenu } from "../binder/hooks/useBinderContextMenu";
+import { useConfirmedCardDelete } from "../binder/hooks/useConfirmedCardDelete";
+import { useEscapeToClose } from "../binder/hooks/useEscapeToClose";
 
 function BinderCreate() {
+
+  const [settings, setSettings] = useState<BinderSettings>({
+    keyboardShortcuts: true,
+    keyboardOnlyMode: false,
+    confirmBeforeDelete: false,
+    showHoverControls: true,
+    clickCompatibilityMode: false,
+    showCardTooltips: true,
+    showEmptySlotNumbers: false,
+  });
+
+  const dragAndDropEnabled =
+    !settings.keyboardOnlyMode && !settings.clickCompatibilityMode;
+
   const {
     tableauCards,
     binderCards,
@@ -30,19 +52,140 @@ function BinderCreate() {
     handleSelectCard,
     handleCardInteraction,
     handleCardSave,
+    handleFlipCard,
+    handleTrashCard,
     handleToBinder,
     handleToTableau,
     handleBinderMove,
     handleToTrash,
     closeModal,
+    openModal,
     handleExport,
-    handleImport
+    handleImport,
+    clearTableau,
+    handleUpdateCardAtLocation,
+    handleMoveCardToZone,
+    handleDuplicateCard,
   } = useBinderManager();
 
   const [overlayCard, setOverlayCard] = useState<CardInstance | null>(null);
   const [page, setPage] = useState(0);
+  const [sidePanelOpen, setSidePanelOpen] = useState(false);
   const hoverInterval = useRef<number | null>(null);
-  const [sortMode, setSortMode] = useState<TableauSortMode>("cmc");
+
+
+  const {
+    selectedCard,
+    setSelectedCard,
+    targetCard,
+    setTargetCard,
+    handleCardHoverStart,
+    handleCardHoverEnd,
+  } = useBinderSelectionTarget(settings);
+
+  const handleCardClick = (
+    location: CardLocation,
+    event: React.MouseEvent
+  ) => {
+    if (settings.clickCompatibilityMode) {
+      if (event.shiftKey) {
+        if (location.zone === "binder") {
+          setTargetCard(location);
+        }
+
+        return;
+      }
+
+      setSelectedCard(location);
+      return;
+    }
+
+    handleCardInteraction(location, event);
+  };
+
+  const handleBinderSlotClick = (location: CardLocation, event: React.MouseEvent) => {
+    if (!settings.clickCompatibilityMode) return;
+
+    if (event.shiftKey) {
+      setTargetCard(location);
+      return;
+    }
+
+    setSelectedCard(location);
+  };
+
+  const handleKeyboardMoveCardToZone = (
+    location: CardLocation,
+    targetZone: CardLocation["zone"]
+  ) => {
+    const firstFreeBinderIndex = binderCards.findIndex((card) => card === null);
+    const tableauDestinationIndex = tableauCards.length;
+
+    handleMoveCardToZone(location, targetZone);
+    setTargetCard(null);
+
+    if (
+      location.zone === "binder" &&
+      targetZone === "tableau" &&
+      tableauCards.length < TABLEAU_SIZE_LIMIT
+    ) {
+      setSelectedCard({ zone: "tableau", index: tableauDestinationIndex });
+    }
+
+    if (
+      location.zone === "tableau" &&
+      targetZone === "binder" &&
+      firstFreeBinderIndex !== -1
+    ) {
+      setSelectedCard({ zone: "binder", index: firstFreeBinderIndex });
+    }
+  };
+
+  const {
+    contextMenu,
+    contextMenuCard,
+    handleCardContextMenu,
+    closeContextMenu,
+  } = useBinderContextMenu({ binderCards, tableauCards });
+
+  const {
+    handleConfirmedTrashCard,
+    handleConfirmedDraggedCardTrash,
+  } = useConfirmedCardDelete({
+    confirmBeforeDelete: settings.confirmBeforeDelete,
+    onTrashCard: handleTrashCard,
+    onTrashDraggedCard: handleToTrash,
+  });
+
+  useBinderKeyboardShortcuts({
+    enabled: settings.keyboardShortcuts,
+    selectedCard,
+    targetCard,
+    setSelectedCard,
+    setTargetCard,
+    clickCompatibilityMode: settings.clickCompatibilityMode,
+    confirmBeforeDelete: settings.confirmBeforeDelete,
+    onFlipCard: handleFlipCard,
+    onDuplicateCard: handleDuplicateCard,
+    onTrashCard: handleTrashCard,
+    onMoveTableauToBinder: handleToBinder,
+    onMoveBinderCard: handleBinderMove,
+    onMoveCardToZone: handleKeyboardMoveCardToZone,
+    onOpenDetails: openModal,
+  });
+
+  useEscapeToClose(modalLocation !== null, closeModal);
+  useEscapeToClose(sidePanelOpen, () => setSidePanelOpen(false));
+
+  const updateSetting = <K extends keyof BinderSettings>(
+    key: K,
+    value: BinderSettings[K]
+  ) => {
+    setSettings((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
 
   const clearHoverInterval = () => {
     if (hoverInterval.current !== null) {
@@ -65,12 +208,14 @@ function BinderCreate() {
   return (
     <div className={styles.binderCreatePage}>
       <div className={styles.topArea}>
-        <Link to="/">Home</Link>
+        <Link className={styles.homeLink} to="/">Home</Link>
         <SearchBar onSelectCard={handleSelectCard} />
       </div>
 
       <DragDropProvider
         onDragOver={(event) => {
+          if (!dragAndDropEnabled) return;
+
           handleBinderDragOver({
             event,
             page,
@@ -82,76 +227,104 @@ function BinderCreate() {
           });
         }}
         onDragStart={(event) => {
+          if (!dragAndDropEnabled) return;
+
           handleBinderDragStart({ event, setOverlayCard });
         }}
         onDragEnd={(event) => {
+          if (!dragAndDropEnabled) return;
+
           handleBinderDragEnd({
             event,
             handleToBinder,
             handleToTableau,
             handleBinderMove,
-            handleToTrash,
+            handleToTrash: handleConfirmedDraggedCardTrash,
             clearHoverInterval,
             setOverlayCard
           });
         }}
       >
-        <TrashDroppable />
-
-        <select
-          className={styles.sortSelect}
-          value={sortMode}
-          onChange={(e) => setSortMode(e.target.value as TableauSortMode)}
-        >
-          <option value="cmc">Mana Value</option>
-          <option value="color_identity">Color Identity</option>
-          <option value="type_line">Type</option>
-          <option value="rarity">Rarity</option>
-          <option value="set">Set</option>
-        </select>
 
         <Tableau
-          onCardClick={handleCardInteraction}
-          sortType={sortMode}
+          onCardClick={handleCardClick}
+          onCardContextMenu={handleCardContextMenu}
           cards={tableauCards}
+          onClearTableau={clearTableau}
+          onMouseEnter={handleCardHoverStart}
+          onMouseLeave={handleCardHoverEnd}
+          selectedCard={selectedCard}
+          settings={settings}
+          dragAndDropEnabled={dragAndDropEnabled}
         />
 
-        <p className={styles.pageIndicator}>{`Current page: ${page + 1}/${MAX_BINDER_PAGE_INDEX + 1}`}</p>
+        <section className={styles.binderSection}>
+          <div className={styles.binderLayout}>
+            <DragHoverDetector id="left" enabled={dragAndDropEnabled} />
+            <Binder
+              onCardClick={handleCardClick}
+              onSlotClick={handleBinderSlotClick}
+              onCardContextMenu={handleCardContextMenu}
+              onFlipCard={handleFlipCard}
+              onTrashCard={handleConfirmedTrashCard}
+              footerStart={
+                <BinderFileControls
+                  onExport={handleExport}
+                  onImport={handleImport}
+                />
+              }
+              onMouseEnter={handleCardHoverStart}
+              onMouseLeave={handleCardHoverEnd}
+              onPageChange={handlePageChange}
+              page={page}
+              cards={binderCards}
+              selectedCard={selectedCard}
+              targetCard={targetCard}
+              settings={settings}
+              dragAndDropEnabled={dragAndDropEnabled}
+            />
+            <DragHoverDetector id="right" enabled={dragAndDropEnabled} />
+          </div>
+        </section>
 
-        <div className={styles.binderLayout}>
-          <DragHoverDetector id="left" />
-          <Binder
-            onCardClick={handleCardInteraction}
-            onPageChange={handlePageChange}
-            page={page}
-            cards={binderCards}
-          />
-          <DragHoverDetector id="right" />
-        </div>
-
-        <DragOverlay dropAnimation={null}>
+        {dragAndDropEnabled && <DragOverlay dropAnimation={null}>
           {overlayCard ? <CardOverlay card={overlayCard} /> : null}
-        </DragOverlay>
+        </DragOverlay>}
       </DragDropProvider>
 
       {modalLocation !== null && selectedModalCard !== null && (
         <div className={styles.modalBackdrop} onClick={closeModal}>
           <div className={styles.modalPanel} onClick={(e) => e.stopPropagation()}>
-           <CardOptionsModal
-            card={selectedModalCard}
-            handleSave={(card) => handleCardSave(card)}
+            <CardOptionsModal
+              card={selectedModalCard}
+              handleSave={(card) => handleCardSave(card)}
+              onClose={closeModal}
             />
           </div>
         </div>
       )}
-      <button className={styles.exportButton} onClick={handleExport}>Export Binder</button>
 
-      <input
-        className={styles.importInput}
-        type="file"
-        accept="application/json,.json"
-        onChange={handleImport}
-        />
+      {contextMenu && contextMenuCard && <RightClickMenu
+        instance={contextMenuCard}
+        location={contextMenu.location}
+        x={contextMenu.x}
+        y={contextMenu.y}
+        onUpdateCardAtLocation={handleUpdateCardAtLocation}
+        onDetailsClick={openModal}
+        onFlipCard={handleFlipCard}
+        onTrashCard={handleConfirmedTrashCard}
+        onClose={closeContextMenu}
+        onMoveCardToZone={handleMoveCardToZone}
+        onDuplicateCard={handleDuplicateCard}
+      />}
+
+      <BinderSidePanel
+        sidePanelOpen={sidePanelOpen}
+        setSidePanelOpen={setSidePanelOpen}
+        settings={settings}
+        updateSetting={updateSetting}
+      />
+
     </div>
   );
 }

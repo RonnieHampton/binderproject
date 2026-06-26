@@ -1,0 +1,82 @@
+.tableau {
+  position: relative;
+  height: 60vh;
+  max-height: 60vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+}
+
+.tableauBoard {
+  max-width: 100%;
+  min-height: 320px;
+  padding: 1rem;
+
+  column-width: 230px;
+  column-gap: 0.25rem;
+
+  overflow: visible;
+
+  width: 100%;
+
+}
+.trashArea {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 20;
+  width: min(16.666%, 180px);
+  min-width: 140px;
+}
+
+.tableauColumn {
+  width: 230px;
+  display: inline-block;
+  break-inside: avoid;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+}
+
+.columnHeader {
+  width: 215px;
+  margin-bottom: 0.75rem;
+
+  font-size: 0.95rem;
+  font-weight: 700;
+
+  color: black;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardStack {
+  --card-overlap: -220px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cardStack > * {
+  position: relative;
+  width: 215px;
+
+  margin-bottom: var(--card-overlap);
+
+  transition:
+    transform 0.14s ease,
+    filter 0.14s ease;
+}
+
+.cardStack > *:hover {
+  transform: translateY(-20px);
+  filter: brightness(1.06);
+}
+
+.cardStack > *:last-child {
+  margin-bottom: 0;
+}

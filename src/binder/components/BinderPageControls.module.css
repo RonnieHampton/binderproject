@@ -1,0 +1,58 @@
+.pageControls {
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.pageIndicator {
+  color: var(--app-muted);
+  font-size: 0.92rem;
+  font-weight: 800;
+  line-height: 1;
+  min-width: 6rem;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.pageControlButton {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius-sm);
+  color: var(--app-text);
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 750;
+  min-height: 2.35rem;
+  min-width: 6.5rem;
+  padding: 0 0.9rem;
+  transition:
+    background 0.14s ease,
+    border-color 0.14s ease,
+    box-shadow 0.14s ease,
+    color 0.14s ease;
+}
+
+.pageControlButton:hover:not(:disabled) {
+  background: var(--app-surface-solid);
+  border-color: var(--app-border-strong);
+  box-shadow: var(--app-shadow-sm);
+}
+
+.pageControlButton:disabled {
+  color: #9ca3af;
+  cursor: not-allowed;
+  opacity: 0.68;
+}
+
+.pageControlButton:focus-visible {
+  box-shadow: 0 0 0 4px var(--app-accent-soft);
+  outline: 2px solid rgba(37, 99, 235, 0.35);
+  outline-offset: 2px;
+}
+
+@media (max-width: 720px) {
+  .pageControls {
+    flex-wrap: wrap;
+  }
+}

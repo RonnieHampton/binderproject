@@ -6,12 +6,12 @@ function BinderView() {
     <div className={styles.page}>
       <h1 className={styles.heading}>Welcome to Binder Project</h1>
       <p className={styles.copy}>
-        You can view your binders here. 
+        You can view your binders here.
         <br />
-        <Link to="/">Home</Link>
+        <Link className={styles.homeLink} to="/">Home</Link>
       </p>
     </div>
-  )
-}  
+  );
+}
 
-export default BinderView
+export default BinderView;

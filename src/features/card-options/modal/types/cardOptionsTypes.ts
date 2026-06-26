@@ -1,5 +1,5 @@
 import type { ScryfallCard } from "../../../../types/scryfall";
-import type { CardInstance } from "../../../binder/state/binderTypes";
+import type { CardInstance } from "../../../../binder/state/binderTypes";
 
 export type CardTextBlock = {
   name?: string;
@@ -17,6 +17,7 @@ export type CardDetailsData = {
 export type CardOptionsModalProps = {
   card: CardInstance;
   handleSave: (card: CardInstance) => void;
+  onClose: () => void;
 };
 
 export type CardPrintingListProps = {

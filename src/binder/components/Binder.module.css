@@ -1,0 +1,52 @@
+.binder {
+  position: relative;
+}
+
+.topControls {
+  margin: 1rem auto 0.75rem;
+}
+
+.binderPage {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  top: 0;
+}
+
+.binderPageVisible {
+  position: relative;
+  visibility: visible;
+  pointer-events: auto;
+  opacity: 1;
+  left: auto;
+}
+
+.binderPageHidden {
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
+  opacity: 0;
+  left: -9999px;
+}
+
+.binderFooter {
+  align-items: center;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr auto 1fr;
+  margin: 0.9rem auto 0;
+}
+
+.footerStart {
+  justify-self: start;
+}
+
+@media (max-width: 720px) {
+  .binderFooter {
+    grid-template-columns: 1fr;
+  }
+
+  .footerStart {
+    justify-self: stretch;
+  }
+}

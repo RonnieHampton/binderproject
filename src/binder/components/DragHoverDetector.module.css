@@ -1,0 +1,6 @@
+.dragHoverDetector {
+  width: 250px;
+  height: 100%;
+  transition: opacity 0.2s ease;
+  color: transparent;
+}
