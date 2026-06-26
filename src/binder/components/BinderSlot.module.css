@@ -17,6 +17,18 @@
   outline-offset: 3px;
 }
 
+.targetSlot {
+  outline: 3px solid #f59e0b;
+  outline-offset: 3px;
+}
+
+.selectedSlot.targetSlot {
+  outline-color: #f59e0b;
+  box-shadow:
+    0 0 0 3px var(--app-accent),
+    0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
 .slotIndex {
   margin: 0;
   color: #a7a7a7;

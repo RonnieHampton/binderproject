@@ -16,7 +16,7 @@ function BinderSidePanel({ settings, sidePanelOpen, setSidePanelOpen, updateSett
         type="button"
         aria-label="Open binder options"
         onClick={() => setSidePanelOpen(true)}
-        >
+      >
         <span />
         <span />
         <span />
@@ -71,69 +71,44 @@ function BinderSidePanel({ settings, sidePanelOpen, setSidePanelOpen, updateSett
                 <kbd>Esc</kbd>
                 <span>Close menu</span>
               </div>
-
-              <h3>Keyboard Only Mode Controls</h3>
-
-              <div className={styles.shortcutRow}>
-                <kbd>Arrow keys</kbd>
-                <span>Navigate cards/slots</span>
-              </div>
-              <div className={styles.shortcutRow}>
-                <kbd>Space</kbd>
-                <span>Select card</span>
-              </div>
-              <div className={styles.shortcutRow}>
-                <kbd>PageUp/PageDown</kbd>
-                <span>Change page</span>
-              </div>
-              <div className={styles.shortcutRow}>
-                <kbd>Tab</kbd>
-                <span>Change focus</span>
-              </div>
             </div>
 
             <section className={styles.settingsSection}>
               <h2>Settings</h2>
 
               <label className={styles.settingRow}>
-                <input type="checkbox" checked={settings.keyboardShortcuts} onChange={(e) => 
-                        updateSetting('keyboardShortcuts', e.target.checked)} />
+                <input type="checkbox" checked={settings.keyboardShortcuts} onChange={(e) =>
+                  updateSetting('keyboardShortcuts', e.target.checked)} />
                 Enable keyboard shortcuts
               </label>
 
               <label className={styles.settingRow}>
-                <input type="checkbox" checked={settings.keyboardOnlyMode} onChange={(e) =>
-                    updateSetting('keyboardOnlyMode', e.target.checked)} />
-                Keyboard only mode
-              </label>
-
-              <label className={styles.settingRow}>
-                <input type="checkbox" checked={settings.confirmBeforeDelete} onChange={(e) => 
-                    updateSetting('confirmBeforeDelete', e.target.checked)} />
+                <input type="checkbox" checked={settings.confirmBeforeDelete} onChange={(e) =>
+                  updateSetting('confirmBeforeDelete', e.target.checked)} />
                 Confirm before delete
               </label>
 
               <label className={styles.settingRow}>
-                <input type="checkbox" checked={settings.showHoverControls} onChange={(e) => 
-                    updateSetting('showHoverControls', e.target.checked)} />
+                <input type="checkbox" checked={settings.showHoverControls} onChange={(e) =>
+                  updateSetting('showHoverControls', e.target.checked)} />
                 Show hover controls
               </label>
 
               <label className={styles.settingRow}>
-                <input type="checkbox" checked={settings.clickCompatibilityMode} onChange={(e) => 
-                    updateSetting('clickCompatibilityMode', e.target.checked)} />
-                Click compatibility mode
+                <input type="checkbox" checked={settings.clickCompatibilityMode} onChange={(e) =>
+                  updateSetting('clickCompatibilityMode', e.target.checked)} />
+                Click only compatibility mode
               </label>
 
               <label className={styles.settingRow}>
-                <input type="checkbox" checked={settings.showCardTooltips} 
-                onChange={(e) => updateSetting('showCardTooltips', e.target.checked)} />
+                <input type="checkbox" checked={settings.showCardTooltips}
+                  onChange={(e) => updateSetting('showCardTooltips', e.target.checked)} />
                 Show card tooltips
               </label>
 
               <label className={styles.settingRow}>
-                <input type="checkbox" checked={settings.showEmptySlotNumbers} 
-                onChange={(e) => updateSetting('showEmptySlotNumbers', e.target.checked)} />
+                <input type="checkbox" checked={settings.showEmptySlotNumbers}
+                  onChange={(e) => updateSetting('showEmptySlotNumbers', e.target.checked)} />
                 Show empty slot numbers
               </label>
             </section>

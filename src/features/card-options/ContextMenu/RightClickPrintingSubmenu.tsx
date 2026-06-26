@@ -23,7 +23,7 @@ function RightClickPrintingSubmenu({
   onPrintingClick,
 }: RightClickPrintingSubmenuProps) {
   return (
-     <div
+    <div
       className={styles.printingSubmenu}
       style={{ left: x, position: "fixed", top: y }}
     >
@@ -35,16 +35,16 @@ function RightClickPrintingSubmenu({
         <p className={styles.printingStatus}>{errorMessage}</p>
       )}
 
-      
-        <section className={styles.cardPrintings}>
-          {printings.map((printing) => (
-            <button
-              className={styles.printingOption}
-              key={printing.id}
-              onClick={() => onPrintingClick?.({
-                ...instance,
-                card: printing,
-              })}
+
+      <section className={styles.cardPrintings}>
+        {printings.map((printing) => (
+          <button
+            className={styles.printingOption}
+            key={printing.id}
+            onClick={() => onPrintingClick?.({
+              ...instance,
+              card: printing,
+            })}
             type="button"
           >
             <img

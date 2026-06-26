@@ -11,9 +11,8 @@ function TrashDroppable() {
   return (
     <div
       ref={ref}
-      className={`${styles.trashDroppable} ${
-        isDropTarget ? styles.trashDroppableTarget : styles.trashDroppableIdle
-      }`}
+      className={`${styles.trashDroppable} ${isDropTarget ? styles.trashDroppableTarget : styles.trashDroppableIdle
+        }`}
     >
       Trash
     </div>

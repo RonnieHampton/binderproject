@@ -1,6 +1,12 @@
 .binderCreatePage {
   min-height: 100vh;
   padding: 1.25rem clamp(1rem, 2.5vw, 2rem) 2rem;
+  user-select: none;
+}
+
+.binderCreatePage input,
+.binderCreatePage textarea {
+  user-select: text;
 }
 
 .topArea {

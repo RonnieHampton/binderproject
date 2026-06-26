@@ -17,23 +17,23 @@ function CardPrintingList({ instance, handlePrintingClick }: CardPrintingListPro
         <p className={styles.printingStatus}>{errorMessage}</p>
       )}
 
-      
-        <section className={styles.cardPrintings}>
-          {printings.map((printing) => (
-            <div key={printing.id} className={styles.printingContainer}>
+
+      <section className={styles.cardPrintings}>
+        {printings.map((printing) => (
+          <div key={printing.id} className={styles.printingContainer}>
             <img
               className={styles.printingImage}
               onClick={() => handlePrintingClick(printing)}
               title={`${printing.set_name} (${printing.set?.toUpperCase()} · ${printing.collector_number})`}
-            src={
-              printing.image_uris?.small ??
-              printing.card_faces?.[0]?.image_uris?.small
-            }
-            alt={printing.name}
-          />
-          <p className={styles.printingCollectorNumber}>
-            {printing.collector_number}
-          </p>
+              src={
+                printing.image_uris?.small ??
+                printing.card_faces?.[0]?.image_uris?.small
+              }
+              alt={printing.name}
+            />
+            <p className={styles.printingCollectorNumber}>
+              {printing.collector_number}
+            </p>
           </div>
         ))}
       </section>

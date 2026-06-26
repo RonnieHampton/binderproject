@@ -4,6 +4,7 @@ import type { BinderSettings } from "../types/binderSettings";
 
 export function useBinderSelectionTarget(settings: BinderSettings) {
   const [selectedCard, setSelectedCard] = useState<CardLocation | null>(null);
+  const [targetCard, setTargetCard] = useState<CardLocation | null>(null);
 
   const selectionUsesExplicitMode =
     settings.keyboardOnlyMode || settings.clickCompatibilityMode;
@@ -23,6 +24,8 @@ export function useBinderSelectionTarget(settings: BinderSettings) {
   return {
     selectedCard,
     setSelectedCard,
+    targetCard,
+    setTargetCard,
     handleCardHoverStart,
     handleCardHoverEnd,
   };

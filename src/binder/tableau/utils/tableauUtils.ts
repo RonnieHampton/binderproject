@@ -54,7 +54,7 @@ function normalizeBucket(
 export default function SortTableau(cards: CardInstance[], sortType: TableauSortMode) {
   // Implementation of sorting logic based on sortType
   const buckets = new Map<string, TableauRenderableCard[]>();
-  
+
   for (const [sourceIndex, card] of cards.entries()) {
     const bucketName = normalizeBucket(card, sortType);
     const bucket = buckets.get(bucketName) ?? [];
@@ -64,11 +64,11 @@ export default function SortTableau(cards: CardInstance[], sortType: TableauSort
 
   if (sortType === "cmc") {
     return [...buckets.entries()].map(([title, cards]) => ({
-    id: title,
-    title,
-    sortValue: Number(cards[0].instance.card.cmc),
-    cards
-  })).sort((a, b) => (a.sortValue as number) - (b.sortValue as number));
+      id: title,
+      title,
+      sortValue: Number(cards[0].instance.card.cmc),
+      cards
+    })).sort((a, b) => (a.sortValue as number) - (b.sortValue as number));
   }
 
   return [...buckets.entries()].map(([title, cards]) => ({

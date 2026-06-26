@@ -18,9 +18,10 @@ type BinderProps = {
   onMouseEnter: (location: CardLocation) => void;
   onMouseLeave: () => void;
   selectedCard: CardLocation | null;
+  targetCard: CardLocation | null;
   settings: BinderSettings;
   dragAndDropEnabled: boolean;
-  onSlotClick: (location: CardLocation) => void;
+  onSlotClick: (location: CardLocation, event: React.MouseEvent) => void;
 };
 
 function Binder({
@@ -35,6 +36,7 @@ function Binder({
   onMouseEnter,
   onMouseLeave,
   selectedCard,
+  targetCard,
   settings,
   dragAndDropEnabled,
   onSlotClick
@@ -61,9 +63,8 @@ function Binder({
         return (
           <div
             key={pageIndex}
-            className={`${styles.binderPage} ${
-              isVisible ? styles.binderPageVisible : styles.binderPageHidden
-            }`}
+            className={`${styles.binderPage} ${isVisible ? styles.binderPageVisible : styles.binderPageHidden
+              }`}
           >
             {pageCards.map((instance, index) => (
               <BinderSlot
@@ -78,6 +79,7 @@ function Binder({
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}
                 selectedCard={selectedCard}
+                targetCard={targetCard}
                 settings={settings}
                 dragAndDropEnabled={dragAndDropEnabled}
                 onSlotClick={onSlotClick}

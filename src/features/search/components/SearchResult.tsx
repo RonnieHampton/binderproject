@@ -2,14 +2,14 @@ import type { ScryfallCard } from "../../../types/scryfall";
 import styles from "./SearchResult.module.css";
 
 type SearchResultProps = {
-  result: ScryfallCard[]
-  onSelectCard?: (card: ScryfallCard) => void
-}
+  result: ScryfallCard[];
+  onSelectCard?: (card: ScryfallCard) => void;
+};
 
 function SearchResult({ result, onSelectCard }: SearchResultProps) {
   return (
     <div className={styles.resultList}>
-    {result.slice(0, 20).map((card) => (
+      {result.slice(0, 20).map((card) => (
         <button
           className={styles.resultRow}
           key={card.id}
@@ -32,9 +32,9 @@ function SearchResult({ result, onSelectCard }: SearchResultProps) {
             </span>
           </div>
         </button>
-    ))}
+      ))}
     </div>
-  )
+  );
 }
 
-export default SearchResult
+export default SearchResult;

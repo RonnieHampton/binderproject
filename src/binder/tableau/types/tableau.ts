@@ -1,4 +1,4 @@
-import type {CardInstance} from '../../state/binderTypes'
+import type { CardInstance } from '../../state/binderTypes';
 
 export type TableauSortMode =
   | "cmc"

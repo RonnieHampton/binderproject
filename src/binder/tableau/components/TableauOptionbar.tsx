@@ -12,73 +12,58 @@ type TableauOptionbarProps = {
   multiselectEnabled: boolean;
   setMultiselectEnabled: Dispatch<SetStateAction<boolean>>;
   onClearTableau: () => void;
-}
+};
 
-function TableauOptionbar(
-  {
-    sortMode,
-    length,
-    setSortMode,
-    setTrashVisible,
-    setTableauVisible,
-    multiselectEnabled,
-    setMultiselectEnabled,
-    onClearTableau,
-  }: TableauOptionbarProps
-) {
-
+function TableauOptionbar({
+  sortMode,
+  length,
+  setSortMode,
+  setTrashVisible,
+  setTableauVisible,
+  onClearTableau,
+}: TableauOptionbarProps) {
   return (
     <div className={styles.optionbar}>
       <select
-          className={styles.sortSelect}
-          value={sortMode}
-          onChange={(e) => setSortMode(e.target.value as TableauSortMode)}
-        >
-          <option value="cmc">Mana Value</option>
-          <option value="color_identity">Color Identity</option>
-          <option value="type_line">Type</option>
-          <option value="rarity">Rarity</option>
-          <option value="set">Set</option>
-        </select>
-        <button
-          className={styles.optionButton}
-          type="button"
-          onClick={() => setTrashVisible((prev) => !prev)}
-        >
-          Trash
-        </button>
-        <button
-          className={styles.optionButton}
-          type="button"
-          onClick={() => setTableauVisible((prev) => !prev)}
-        >
-          Hide Tableau
-        </button>
-        <label
-          className={`${styles.toggleLabel} ${
-            multiselectEnabled ? styles.toggleLabelActive : ""
-          }`}
-          title="Multiselect is not implemented yet"
-        >
-          <input
-            type="checkbox"
-            checked={multiselectEnabled}
-            onChange={() => setMultiselectEnabled((prev) => !prev)}
-          />
-          <span className={styles.toggleTrack} aria-hidden="true">
-            <span className={styles.toggleThumb} />
-          </span>
-          Multiselect
-        </label>
-        <button
-          className={styles.clearButton}
-          type="button"
-          onClick={onClearTableau}
-          disabled={length === 0}
-        >
-          Clear Tableau
-        </button>
-        <span className={styles.cardCount}>{`Cards: ${length}/${TABLEAU_SIZE_LIMIT}`}</span>
+        className={styles.sortSelect}
+        value={sortMode}
+        onChange={(e) => setSortMode(e.target.value as TableauSortMode)}
+      >
+        <option value="cmc">Mana Value</option>
+        <option value="color_identity">Color Identity</option>
+        <option value="type_line">Type</option>
+        <option value="rarity">Rarity</option>
+        <option value="set">Set</option>
+      </select>
+
+      <button
+        className={styles.optionButton}
+        type="button"
+        onClick={() => setTrashVisible((prev) => !prev)}
+      >
+        Trash
+      </button>
+
+      <button
+        className={styles.optionButton}
+        type="button"
+        onClick={() => setTableauVisible((prev) => !prev)}
+      >
+        Hide Tableau
+      </button>
+
+      <button
+        className={styles.clearButton}
+        type="button"
+        onClick={onClearTableau}
+        disabled={length === 0}
+      >
+        Clear Tableau
+      </button>
+
+      <span className={styles.cardCount}>
+        {`Cards: ${length}/${TABLEAU_SIZE_LIMIT}`}
+      </span>
     </div>
   );
 }

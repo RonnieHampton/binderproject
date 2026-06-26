@@ -21,72 +21,72 @@ export const initialBinderState: BinderState = {
 type BinderAction =
   // Search
   | {
-      type: "cardSearchSelect";
-      card: ScryfallCard;
-    }
+    type: "cardSearchSelect";
+    card: ScryfallCard;
+  }
 
   // Modal
   | {
-      type: "openModal";
-      location: CardLocation;
-    }
+    type: "openModal";
+    location: CardLocation;
+  }
   | {
-      type: "closeModal";
-    }
+    type: "closeModal";
+  }
   | {
-      type: "saveModalCard";
-      card: CardInstance;
-      location: CardLocation;
-    }
+    type: "saveModalCard";
+    card: CardInstance;
+    location: CardLocation;
+  }
 
   // Card interactions
   | {
-      type: "flipCard";
-      location: CardLocation;
-    }
+    type: "flipCard";
+    location: CardLocation;
+  }
 
   // Drag and drop
   | {
-      type: "moveTableauToBinder";
-      source: CardLocation;
-      target: CardLocation;
-    }
+    type: "moveTableauToBinder";
+    source: CardLocation;
+    target: CardLocation;
+  }
   | {
-      type: "moveBinderToTableau";
-      source: CardLocation;
-    }
+    type: "moveBinderToTableau";
+    source: CardLocation;
+  }
   | {
-      type: "moveBinderCard";
-      source: CardLocation;
-      target: CardLocation;
-    }
+    type: "moveBinderCard";
+    source: CardLocation;
+    target: CardLocation;
+  }
   | {
-      type: "trashCard";
-      source: CardLocation;
-    }
+    type: "trashCard";
+    source: CardLocation;
+  }
 
   // Import
   | {
-      type: "importBinder";
-      cards: (CardInstance | null)[];
-    }
+    type: "importBinder";
+    cards: (CardInstance | null)[];
+  }
 
   | {
-      type: "clearTableau";
-    }
-  | {
-      type: "updateCardAtLocation";
-      card: CardInstance;
-      location: CardLocation;
+    type: "clearTableau";
   }
   | {
-      type: "moveCardToZone";
-      source: CardLocation;
-      targetZone: CardZone;
+    type: "updateCardAtLocation";
+    card: CardInstance;
+    location: CardLocation;
   }
   | {
-      type: "duplicateCard";
-      source: CardLocation;
+    type: "moveCardToZone";
+    source: CardLocation;
+    targetZone: CardZone;
+  }
+  | {
+    type: "duplicateCard";
+    source: CardLocation;
   };
 
 function binderReducer(state: BinderState, action: BinderAction): BinderState {
@@ -357,12 +357,12 @@ function binderReducer(state: BinderState, action: BinderAction): BinderState {
 
         if (!cardToDuplicate) return state;
         if (freeCardIndex === -1) return state;
-        
+
         const duplicatedCard = {
           ...cardToDuplicate,
           id: crypto.randomUUID(),
         };
-        
+
         binderCards[freeCardIndex] = duplicatedCard;
 
         return {

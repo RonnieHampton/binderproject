@@ -153,15 +153,15 @@ export function useBinderManager() {
 
   const handleUpdateCardAtLocation = (card: CardInstance, location: CardLocation) => {
     dispatch({ type: "updateCardAtLocation", card, location });
-  }
+  };
 
   const handleMoveCardToZone = (source: CardLocation, targetZone: CardZone) => {
     dispatch({ type: "moveCardToZone", source, targetZone });
-  }
+  };
 
   const handleDuplicateCard = (location: CardLocation) => {
     dispatch({ type: "duplicateCard", source: location });
-  }
+  };
 
   return {
     tableauCards,

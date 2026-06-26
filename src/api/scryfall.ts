@@ -1,19 +1,19 @@
 import type {
   ScryfallCard,
-} from "../types/scryfall"
+} from "../types/scryfall";
 
 const SCRYFALL_TIMEOUT_MS = 10000;
 
 export type ApiResult<T> =
   | {
-      status: "success"; 
-      data: T;
-    }
+    status: "success";
+    data: T;
+  }
   | {
-      status: "error";
-      data: T;
-      message: string;
-    };
+    status: "error";
+    data: T;
+    message: string;
+  };
 
 async function fetchWithTimeout(uri: string) {
   const controller = new AbortController();
@@ -71,7 +71,7 @@ export async function fetchPrintings(
 ): Promise<ApiResult<ScryfallCard[]>> {
   try {
     const response = await fetchWithTimeout(uri);
-    
+
     if (!response.ok) {
       return {
         status: "error",

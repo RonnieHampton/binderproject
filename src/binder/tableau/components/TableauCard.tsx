@@ -27,21 +27,21 @@ function TableauCard({ card, index, onCardClick, onCardContextMenu, settings, se
     disabled: !dragAndDropEnabled
   });
 
-    const shouldShowSelection =
-        settings.keyboardOnlyMode ||
-        settings.clickCompatibilityMode;
+  const shouldShowSelection =
+    settings.keyboardOnlyMode ||
+    settings.clickCompatibilityMode;
 
-    const isSelected =
-        shouldShowSelection &&
-        selectedCard?.zone === "tableau" &&
-        selectedCard.index === index;
+  const isSelected =
+    shouldShowSelection &&
+    selectedCard?.zone === "tableau" &&
+    selectedCard.index === index;
 
   return (
     <div
       ref={ref}
       className={`${styles.tableauCard} ${isSelected ? styles.selectedCard : ""}`}
-      onClick={(e) => {onCardClick({ zone: "tableau", index }, e)}}
-      onContextMenu={(e) => {onCardContextMenu({ zone: "tableau", index }, e)}}
+      onClick={(e) => { onCardClick({ zone: "tableau", index }, e) ;}}
+      onContextMenu={(e) => { onCardContextMenu({ zone: "tableau", index }, e) ;}}
       title={settings.showCardTooltips ? getCardTooltip(card) : undefined}
       onMouseEnter={() => onMouseEnter({ zone: "tableau", index })}
       onMouseLeave={onMouseLeave}

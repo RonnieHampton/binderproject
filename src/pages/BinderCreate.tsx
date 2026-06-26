@@ -19,6 +19,7 @@ import styles from "./BinderCreate.module.css";
 import {
   MAX_BINDER_PAGE_INDEX,
   PAGE_CHANGE_INTERVAL,
+  TABLEAU_SIZE_LIMIT,
 } from "../binder/config/binderConfig";
 import RightClickMenu from "../features/card-options/ContextMenu/RightClickMenu";
 import BinderSidePanel from "../binder/components/BinderSidePanel";
@@ -76,6 +77,8 @@ function BinderCreate() {
   const {
     selectedCard,
     setSelectedCard,
+    targetCard,
+    setTargetCard,
     handleCardHoverStart,
     handleCardHoverEnd,
   } = useBinderSelectionTarget(settings);
@@ -85,6 +88,14 @@ function BinderCreate() {
     event: React.MouseEvent
   ) => {
     if (settings.clickCompatibilityMode) {
+      if (event.shiftKey) {
+        if (location.zone === "binder") {
+          setTargetCard(location);
+        }
+
+        return;
+      }
+
       setSelectedCard(location);
       return;
     }
@@ -92,10 +103,42 @@ function BinderCreate() {
     handleCardInteraction(location, event);
   };
 
-  const handleBinderSlotClick = (location: CardLocation) => {
+  const handleBinderSlotClick = (location: CardLocation, event: React.MouseEvent) => {
     if (!settings.clickCompatibilityMode) return;
 
+    if (event.shiftKey) {
+      setTargetCard(location);
+      return;
+    }
+
     setSelectedCard(location);
+  };
+
+  const handleKeyboardMoveCardToZone = (
+    location: CardLocation,
+    targetZone: CardLocation["zone"]
+  ) => {
+    const firstFreeBinderIndex = binderCards.findIndex((card) => card === null);
+    const tableauDestinationIndex = tableauCards.length;
+
+    handleMoveCardToZone(location, targetZone);
+    setTargetCard(null);
+
+    if (
+      location.zone === "binder" &&
+      targetZone === "tableau" &&
+      tableauCards.length < TABLEAU_SIZE_LIMIT
+    ) {
+      setSelectedCard({ zone: "tableau", index: tableauDestinationIndex });
+    }
+
+    if (
+      location.zone === "tableau" &&
+      targetZone === "binder" &&
+      firstFreeBinderIndex !== -1
+    ) {
+      setSelectedCard({ zone: "binder", index: firstFreeBinderIndex });
+    }
   };
 
   const {
@@ -117,15 +160,22 @@ function BinderCreate() {
   useBinderKeyboardShortcuts({
     enabled: settings.keyboardShortcuts,
     selectedCard,
+    targetCard,
+    setSelectedCard,
+    setTargetCard,
+    clickCompatibilityMode: settings.clickCompatibilityMode,
     confirmBeforeDelete: settings.confirmBeforeDelete,
     onFlipCard: handleFlipCard,
     onDuplicateCard: handleDuplicateCard,
     onTrashCard: handleTrashCard,
-    onMoveCardToZone: handleMoveCardToZone,
+    onMoveTableauToBinder: handleToBinder,
+    onMoveBinderCard: handleBinderMove,
+    onMoveCardToZone: handleKeyboardMoveCardToZone,
     onOpenDetails: openModal,
   });
 
   useEscapeToClose(modalLocation !== null, closeModal);
+  useEscapeToClose(sidePanelOpen, () => setSidePanelOpen(false));
 
   const updateSetting = <K extends keyof BinderSettings>(
     key: K,
@@ -229,6 +279,7 @@ function BinderCreate() {
               page={page}
               cards={binderCards}
               selectedCard={selectedCard}
+              targetCard={targetCard}
               settings={settings}
               dragAndDropEnabled={dragAndDropEnabled}
             />
@@ -244,10 +295,10 @@ function BinderCreate() {
       {modalLocation !== null && selectedModalCard !== null && (
         <div className={styles.modalBackdrop} onClick={closeModal}>
           <div className={styles.modalPanel} onClick={(e) => e.stopPropagation()}>
-           <CardOptionsModal
-            card={selectedModalCard}
-            handleSave={(card) => handleCardSave(card)}
-            onClose={closeModal}
+            <CardOptionsModal
+              card={selectedModalCard}
+              handleSave={(card) => handleCardSave(card)}
+              onClose={closeModal}
             />
           </div>
         </div>
@@ -267,9 +318,9 @@ function BinderCreate() {
         onDuplicateCard={handleDuplicateCard}
       />}
 
-      <BinderSidePanel 
-        sidePanelOpen={sidePanelOpen} 
-        setSidePanelOpen={setSidePanelOpen} 
+      <BinderSidePanel
+        sidePanelOpen={sidePanelOpen}
+        setSidePanelOpen={setSidePanelOpen}
         settings={settings}
         updateSetting={updateSetting}
       />
